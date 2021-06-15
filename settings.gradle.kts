@@ -1,2 +1,2 @@
 rootProject.name = "Cohorts"
-include ':app'
+include(":app")
