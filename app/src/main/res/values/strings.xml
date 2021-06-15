@@ -2,4 +2,7 @@
     <string name="app_name">Cohorts</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cohort_label">Cohort</string>
+    <string name="chat_label">Chat</string>
+    <string name="files_label">Files</string>
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Cohorts.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Translator.Headline6</item>
+        <item name="theme">@style/ToolBarTheme</item>
+    </style>
+
+    <style name="ToolBarTheme">
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+    </style>
+
+</resources>

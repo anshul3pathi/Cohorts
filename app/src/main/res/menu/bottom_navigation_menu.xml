@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/cohortsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_cohort"
+        android:title="@string/cohort_label"/>
+
+    <item
+        android:id="@+id/chatFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/chat_label"/>
+
+    <item
+        android:id="@+id/filesFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_files"
+        android:title="@string/files_label"/>
+
+</menu>
