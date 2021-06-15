@@ -27,3 +27,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    nav_version = "2.3.5"
+}

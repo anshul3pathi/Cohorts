@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/cohortsFragment">
+    <fragment
+        android:id="@+id/cohortsFragment"
+        android:name="com.example.cohorts.ui.cohorts.CohortsFragment"
+        android:label="@string/cohort_label" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.cohorts.ui.chat.ChatFragment"
+        android:label="@string/chat_label" />
+    <fragment
+        android:id="@+id/filesFragment"
+        android:name="com.example.cohorts.ui.files.FilesFragment"
+        android:label="@string/files_label" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.cohorts.ui.help.HelpFragment"
+        android:label="@string/help_label" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.cohorts.ui.settings.SettingsFragment"
+        android:label="@string/settings_label" />
+</navigation>

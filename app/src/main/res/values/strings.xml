@@ -5,4 +5,6 @@
     <string name="cohort_label">Cohort</string>
     <string name="chat_label">Chat</string>
     <string name="files_label">Files</string>
+    <string name="help_label">Help</string>
+    <string name="settings_label">Settings</string>
 </resources>
