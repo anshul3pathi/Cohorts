@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextAppearance.Translator.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+    <style name="TextAppearance.Cohorts.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
     </style>
+
+    <style name="TextAppearance.Cohorts.Body1." parent="TextAppearance.MaterialComponents.Body1">
+    </style>
+
+    <style name="TextAppearance.Cohorts.Body2." parent="TextAppearance.MaterialComponents.Body2">
+    </style>
+
+    <style name="TextAppearance.Cohorts.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+    </style>
+
 
 </resources>

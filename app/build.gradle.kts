@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("com.google.gms.google-services")
     id("dagger.hilt.android.plugin")
 }
 
@@ -53,6 +54,11 @@ dependencies {
     implementation(Dependency.MATERIAL)
     implementation(Dependency.CONSTRAINT_LAYOUT)
 
+    // ViewModel and LiveData
+    implementation(Dependency.LIFECYCLE_EXTENSIONS)
+    implementation(Dependency.LIFECYCLE_VIEW_MODEL_KTX)
+    implementation(Dependency.FRAGMENT_KTX)
+
     // JUNIT Testing
     testImplementation(Dependency.JUNIT)
     androidTestImplementation(Dependency.EXT_JUNIT)
@@ -65,4 +71,10 @@ dependencies {
     // Navigation
     implementation(Dependency.NAVIGATION_FRAGMENT_KTX)
     implementation(Dependency.NAVIGATION_UI_KTX)
+
+    // Firebase
+    implementation(platform(Dependency.FIREBASE_BOM))
+    implementation(Dependency.FIREBASE_UI_AUTH)
+    implementation(Dependency.PLAY_SERVICES_AUTH)
+    implementation(Dependency.FIREBASE_AUTH_KTX)
 }

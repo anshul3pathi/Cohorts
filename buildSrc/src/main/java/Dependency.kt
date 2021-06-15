@@ -58,6 +58,12 @@ object Dependency {
     const val DAGGER = "com.google.dagger:dagger-compiler:${Versions.DAGGER}"
     const val DAGGER_COMPILER = "com.google.dagger:dagger:${Versions.DAGGER}"
 
+    // Firebase
+    const val FIREBASE_BOM = "com.google.firebase:firebase-bom:${Versions.FIREBASE_BOM}"
+    const val FIREBASE_UI_AUTH = "com.firebaseui:firebase-ui-auth:${Versions.FIREBASE_UI_AUTH}"
+    const val PLAY_SERVICES_AUTH = "com.google.android.gms:play-services-auth:${Versions.PLAY_SERVICES_AUTH}"
+    const val FIREBASE_AUTH_KTX = "com.google.firebase:firebase-firestore-ktx"
+
     // ANDROID TESTS
     const val EXT_JUNIT = "androidx.test.ext:junit:${Versions.EXT_JUNIT}"
     const val ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"

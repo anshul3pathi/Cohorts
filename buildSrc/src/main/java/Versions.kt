@@ -39,6 +39,9 @@ object Versions {
     const val DAGGER = "2.35"
     const val EXT_JUNIT = "1.1.2"
     const val LEGACY = "1.0.0"
+    const val FIREBASE_BOM = "28.1.0"
+    const val PLAY_SERVICES_AUTH = "19.0.0"
+    const val FIREBASE_UI_AUTH = "6.4.0"
 
 
     //  Testing
