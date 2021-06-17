@@ -9,6 +9,9 @@ import androidx.databinding.DataBindingUtil
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivitySplashScreenBinding
 import com.example.cohorts.ui.MainActivity
+import com.example.cohorts.ui.login.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,11 +19,13 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private val viewModel: SplashViewModel by viewModels()
     private lateinit var binding: ActivitySplashScreenBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen)
+        auth = FirebaseAuth.getInstance()
 
         // Hide the status bar.
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -28,8 +33,13 @@ class SplashScreenActivity : AppCompatActivity() {
 
         viewModel.navigateToLiveData.observe(this, { navigateToMainActivity ->
             if (navigateToMainActivity) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                if (auth.currentUser != null) {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
                 finish()
             }
         })

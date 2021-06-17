@@ -7,4 +7,5 @@
     <string name="files_label">Files</string>
     <string name="help_label">Help</string>
     <string name="settings_label">Settings</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
