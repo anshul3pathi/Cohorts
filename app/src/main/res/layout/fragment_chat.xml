@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.chat.ChatFragment">
+        android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
+        <ImageView
+            android:id="@+id/meme_chat_IV"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:src="@drawable/jal_lijiye"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="hello from chat" />
+            android:id="@+id/meme_text_chat_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="jal lijiye, thak gaye honge video call kr kr ke"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/meme_chat_IV"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

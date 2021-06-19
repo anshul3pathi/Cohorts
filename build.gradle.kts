@@ -5,10 +5,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.0")
+        classpath("com.android.tools.build:gradle:4.2.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KOTLIN}")
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.HILT}")
         classpath("com.google.gms:google-services:4.3.8")
@@ -22,6 +24,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://github.com/jitsi/jitsi-maven-repository/raw/master/releases")
+        }
         jcenter() // Warning: this repository is going to shut down soon
     }
 }

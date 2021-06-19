@@ -74,7 +74,10 @@ dependencies {
 
     // Firebase
     implementation(platform(Dependency.FIREBASE_BOM))
-    implementation("com.firebaseui:firebase-ui-auth:6.4.0")
+    implementation(Dependency.FIREBASE_UI_AUTH)
     implementation(Dependency.PLAY_SERVICES_AUTH)
     implementation(Dependency.FIREBASE_AUTH_KTX)
+
+    // Jitsi
+    implementation (Dependency.JITSI_MEET_SDK)
 }

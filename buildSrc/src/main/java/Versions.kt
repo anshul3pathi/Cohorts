@@ -43,6 +43,9 @@ object Versions {
     const val PLAY_SERVICES_AUTH = "19.0.0"
     const val FIREBASE_UI_AUTH = "6.4.0"
 
+    // Jitsi
+    const val JITSI_MEET = "3.6.0"
+
 
     //  Testing
     const val ANDROIDX_TEST_CORE = "1.3.0"

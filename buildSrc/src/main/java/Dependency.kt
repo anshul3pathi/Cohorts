@@ -64,6 +64,9 @@ object Dependency {
     const val PLAY_SERVICES_AUTH = "com.google.android.gms:play-services-auth:${Versions.PLAY_SERVICES_AUTH}"
     const val FIREBASE_AUTH_KTX = "com.google.firebase:firebase-firestore-ktx"
 
+    // Jitsi Meet
+    const val JITSI_MEET_SDK = "org.jitsi.react:jitsi-meet-sdk:${Versions.JITSI_MEET}"
+
     // ANDROID TESTS
     const val EXT_JUNIT = "androidx.test.ext:junit:${Versions.EXT_JUNIT}"
     const val ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"
