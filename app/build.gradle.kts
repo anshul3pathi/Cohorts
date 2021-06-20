@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("com.google.gms.google-services")
     id("dagger.hilt.android.plugin")
+    id("kotlin-android")
 }
 
 android {
@@ -58,6 +59,8 @@ dependencies {
     implementation(Dependency.LIFECYCLE_EXTENSIONS)
     implementation(Dependency.LIFECYCLE_VIEW_MODEL_KTX)
     implementation(Dependency.FRAGMENT_KTX)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlin_version"]}")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     // JUNIT Testing
     testImplementation(Dependency.JUNIT)

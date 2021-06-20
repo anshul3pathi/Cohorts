@@ -7,7 +7,11 @@
     <fragment
         android:id="@+id/cohortsFragment"
         android:name="com.example.cohorts.ui.cohorts.CohortsFragment"
-        android:label="@string/cohort_label" />
+        android:label="@string/cohort_label" >
+        <action
+            android:id="@+id/action_cohortsTo_viewPager"
+            app:destination="@id/viewPagerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.cohorts.ui.chat.ChatFragment"
@@ -24,4 +28,8 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.cohorts.ui.settings.SettingsFragment"
         android:label="@string/settings_label" />
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.example.cohorts.ui.cohorts.ViewPagerFragment"
+        android:label="ViewPagerFragment" />
 </navigation>
