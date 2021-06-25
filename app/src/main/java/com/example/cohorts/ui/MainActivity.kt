@@ -26,6 +26,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private val hiddenDestination = listOf(
+        R.id.cohortsFragment,
+        R.id.addNewMemberFragment,
+        R.id.viewPagerFragment
+    )
+
     // overridden functions
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         // Hide bottom navigation bar inside cohorts
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.viewPagerFragment) {
+            if (shouldHideBottomNav(destination.id)) {
                 binding.bottomNavigation.visibility = View.GONE
             } else {
                 binding.bottomNavigation.visibility = View.VISIBLE
@@ -70,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             R.id.item_sign_out -> {
                 signOut()
                 true
-            } else -> {
+            }  else -> {
                 super.onOptionsItemSelected(item)
             }
         }
@@ -91,6 +97,13 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
+    }
+
+    private fun shouldHideBottomNav(id: Int): Boolean {
+        for (item in hiddenDestination) {
+            if (item == id) return true
+        }
+        return false
     }
 
 }

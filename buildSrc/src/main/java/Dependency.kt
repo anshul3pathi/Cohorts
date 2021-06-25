@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.sonatype.aether.version.VersionScheme
-
 object Dependency {
 
     // KOTLIN
@@ -18,8 +16,8 @@ object Dependency {
     const val FRAGMENT_TEST = "androidx.fragment:fragment-testing:${Versions.FRAGMENT}"
 
     // NAVIGATION
-    const val NAVIGATION_FRAGMENT_KTX = "android.arch.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}"
-    const val NAVIGATION_UI_KTX = "android.arch.navigation:navigation-ui-ktx:${Versions.NAVIGATION}"
+    const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}"
+    const val NAVIGATION_UI_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}"
     const val NAVIGATION_DYNAMIC_FEATURES_FRAGMENT = "androidx.navigation:navigation-dynamic-features-fragment:1.0.0"
 
     // CORE WITH KTX
@@ -60,9 +58,11 @@ object Dependency {
 
     // Firebase
     const val FIREBASE_BOM = "com.google.firebase:firebase-bom:${Versions.FIREBASE_BOM}"
-    const val FIREBASE_UI_AUTH = "com.firebaseui:firebase-ui-auth:${Versions.FIREBASE_UI_AUTH}"
+    const val FIREBASE_UI_AUTH = "com.firebaseui:firebase-ui-auth:${Versions.FIREBASE_UI}"
     const val PLAY_SERVICES_AUTH = "com.google.android.gms:play-services-auth:${Versions.PLAY_SERVICES_AUTH}"
-    const val FIREBASE_AUTH_KTX = "com.google.firebase:firebase-firestore-ktx"
+    const val FIREBASE_FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
+    const val FIREBASE_REALTIME_DATABASE_KTX = "com.google.firebase:firebase-database-ktx"
+    const val FIREBASE_UI_FIRESTORE = "com.firebaseui:firebase-ui-firestore:${Versions.FIREBASE_UI}"
 
     // Jitsi Meet
     const val JITSI_MEET_SDK = "org.jitsi.react:jitsi-meet-sdk:${Versions.JITSI_MEET}"

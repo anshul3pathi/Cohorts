@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_new_member_fragment_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        tools:context=".ui.cohorts.newmember.AddNewMemberFragment">
+
+        <TextView
+            android:id="@+id/email_address_label_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+            android:text="@string/enter_email_address" />
+
+        <EditText
+            android:id="@+id/enter_email_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/email_address_label_tv"
+            app:layout_constraintTop_toBottomOf="@id/email_address_label_tv"
+            app:layout_constraintEnd_toEndOf="@id/email_address_label_tv"
+            android:backgroundTint="?attr/colorPrimary"
+            android:hint="@string/email_address_hint"
+            android:layout_marginTop="12dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/enter_email_et"
+            app:layout_constraintStart_toStartOf="@id/enter_email_et"
+            app:layout_constraintEnd_toEndOf="@id/enter_email_et"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_add_member_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/cancel"/>
+
+            <Button
+                android:id="@+id/done_add_member_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="@string/add"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

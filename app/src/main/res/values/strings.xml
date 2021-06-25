@@ -8,4 +8,17 @@
     <string name="help_label">Help</string>
     <string name="settings_label">Settings</string>
     <string name="sign_out">Sign Out</string>
+    <string name="cohort_name">Cohort Name</string>
+    <string name="letters_numbers_and_spaces_are_allowed">Letters, numbers and spaces are allowed.</string>
+    <string name="description_optional">Description (optional)</string>
+    <string name="write_something_about_the_cohort">Write something about the Cohort</string>
+    <string name="add_new_cohort">Add New Cohort</string>
+    <string name="join">Join</string>
+    <string name="add_new_member">Add New Member</string>
+    <string name="enter_email_address">Enter email address</string>
+    <string name="email_address_hint">abc@gmail.com</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="member_number">Members: %s</string>
+    <string name="start_video_call">Start Video Call</string>
 </resources>

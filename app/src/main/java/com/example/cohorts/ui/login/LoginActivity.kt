@@ -8,10 +8,14 @@ import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityLoginBinding
+import com.example.cohorts.model.User
 import com.example.cohorts.ui.MainActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -21,6 +25,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     private val providers = arrayListOf(
         AuthUI.IdpConfig.EmailBuilder().build(),
         AuthUI.IdpConfig.GoogleBuilder().build()
@@ -30,6 +36,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        auth = FirebaseAuth.getInstance()
+        firestore = Firebase.firestore
 
         launchSignInFlow()
 
@@ -59,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
                 val user = FirebaseAuth.getInstance().currentUser
                 Log.d(TAG, "onActivityResult: user: ${user?.displayName}")
                 val mainActivityIntent = Intent(this, MainActivity::class.java)
+                saveUserInDatabase()
                 startActivity(mainActivityIntent)
                 finish()
                 // user pressed back button or there was an error
@@ -67,6 +76,15 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun saveUserInDatabase() {
+        val user = User(
+            userName = auth.currentUser!!.displayName,
+            userEmail = auth.currentUser!!.email,
+            uid = auth.currentUser!!.uid
+        )
+        firestore.collection("users").document(user.uid!!).set(user)
     }
 
 }

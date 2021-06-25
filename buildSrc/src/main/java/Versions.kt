@@ -10,7 +10,7 @@ object Versions {
     const val APP_VERSION_NAME = "1.1.0"
 
 
-    const val NAVIGATION = "1.0.0"
+    const val NAVIGATION = "2.3.0-alpha01"
     const val HILT = "2.35"
     const val HILT_TESTS = "2.28-alpha"
     const val GRADLE_PLUGIN = "4.1.1"
@@ -41,7 +41,7 @@ object Versions {
     const val LEGACY = "1.0.0"
     const val FIREBASE_BOM = "28.1.0"
     const val PLAY_SERVICES_AUTH = "19.0.0"
-    const val FIREBASE_UI_AUTH = "6.4.0"
+    const val FIREBASE_UI = "6.4.0"
 
     // Jitsi
     const val JITSI_MEET = "3.6.0"

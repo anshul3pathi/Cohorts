@@ -11,4 +11,9 @@
         <item name="colorControlNormal">?attr/colorOnSurface</item>
     </style>
 
+    <style name="Widget.Cohorts.AddCohortFab" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="colorSecondary">?colorPrimary</item>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
+
 </resources>

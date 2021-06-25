@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
     id("dagger.hilt.android.plugin")
     id("kotlin-android")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -74,12 +75,17 @@ dependencies {
     // Navigation
     implementation(Dependency.NAVIGATION_FRAGMENT_KTX)
     implementation(Dependency.NAVIGATION_UI_KTX)
+//    implementation("androidx.navigation:navigation-fragment:2.4.0-alpha03")
+//    implementation("androidx.navigation:navigation-ui:2.4.0-alpha03")
 
     // Firebase
     implementation(platform(Dependency.FIREBASE_BOM))
     implementation(Dependency.FIREBASE_UI_AUTH)
     implementation(Dependency.PLAY_SERVICES_AUTH)
-    implementation(Dependency.FIREBASE_AUTH_KTX)
+    implementation(Dependency.FIREBASE_REALTIME_DATABASE_KTX)
+    implementation(Dependency.FIREBASE_FIRESTORE_KTX)
+//    implementation("com.firebaseui:firebase-ui-database:7.1.1")
+    implementation(Dependency.FIREBASE_UI_FIRESTORE)
 
     // Jitsi
     implementation (Dependency.JITSI_MEET_SDK)

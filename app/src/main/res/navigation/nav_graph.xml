@@ -1,35 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/cohortsFragment">
+
     <fragment
         android:id="@+id/cohortsFragment"
         android:name="com.example.cohorts.ui.cohorts.CohortsFragment"
-        android:label="@string/cohort_label" >
+        android:label="@string/cohort_label">
         <action
             android:id="@+id/action_cohortsTo_viewPager"
             app:destination="@id/viewPagerFragment" />
+        <action
+            android:id="@+id/cohorts_to_addNewCohorts"
+            app:destination="@id/addNewCohort" />
     </fragment>
+
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.cohorts.ui.chat.ChatFragment"
         android:label="@string/chat_label" />
+
     <fragment
         android:id="@+id/filesFragment"
         android:name="com.example.cohorts.ui.files.FilesFragment"
         android:label="@string/files_label" />
+
     <fragment
         android:id="@+id/helpFragment"
         android:name="com.example.cohorts.ui.help.HelpFragment"
         android:label="@string/help_label" />
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.cohorts.ui.settings.SettingsFragment"
         android:label="@string/settings_label" />
+
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.example.cohorts.ui.cohorts.ViewPagerFragment"
-        android:label="ViewPagerFragment" />
+        android:name="com.example.cohorts.ui.cohorts.ViewPagerFragment">
+        <argument
+            android:name="cohort"
+            app:argType="com.example.cohorts.model.Cohort"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_viewPagerFragment_to_addNewMemberFragment"
+            app:destination="@id/addNewMemberFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addNewCohort"
+        android:name="com.example.cohorts.ui.cohorts.newcohort.AddNewCohort"
+        android:label="@string/add_new_cohort" />
+
+    <dialog
+        android:id="@+id/addNewMemberFragment"
+        android:name="com.example.cohorts.ui.cohorts.newmember.AddNewMemberFragment"
+        android:label="AddNewMemberFragment" >
+        <argument
+            android:name="cohort"
+            app:argType="com.example.cohorts.model.Cohort"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </dialog>
+
 </navigation>
