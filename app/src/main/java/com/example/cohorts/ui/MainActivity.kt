@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val hiddenDestination = listOf(
-        R.id.cohortsFragment,
         R.id.addNewMemberFragment,
         R.id.viewPagerFragment
     )

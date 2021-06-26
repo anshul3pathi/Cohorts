@@ -2,15 +2,32 @@
 <resources>
 
     <style name="TextAppearance.Cohorts.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="font">@font/rubik_bold</item>
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Cohorts.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="font">@font/rubik_medium</item>
+        <item name="fontFamily">@font/rubik_medium</item>
     </style>
 
     <style name="TextAppearance.Cohorts.Body1." parent="TextAppearance.MaterialComponents.Body1">
+        <item name="font">@font/rubik</item>
+        <item name="fontFamily">@font/rubik</item>
     </style>
 
     <style name="TextAppearance.Cohorts.Body2." parent="TextAppearance.MaterialComponents.Body2">
+        <item name="font">@font/rubik</item>
+        <item name="fontFamily">@font/rubik</item>
     </style>
 
     <style name="TextAppearance.Cohorts.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="font">@font/rubik</item>
+        <item name="fontFamily">@font/rubik</item>
+    </style>
+
+    <style name="TextAppearance.Cohorts.CohortTitle" parent = "TextAppearance.Cohorts.Subtitle1">
+        <item name="android:textStyle">bold</item>
     </style>
 
 

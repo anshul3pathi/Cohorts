@@ -1,14 +1,9 @@
-package com.example.cohorts.ui.cohorts
+package com.example.cohorts.ui.cohorts.viewpager
 
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
@@ -22,10 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import org.jitsi.meet.sdk.*
-import java.lang.RuntimeException
-import java.net.MalformedURLException
-import java.net.URL
+import timber.log.Timber
 
 class ViewPagerFragment : Fragment() {
 
@@ -47,7 +39,7 @@ class ViewPagerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d(TAG, "onCreateView")
+        Timber.d( "onCreateView")
         // Inflate the layout for this fragment
         binding = FragmentViewPagerBinding.inflate(inflater)
         firestore = Firebase.firestore
@@ -66,7 +58,7 @@ class ViewPagerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
+        Timber.d( "onViewCreated")
 
         viewPagerAdapter = ViewPagerAdapter(
             fragmentList,
@@ -99,7 +91,7 @@ class ViewPagerFragment : Fragment() {
                 navController.navigate(action)
                 true
             } R.id.start_video_call_menu_button -> {
-                Log.d(TAG, "onOptionsItemSelected: start video call button clicked")
+                Timber.d( "onOptionsItemSelected: start video call button clicked")
                 startMeeting()
                 true
             } else -> return super.onOptionsItemSelected(item)

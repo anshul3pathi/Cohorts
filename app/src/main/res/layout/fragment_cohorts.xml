@@ -17,10 +17,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_add"
-            android:theme="@style/Widget.Cohorts.AddCohortFab"/>
+            android:elevation="6dp"
+            android:src="@drawable/ic_add" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

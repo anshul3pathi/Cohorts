@@ -11,6 +11,7 @@ import com.example.cohorts.model.Cohort
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import org.jitsi.meet.sdk.*
+import timber.log.Timber
 import java.lang.RuntimeException
 import java.net.MalformedURLException
 import java.net.URL
@@ -45,14 +46,14 @@ class Jitsi(
                     context, "User joined - ${event.data["name"]}", Toast.LENGTH_LONG
                 ).show()
                 BroadcastEvent.Type.CONFERENCE_TERMINATED -> hangUp()
-                else -> Log.d(TAG, "Event - ${event.data}")
+                else -> Timber.d( "Event - ${event.data}")
             }
         }
     }
 
     // Example for sending actions to JitsiMeetSDK
     private fun hangUp() {
-        Log.d(TAG, "hangUp: Conference call terminated")
+        Timber.d( "hangUp: Conference call terminated")
         val hangupBroadcastIntent: Intent = BroadcastIntentHelper.buildHangUpIntent()
         LocalBroadcastManager
             .getInstance(context)

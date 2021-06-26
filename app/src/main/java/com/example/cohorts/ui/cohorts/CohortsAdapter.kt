@@ -1,6 +1,5 @@
-package com.example.cohorts.adapters
+package com.example.cohorts.ui.cohorts
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,6 @@ import com.example.cohorts.databinding.ItemCohortBinding
 import com.example.cohorts.model.Cohort
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cohorts.R
-import com.example.cohorts.ui.cohorts.CohortClickListener
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
@@ -30,7 +28,7 @@ class CohortsAdapter(
 
         init {
             binding.apply {
-                itemCohortRoot.setOnClickListener {
+                cohortItemMcv.setOnClickListener {
                     itemClickListener.cohortItemClicked(getItem(layoutPosition))
                 }
                 joinVideoCallButton.setOnClickListener { button ->

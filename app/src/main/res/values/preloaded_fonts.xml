@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/libre_franklin_bold</item>
+        <item>@font/libre_franklin_thin</item>
+        <item>@font/rubik</item>
+        <item>@font/rubik_bold</item>
+        <item>@font/rubik_medium</item>
+        <item>@font/shrikhand</item>
+    </array>
+</resources>

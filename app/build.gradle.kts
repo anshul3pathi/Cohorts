@@ -51,6 +51,9 @@ dependencies {
     implementation(Dependency.KOTLIN_STDLIB)
     implementation(Dependency.CORE_KTX)
 
+    // Timber
+    implementation(Dependency.TIMBER)
+
     // UI
     implementation(Dependency.APP_COMPAT)
     implementation(Dependency.MATERIAL)

@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 class AddNewMemberFragment : BottomSheetDialogFragment() {
 
@@ -35,13 +36,13 @@ class AddNewMemberFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        Log.d(TAG, "onCreateView")
+        Timber.d("onCreateView")
         binding = FragmentAddNewMemberBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
+        Timber.d("onViewCreated")
         firestore = Firebase.firestore
         binding.apply {
             doneAddMemberButton.setOnClickListener {
@@ -67,21 +68,21 @@ class AddNewMemberFragment : BottomSheetDialogFragment() {
                     addSearchedUserToCohort(it.documents)
                 }
                 .addOnFailureListener { e ->
-                    Log.e(TAG, "user search failed", e)
+                    Timber.e("user search failed - $e")
                 }
         }
     }
 
     private fun addSearchedUserToCohort(documents: MutableList<DocumentSnapshot>) {
         if (documents.size > 1) {
-            Log.e(TAG, "multiple users with the given email found")
+            Timber.e("multiple users with the given email found")
         } else if (documents.size == 0) {
-            Log.d(TAG, "user not found")
+            Timber.d( "user not found")
         } else {
             val user = documents[0].data!!
-            Log.d(TAG, "User found with name: ${user["userName"]}")
+            Timber.d("User found with name: ${user["userName"]}")
             if ((user["uid"] as String) in cohort.cohortMembers) {
-                Log.d(TAG, "user is already in cohort")
+                Timber.d("user is already in cohort")
             } else {
                 cohort.cohortMembers.add(user["uid"] as String)
                 cohort.numberOfMembers += 1

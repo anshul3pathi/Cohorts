@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.example.cohorts.ui.cohorts.ViewPagerFragment">
+        android:name="com.example.cohorts.ui.cohorts.viewpager.ViewPagerFragment">
         <argument
             android:name="cohort"
             app:argType="com.example.cohorts.model.Cohort"

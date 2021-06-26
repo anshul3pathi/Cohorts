@@ -1,4 +1,4 @@
-package com.example.cohorts.ui.cohorts
+package com.example.cohorts.ui.cohorts.viewpager
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

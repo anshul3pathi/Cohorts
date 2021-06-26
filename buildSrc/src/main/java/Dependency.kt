@@ -34,6 +34,9 @@ object Dependency {
     // OKHTTP
     const val OKHTTP = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
 
+    // Timber
+    const val TIMBER = "com.jakewharton.timber:timber:${Versions.TIMBER}"
+
     // RECYCLERVIEW
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${Versions.RECYCLERVIEW}"
     const val LEGACY_SUPPORT = "androidx.legacy:legacy-support-v4:${Versions.LEGACY_SUPPORT}"

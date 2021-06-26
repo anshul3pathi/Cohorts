@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import timber.log.Timber
 
 class AddNewCohort : Fragment() {
 
@@ -49,7 +50,7 @@ class AddNewCohort : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.done_add_cohort_button -> {
-                Log.d(TAG, "added new Cohort - ${binding.cohortNameEt.text}")
+                Timber.d( "added new Cohort - ${binding.cohortNameEt.text}")
                 addNewCohortToDatabase()
                 navController.popBackStack()
                 true
