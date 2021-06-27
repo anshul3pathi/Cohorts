@@ -1,4 +1,4 @@
-package com.example.cohorts.model
+package com.example.cohorts.core.model
 
 import com.example.cohorts.utils.generateRandomString
 import java.io.Serializable

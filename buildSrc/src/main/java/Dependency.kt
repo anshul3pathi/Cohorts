@@ -66,6 +66,7 @@ object Dependency {
     const val FIREBASE_FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
     const val FIREBASE_REALTIME_DATABASE_KTX = "com.google.firebase:firebase-database-ktx"
     const val FIREBASE_UI_FIRESTORE = "com.firebaseui:firebase-ui-firestore:${Versions.FIREBASE_UI}"
+    const val FIREBASE_COROUTINES_PLAY_SERVICES = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.FIREBASE_COROUTINES}"
 
     // Jitsi Meet
     const val JITSI_MEET_SDK = "org.jitsi.react:jitsi-meet-sdk:${Versions.JITSI_MEET}"

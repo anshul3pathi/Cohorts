@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentCohortsBinding
 import com.example.cohorts.jitsi.Jitsi
-import com.example.cohorts.model.Cohort
+import com.example.cohorts.core.model.Cohort
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

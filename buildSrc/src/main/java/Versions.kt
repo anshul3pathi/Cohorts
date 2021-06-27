@@ -7,7 +7,7 @@ object Versions {
     const val TARGET_SDK = 30
     const val GRADLE_BUILD_TOOLS = "4.2.1"
     const val APP_VERSION = 2
-    const val APP_VERSION_NAME = "1.2.0"
+    const val APP_VERSION_NAME = "1.4.0"
 
 
     const val NAVIGATION = "2.3.0-alpha01"
@@ -43,6 +43,7 @@ object Versions {
     const val PLAY_SERVICES_AUTH = "19.0.0"
     const val FIREBASE_UI = "6.4.0"
     const val TIMBER = "4.7.1"
+    const val FIREBASE_COROUTINES = "1.1.1"
 
     // Jitsi
     const val JITSI_MEET = "3.6.0"

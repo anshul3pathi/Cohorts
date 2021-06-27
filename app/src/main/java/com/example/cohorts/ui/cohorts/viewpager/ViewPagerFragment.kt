@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentViewPagerBinding
 import com.example.cohorts.jitsi.Jitsi
-import com.example.cohorts.model.Cohort
+import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.cohorts.cohortschat.CohortsChatFragment
 import com.example.cohorts.ui.cohorts.cohortsfile.CohortsFilesFragment
 import com.google.android.material.tabs.TabLayoutMediator

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.cohorts.databinding.ItemCohortBinding
-import com.example.cohorts.model.Cohort
+import com.example.cohorts.core.model.Cohort
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cohorts.R
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter

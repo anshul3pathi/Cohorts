@@ -90,6 +90,12 @@ dependencies {
 //    implementation("com.firebaseui:firebase-ui-database:7.1.1")
     implementation(Dependency.FIREBASE_UI_FIRESTORE)
 
+    /* coroutines support for firebase operations */
+    implementation(Dependency.FIREBASE_COROUTINES_PLAY_SERVICES)
+
+    // Timber
+    implementation(Dependency.TIMBER)
+
     // Jitsi
     implementation (Dependency.JITSI_MEET_SDK)
 }

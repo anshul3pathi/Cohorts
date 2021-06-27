@@ -1,14 +1,13 @@
 package com.example.cohorts.ui.cohorts.newcohort
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentAddNewCohortBinding
-import com.example.cohorts.model.Cohort
+import com.example.cohorts.core.model.Cohort
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore

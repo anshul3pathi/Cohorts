@@ -1,4 +1,4 @@
-package com.example.cohorts.model
+package com.example.cohorts.core.model
 
 data class User(
     var userName: String? = null,
