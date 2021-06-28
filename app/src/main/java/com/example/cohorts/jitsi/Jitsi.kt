@@ -6,24 +6,29 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
+import com.example.cohorts.core.model.User
+import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.succeeded
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.scopes.ActivityScoped
+import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.*
 import timber.log.Timber
 import java.lang.RuntimeException
 import java.net.MalformedURLException
 import java.net.URL
+import javax.inject.Inject
 
-class Jitsi(
+@ActivityScoped
+class Jitsi @Inject constructor(
     private val context: Context,
-    private val cohort: Cohort,
-    private val firestore: FirebaseFirestore,
-    private val currentUser: FirebaseUser
+    private val repository: CohortsRepo
 ) {
 
     companion object {
-        private const val TAG = "JitsiClass"
         private const val JITSI_SERVER = "https://meet.jit.si"
     }
 
@@ -32,6 +37,10 @@ class Jitsi(
             onBroadcastReceived(intent)
         }
     }
+    private val coroutineJob = Job()
+    private val jitsiScope = CoroutineScope(coroutineJob)
+    private var currentUser: User? = null
+    private lateinit var cohortUid: String
 
     // Example for handling different JitsiMeetSDK events
     private fun onBroadcastReceived(intent: Intent?) {
@@ -60,20 +69,39 @@ class Jitsi(
 
         unregisterBroadcastReceiver()
 
-        firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .addOnSuccessListener {
-                val newCohort = it.toObject(Cohort::class.java)!!
-                newCohort.membersInMeeting.remove(currentUser.uid)
-                if (newCohort.membersInMeeting.size == 0) {
-                    newCohort.isCallOngoing = false
-                    firestore.collection("cohorts").document(newCohort.cohortUid)
-                        .set(newCohort)
-                } else {
-                    firestore.collection("cohorts").document(newCohort.cohortUid)
-                        .set(newCohort)
+        jitsiScope.launch {
+            val cohort = repository.getCohortById(cohortUid)
+            if (cohort.succeeded) {
+                cohort as Result.Success
+                cohort.data.membersInMeeting.remove(currentUser!!.uid)
+                if (cohort.data.membersInMeeting.size == 0) {
+                    cohort.data.isCallOngoing = false
                 }
+                val saved = repository.saveCohort(cohort.data)
+                if (!saved.succeeded) {
+                    saved as Result.Error
+                    Timber.e(saved.exception)
+                }
+            } else {
+                cohort as Result.Error
+                Timber.e(cohort.exception)
             }
+        }
+
+//        firestore.collection("cohorts").document(cohort.cohortUid)
+//            .get()
+//            .addOnSuccessListener {
+//                val newCohort = it.toObject(Cohort::class.java)!!
+//                newCohort.membersInMeeting.remove(currentUser.uid)
+//                if (newCohort.membersInMeeting.size == 0) {
+//                    newCohort.isCallOngoing = false
+//                    firestore.collection("cohorts").document(newCohort.cohortUid)
+//                        .set(newCohort)
+//                } else {
+//                    firestore.collection("cohorts").document(newCohort.cohortUid)
+//                        .set(newCohort)
+//                }
+//            }
     }
 
     private fun unregisterBroadcastReceiver() {
@@ -98,36 +126,53 @@ class Jitsi(
             .registerReceiver(broadcastReceiver, intentFilter)
     }
 
-    fun initJitsi() {
+    private suspend fun initUserInfo() {
+        currentUser = withContext(Dispatchers.IO) {
+            val result = repository.getCurrentUser()
+            if (result.succeeded) {
+                result as Result.Success
+                result.data
+            } else null
+        }
+    }
+
+    fun initJitsi(cohortUid: String) {
         val serverURL = try {
             URL(JITSI_SERVER)
         } catch (e: MalformedURLException) {
             e.printStackTrace()
             throw RuntimeException("Invalid server URL!")
         }
+        this.cohortUid = cohortUid
 
-        val userBundle = Bundle()
-        userBundle.apply {
-            putString("displayName", currentUser.displayName)
-            putString("email", currentUser.email)
+        jitsiScope.launch {
+            initUserInfo()
+
+            withContext(Dispatchers.Main) {
+                val userBundle = Bundle()
+                userBundle.apply {
+                    putString("displayName", currentUser?.userName)
+                    putString("email", currentUser?.userEmail)
+                }
+                val userInfo = JitsiMeetUserInfo(userBundle)
+
+                val defaultJitsiOptions = JitsiMeetConferenceOptions.Builder()
+                    .setServerURL(serverURL)
+                    .setWelcomePageEnabled(false)
+                    .setFeatureFlag("chat.enabled", false)
+                    .setFeatureFlag("invite.enabled", false)
+                    .setFeatureFlag("call-integration.enabled", false)
+                    .setUserInfo(userInfo)
+                    .build()
+                JitsiMeet.setDefaultConferenceOptions(defaultJitsiOptions)
+            }
         }
-        val userInfo = JitsiMeetUserInfo(userBundle)
-
-        val defaultJitsiOptions = JitsiMeetConferenceOptions.Builder()
-            .setServerURL(serverURL)
-            .setWelcomePageEnabled(false)
-            .setFeatureFlag("chat.enabled", false)
-            .setFeatureFlag("invite.enabled", false)
-            .setFeatureFlag("call-integration.enabled", false)
-            .setUserInfo(userInfo)
-            .build()
-        JitsiMeet.setDefaultConferenceOptions(defaultJitsiOptions)
         registerForBroadcastMessages()
     }
 
-    fun launchJitsi() {
+    fun launchJitsi(cohortRoomCode: String) {
         val jitsiMeetOptions = JitsiMeetConferenceOptions.Builder()
-            .setRoom(cohort.cohortRoomCode)
+            .setRoom(cohortRoomCode)
             .build()
         JitsiMeetActivity.launch(context, jitsiMeetOptions)
     }

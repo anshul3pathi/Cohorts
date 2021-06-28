@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:id="@+id/root_layout_cohorts_fragment"
+        android:id="@+id/root_layout_viewPager_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

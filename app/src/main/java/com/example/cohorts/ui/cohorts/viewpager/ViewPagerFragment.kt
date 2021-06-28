@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
@@ -12,13 +13,17 @@ import com.example.cohorts.jitsi.Jitsi
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.cohorts.cohortschat.CohortsChatFragment
 import com.example.cohorts.ui.cohorts.cohortsfile.CohortsFilesFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ViewPagerFragment : Fragment() {
 
     companion object {
@@ -26,14 +31,15 @@ class ViewPagerFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentViewPagerBinding
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var firestore: FirebaseFirestore
+//    private lateinit var auth: FirebaseAuth
     private lateinit var navController: NavController
     private val fragmentList = listOf(CohortsChatFragment(), CohortsFilesFragment())
     private lateinit var viewPagerAdapter: ViewPagerAdapter
-    private lateinit var cohort: Cohort
+    private lateinit var cohortArgument: Cohort
     private var buttonClicked = false
-    private lateinit var jitsi: Jitsi
+    @Inject lateinit var jitsi: Jitsi
+    private val viewPagerViewModel: ViewPagerViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,15 +48,15 @@ class ViewPagerFragment : Fragment() {
         Timber.d( "onCreateView")
         // Inflate the layout for this fragment
         binding = FragmentViewPagerBinding.inflate(inflater)
-        firestore = Firebase.firestore
-        auth = FirebaseAuth.getInstance()
+//        firestore = Firebase.firestore
+//        auth = FirebaseAuth.getInstance()
         navController = findNavController()
 
         arguments?.let {
-            cohort = ViewPagerFragmentArgs.fromBundle(it).cohort!!
-            (activity as AppCompatActivity).supportActionBar?.title = cohort.cohortName
+            cohortArgument = ViewPagerFragmentArgs.fromBundle(it).cohort!!
+            (activity as AppCompatActivity).supportActionBar?.title = cohortArgument.cohortName
         }
-        jitsi = Jitsi(requireContext(), cohort, firestore, auth.currentUser!!)
+//        jitsi = Jitsi(requireContext(), cohortArgument, firestore, auth.currentUser!!)
 
         setHasOptionsMenu(true)
 
@@ -66,6 +72,22 @@ class ViewPagerFragment : Fragment() {
             lifecycle
         )
 
+        viewPagerViewModel.inMeeting.observe(viewLifecycleOwner, { inMeeting ->
+            if (inMeeting) {
+                Timber.d("You are in a new meeting!")
+            }
+        })
+        viewPagerViewModel.errorOccurred.observe(viewLifecycleOwner, { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Snackbar.make(
+                    binding.rootLayoutViewPagerFragment,
+                    errorMessage,
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
+        })
+
         val tabTitles = listOf("Chat", "Files")
         binding.viewpager2Cohorts.adapter = viewPagerAdapter
 
@@ -74,7 +96,8 @@ class ViewPagerFragment : Fragment() {
             binding.viewpager2Cohorts.setCurrentItem(tab.position, true)
         }.attach()
 
-        jitsi.initJitsi()
+//        jitsi.initJitsi()
+        jitsi.initJitsi(cohortArgument.cohortUid)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -87,7 +110,7 @@ class ViewPagerFragment : Fragment() {
         return when(item.itemId) {
             R.id.add_new_member_menu_item -> {
                 val action = ViewPagerFragmentDirections
-                    .actionViewPagerFragmentToAddNewMemberFragment(cohort)
+                    .actionViewPagerFragmentToAddNewMemberFragment(cohortArgument)
                 navController.navigate(action)
                 true
             } R.id.start_video_call_menu_button -> {
@@ -104,13 +127,15 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun startMeeting() {
-        if (!cohort.isCallOngoing) {
-            cohort.isCallOngoing = true
-            cohort.membersInMeeting.add(auth.currentUser!!.uid)
-            firestore.collection("cohorts").document(cohort.cohortUid)
-                .set(cohort)
-            jitsi.launchJitsi()
-        }
+//        if (!cohortArgument.isCallOngoing) {
+//            cohortArgument.isCallOngoing = true
+//            cohortArgument.membersInMeeting.add(auth.currentUser!!.uid)
+//            firestore.collection("cohorts").document(cohortArgument.cohortUid)
+//                .set(cohortArgument)
+//            jitsi.launchJitsi()
+//        }
+        viewPagerViewModel.startNewMeeting(cohortArgument)
+        jitsi.launchJitsi(cohortArgument.cohortRoomCode)
     }
 
 }

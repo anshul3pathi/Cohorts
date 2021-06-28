@@ -19,7 +19,9 @@ import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityMainBinding
 import com.example.cohorts.ui.login.LoginActivity
 import com.firebase.ui.auth.AuthUI
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

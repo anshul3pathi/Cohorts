@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,12 +15,16 @@ import com.example.cohorts.databinding.FragmentCohortsBinding
 import com.example.cohorts.jitsi.Jitsi
 import com.example.cohorts.core.model.Cohort
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CohortsFragment : Fragment(), CohortClickListener {
 
     companion object {
@@ -31,6 +36,8 @@ class CohortsFragment : Fragment(), CohortClickListener {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var cohortsAdapter: CohortsAdapter
+    private val cohortsViewModel: CohortsViewModel by viewModels()
+    @Inject lateinit var jitsi: Jitsi
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,9 +53,28 @@ class CohortsFragment : Fragment(), CohortClickListener {
         firestore = Firebase.firestore
         auth = FirebaseAuth.getInstance()
 
-        val cohortCollection = firestore.collection("cohorts")
-        val query = cohortCollection
-            .whereNotEqualTo("cohortName", null)
+//        val cohortCollection = firestore.collection("cohorts")
+//        val query = cohortCollection
+//            .whereNotEqualTo("cohortName", null)
+
+        cohortsViewModel.userAddedToMeeting.observe(viewLifecycleOwner, { userAddedToMeeting ->
+            if (userAddedToMeeting) {
+                Timber.d("cohort to join - ${cohortsViewModel.cohort}")
+                cohortsViewModel.resetUserAddedToMeeting()
+            }
+        })
+        cohortsViewModel.errorAddingUserToMeeting.observe(viewLifecycleOwner, { errorAddingUser ->
+            if (errorAddingUser) {
+                Snackbar.make(
+                    binding.cohortsFragmentRootLayout,
+                    "Error adding you to meeting.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                cohortsViewModel.resetErrorAddingUserToMeeting()
+            }
+        })
+
+        val query = cohortsViewModel.fetchCohortsQuery()
 
         val cohortAdapterOptions = FirestoreRecyclerOptions.Builder<Cohort>()
             .setQuery(query, Cohort::class.java)
@@ -85,14 +111,18 @@ class CohortsFragment : Fragment(), CohortClickListener {
         if (auth.currentUser!!.uid in cohort.membersInMeeting) {
             (view as Button).isEnabled = false
         } else {
-            Timber.d("joinVideoCallButtonClicked: trying to join meeting")
+            Timber.d("joinVideoCallButtonClicked: trying to join cohort - $cohort")
 
-            cohort.membersInMeeting.add(auth.currentUser!!.uid)
-            firestore.collection("cohorts").document(cohort.cohortUid)
-                .set(cohort)
-            val jitsi = Jitsi(requireContext(), cohort, firestore, auth.currentUser!!)
-            jitsi.initJitsi()
-            jitsi.launchJitsi()
+//            cohort.membersInMeeting.add(auth.currentUser!!.uid)
+//            firestore.collection("cohorts").document(cohort.cohortUid)
+//                .set(cohort)
+//            val jitsi = Jitsi(requireContext(), cohort, firestore, auth.currentUser!!)
+//            jitsi.initJitsi()
+//            jitsi.launchJitsi()
+
+            cohortsViewModel.addCurrentUserToMeeting(cohort)
+            jitsi.initJitsi(cohort.cohortUid)
+            jitsi.launchJitsi(cohort.cohortRoomCode)
         }
     }
 }
