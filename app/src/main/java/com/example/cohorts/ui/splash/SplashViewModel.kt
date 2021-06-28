@@ -19,7 +19,7 @@ class SplashViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun startTimer() {
-        object: CountDownTimer(3500L, 100L) {
+        object: CountDownTimer(1500L, 500L) {
             override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {

@@ -46,6 +46,20 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    override suspend fun getUserByEmail(userEmail: String): Result<User> {
+        return safeCall {
+            val users = usersCollection
+                .whereEqualTo("userEmail", userEmail)
+                .get()
+                .await()
+                .toObjects(User::class.java)
+            if (users.size != 1) {
+                throw IllegalStateException("More than one user found with given email!")
+            }
+            Result.Success(users[0])
+        }
+    }
+
     override suspend fun addCurrentUserToOngoingMeeting(ofCohort: Cohort): Result<User> {
         return safeCall {
             val currentUser = auth.currentUser!!

@@ -15,5 +15,6 @@ interface CohortsRepo {
     suspend fun addCurrentUserToOngoingMeeting(ofCohort: Cohort): Result<User>
     suspend fun startNewMeeting(ofCohort: Cohort): Result<Any>
     suspend fun leaveOngoingMeeting(): Result<Any>
+    suspend fun getUserByEmail(userEmail: String): Result<User>
 
 }

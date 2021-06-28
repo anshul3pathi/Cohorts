@@ -1,6 +1,7 @@
 package com.example.cohorts.ui.cohorts.newcohort
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,6 +52,18 @@ class AddNewCohort : Fragment() {
                 ).show()
             }
         })
+        addNewCohortViewModel.cohortAddedSuccessfully.observe(
+            viewLifecycleOwner,
+            { cohortAddedSuccessfully ->
+                if (cohortAddedSuccessfully) {
+                    Snackbar.make(
+                        binding.addNewCohortFragmentRoot,
+                        "Cohort created successfully!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -64,7 +77,14 @@ class AddNewCohort : Fragment() {
             R.id.done_add_cohort_button -> {
                 Timber.d( "added new Cohort - ${binding.cohortNameEt.text}")
                 addNewCohortToDatabase()
-                navController.popBackStack()
+                object: CountDownTimer(3000L, 1000L) {
+                    override fun onTick(millisUntilFinished: Long) {
+                    }
+
+                    override fun onFinish() {
+                        navController.popBackStack()
+                    }
+                }.start()
                 true
             } else -> {
                 return super.onOptionsItemSelected(item)
