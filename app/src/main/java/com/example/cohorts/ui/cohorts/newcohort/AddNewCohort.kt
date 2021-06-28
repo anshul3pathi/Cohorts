@@ -3,18 +3,22 @@ package com.example.cohorts.ui.cohorts.newcohort
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentAddNewCohortBinding
 import com.example.cohorts.core.model.Cohort
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class AddNewCohort : Fragment() {
 
     companion object {
@@ -23,8 +27,7 @@ class AddNewCohort : Fragment() {
 
     private lateinit var binding: FragmentAddNewCohortBinding
     private lateinit var navController: NavController
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var currentUser: FirebaseUser
+    private val addNewCohortViewModel: AddNewCohortViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,11 +36,21 @@ class AddNewCohort : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentAddNewCohortBinding.inflate(inflater)
         navController = findNavController()
-        firestore = Firebase.firestore
-        currentUser = FirebaseAuth.getInstance().currentUser!!
 
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        addNewCohortViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Snackbar.make(
+                    binding.addNewCohortFragmentRoot,
+                    errorMessage,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -64,12 +77,7 @@ class AddNewCohort : Fragment() {
             cohortName = binding.cohortNameEt.text.toString(),
             cohortDescription = binding.cohortDescriptionEt.text.toString()
         )
-        // adding currently logged user to the new Cohort
-        newCohort.cohortMembers.add(currentUser.uid)
-        newCohort.numberOfMembers += 1
-
-        firestore.collection("cohorts")
-            .document(newCohort.cohortUid).set(newCohort)
+        addNewCohortViewModel.addNewCohort(newCohort)
     }
 
 }

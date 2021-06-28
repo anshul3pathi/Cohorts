@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_new_cohort_fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp">
