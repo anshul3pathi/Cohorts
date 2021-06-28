@@ -1,6 +1,5 @@
 package com.example.cohorts.core.repository
 
-import android.accounts.NetworkErrorException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
@@ -11,6 +10,7 @@ import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.safeCall
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 class CohortsRepository @Inject constructor(
     firestore: FirebaseFirestore,
@@ -46,11 +46,17 @@ class CohortsRepository @Inject constructor(
         }
     }
 
-    override suspend fun addCurrentUserToMeeting(cohort: Cohort): Result<Any> {
+    override suspend fun addCurrentUserToOngoingMeeting(ofCohort: Cohort): Result<User> {
         return safeCall {
             val currentUser = auth.currentUser!!
-            cohort.membersInMeeting.add(currentUser.uid)
-            saveCohort(cohort)
+            ofCohort.membersInMeeting.add(currentUser.uid)
+            saveCohort(ofCohort)
+            val user = User(
+                uid = currentUser.uid,
+                userEmail = currentUser.email,
+                userName = currentUser.displayName
+            )
+            Result.Success(user)
         }
     }
 
@@ -81,11 +87,11 @@ class CohortsRepository @Inject constructor(
         }
     }
 
-    override suspend fun startNewMeeting(cohort: Cohort): Result<Any> {
+    override suspend fun startNewMeeting(ofCohort: Cohort): Result<Any> {
         return safeCall {
-            if (!cohort.isCallOngoing) {
-                cohort.isCallOngoing = true
-                val result = addCurrentUserToMeeting(cohort)
+            if (!ofCohort.isCallOngoing) {
+                ofCohort.isCallOngoing = true
+                val result = addCurrentUserToOngoingMeeting(ofCohort)
                 if (result.succeeded) {
                     Result.Success(Any())
                 } else {
@@ -94,6 +100,25 @@ class CohortsRepository @Inject constructor(
             } else {
                 throw IllegalStateException("Meeting already going on!")
             }
+        }
+    }
+
+    override suspend fun leaveOngoingMeeting(): Result<Any> {
+        return safeCall {
+            val cohorts = cohortsCollection.whereArrayContains(
+                "membersInMeeting",
+                auth.currentUser!!.uid
+            ).get().await().toObjects(Cohort::class.java)
+            Timber.d("${cohorts[0]}")
+            if (cohorts.size > 1) {
+                throw IllegalStateException("More than one cohort found in whose meeting user is in!")
+            }
+            val meetingCohort = cohorts[0]
+            meetingCohort.membersInMeeting.remove(auth.currentUser!!.uid)
+            if (meetingCohort.membersInMeeting.size == 0) {
+                meetingCohort.isCallOngoing = false
+            }
+            saveCohort(meetingCohort)
         }
     }
 }

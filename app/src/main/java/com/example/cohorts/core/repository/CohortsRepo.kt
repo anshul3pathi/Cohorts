@@ -12,7 +12,8 @@ interface CohortsRepo {
     suspend fun getCohortById(cohortUid: String): Result<Cohort>
     suspend fun getCurrentUser(): Result<User>
     fun fetchCohortsQuery(): Result<Query>
-    suspend fun addCurrentUserToMeeting(cohort: Cohort): Result<Any>
-    suspend fun startNewMeeting(cohort: Cohort): Result<Any>
+    suspend fun addCurrentUserToOngoingMeeting(ofCohort: Cohort): Result<User>
+    suspend fun startNewMeeting(ofCohort: Cohort): Result<Any>
+    suspend fun leaveOngoingMeeting(): Result<Any>
 
 }

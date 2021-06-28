@@ -1,10 +1,13 @@
 package com.example.cohorts.ui.cohorts
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -12,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentCohortsBinding
-import com.example.cohorts.jitsi.Jitsi
 import com.example.cohorts.core.model.Cohort
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
@@ -21,8 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import org.jitsi.meet.sdk.BroadcastEvent
+import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CohortsFragment : Fragment(), CohortClickListener {
@@ -37,7 +40,15 @@ class CohortsFragment : Fragment(), CohortClickListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var cohortsAdapter: CohortsAdapter
     private val cohortsViewModel: CohortsViewModel by viewModels()
-    @Inject lateinit var jitsi: Jitsi
+//    @Inject lateinit var jitsi: Jitsi
+
+    private val broadcastReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver(context) {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                onBroadcastReceived(intent)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,9 +131,36 @@ class CohortsFragment : Fragment(), CohortClickListener {
 //            jitsi.initJitsi()
 //            jitsi.launchJitsi()
 
-            cohortsViewModel.addCurrentUserToMeeting(cohort)
-            jitsi.initJitsi(cohort.cohortUid)
-            jitsi.launchJitsi(cohort.cohortRoomCode)
+            cohortsViewModel.addCurrentUserToOngoingMeeting(
+                cohort,
+                broadcastReceiver,
+                requireContext()
+            )
+//            jitsi.initJitsi(cohort.cohortUid)
+//            jitsi.launchJitsi(cohort.cohortRoomCode)
+        }
+    }
+
+    // Example for handling different JitsiMeetSDK events
+    private fun onBroadcastReceived(intent: Intent?) {
+        if (intent != null) {
+            val event = BroadcastEvent(intent)
+            when (event.type) {
+                BroadcastEvent.Type.CONFERENCE_JOINED -> Toast.makeText(
+                    context, "Conference joined", Toast.LENGTH_LONG
+                ).show()
+                BroadcastEvent.Type.PARTICIPANT_JOINED -> Toast.makeText(
+                    context, "User joined - ${event.data["name"]}", Toast.LENGTH_LONG
+                ).show()
+                BroadcastEvent.Type.CONFERENCE_TERMINATED -> {
+                    Timber.d("on going conference terminated!")
+                    cohortsViewModel.terminateMeeting(
+                        requireContext(),
+                        broadcastReceiver
+                    )
+                }
+                else -> Timber.d( "Event - ${event.data}")
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.cohorts
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,9 +9,13 @@ import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.repository.CohortsRepo
 import com.example.cohorts.core.succeeded
+import com.example.cohorts.jitsi.destroyJitsi
+import com.example.cohorts.jitsi.initJitsi
+import com.example.cohorts.jitsi.launchJitsi
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.jitsi.meet.sdk.BroadcastReceiver
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,14 +38,28 @@ class CohortsViewModel @Inject constructor(
         return query.data
     }
 
-    fun addCurrentUserToMeeting(cohort: Cohort) {
+    fun addCurrentUserToOngoingMeeting(
+        ofCohort: Cohort,
+        broadcastReceiver: BroadcastReceiver,
+        context: Context
+    ) {
         viewModelScope.launch {
-            val result = repository.addCurrentUserToMeeting(cohort)
-            if (result.succeeded) {
+            val addedUser = repository.addCurrentUserToOngoingMeeting(ofCohort)
+            if (addedUser.succeeded) {
+                addedUser as Result.Success
                 _userAddedToMeeting.postValue(true)
+                initJitsi(addedUser.data, broadcastReceiver, context)
+                launchJitsi(context, ofCohort.cohortRoomCode)
             } else {
                 _errorAddingUserToMeeting.postValue(true)
             }
+        }
+    }
+
+    fun terminateMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
+        viewModelScope.launch {
+            repository.leaveOngoingMeeting()
+            destroyJitsi(context, broadcastReceiver)
         }
     }
 

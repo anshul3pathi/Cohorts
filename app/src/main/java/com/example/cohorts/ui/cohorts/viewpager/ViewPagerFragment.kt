@@ -1,7 +1,10 @@
 package com.example.cohorts.ui.cohorts.viewpager
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
@@ -9,19 +12,15 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentViewPagerBinding
-import com.example.cohorts.jitsi.Jitsi
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.cohorts.cohortschat.CohortsChatFragment
 import com.example.cohorts.ui.cohorts.cohortsfile.CohortsFilesFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import org.jitsi.meet.sdk.BroadcastEvent
+import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ViewPagerFragment : Fragment() {
@@ -31,15 +30,20 @@ class ViewPagerFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentViewPagerBinding
-//    private lateinit var firestore: FirebaseFirestore
-//    private lateinit var auth: FirebaseAuth
     private lateinit var navController: NavController
     private val fragmentList = listOf(CohortsChatFragment(), CohortsFilesFragment())
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var cohortArgument: Cohort
-    private var buttonClicked = false
-    @Inject lateinit var jitsi: Jitsi
+//    @Inject lateinit var jitsi: Jitsi
     private val viewPagerViewModel: ViewPagerViewModel by viewModels()
+
+    private val broadcastReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver(context) {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                onBroadcastReceived(intent)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,15 +52,12 @@ class ViewPagerFragment : Fragment() {
         Timber.d( "onCreateView")
         // Inflate the layout for this fragment
         binding = FragmentViewPagerBinding.inflate(inflater)
-//        firestore = Firebase.firestore
-//        auth = FirebaseAuth.getInstance()
         navController = findNavController()
 
         arguments?.let {
             cohortArgument = ViewPagerFragmentArgs.fromBundle(it).cohort!!
             (activity as AppCompatActivity).supportActionBar?.title = cohortArgument.cohortName
         }
-//        jitsi = Jitsi(requireContext(), cohortArgument, firestore, auth.currentUser!!)
 
         setHasOptionsMenu(true)
 
@@ -96,8 +97,8 @@ class ViewPagerFragment : Fragment() {
             binding.viewpager2Cohorts.setCurrentItem(tab.position, true)
         }.attach()
 
-//        jitsi.initJitsi()
-        jitsi.initJitsi(cohortArgument.cohortUid)
+//        jitsi.initJitsi(cohortArgument.cohortUid)
+        viewPagerViewModel.initialiseJitsi(broadcastReceiver, requireContext())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,20 +123,33 @@ class ViewPagerFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        jitsi.destroyJitsi()
+        viewPagerViewModel.terminateOngoingMeeting(requireContext(), broadcastReceiver)
         super.onDestroy()
     }
 
     private fun startMeeting() {
-//        if (!cohortArgument.isCallOngoing) {
-//            cohortArgument.isCallOngoing = true
-//            cohortArgument.membersInMeeting.add(auth.currentUser!!.uid)
-//            firestore.collection("cohorts").document(cohortArgument.cohortUid)
-//                .set(cohortArgument)
-//            jitsi.launchJitsi()
-//        }
-        viewPagerViewModel.startNewMeeting(cohortArgument)
-        jitsi.launchJitsi(cohortArgument.cohortRoomCode)
+        viewPagerViewModel.startNewMeeting(cohortArgument, requireContext())
+//        jitsi.launchJitsi(cohortArgument.cohortRoomCode)
     }
 
+    // Example for handling different JitsiMeetSDK events
+    private fun onBroadcastReceived(intent: Intent?) {
+        if (intent != null) {
+            val event = BroadcastEvent(intent)
+            when (event.type) {
+                BroadcastEvent.Type.CONFERENCE_JOINED -> Toast.makeText(
+                    context, "Conference joined", Toast.LENGTH_LONG
+                ).show()
+                BroadcastEvent.Type.PARTICIPANT_JOINED ->  Toast.makeText(
+                    context, "User joined - ${event.data["name"]}", Toast.LENGTH_LONG
+                ).show()
+                BroadcastEvent.Type.CONFERENCE_TERMINATED -> {
+                    Timber.d("on going conference terminated!")
+                    viewPagerViewModel
+                        .terminateOngoingMeeting(requireContext(), broadcastReceiver)
+                }
+                else -> Timber.d( "Event - ${event.data}")
+            }
+        }
+    }
 }
