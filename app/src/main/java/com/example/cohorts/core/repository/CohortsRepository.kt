@@ -136,4 +136,11 @@ class CohortsRepository @Inject constructor(
             saveCohort(meetingCohort)
         }
     }
+
+    override suspend fun deleteThisCohort(cohort: Cohort): Result<Any> {
+        return safeCall {
+            cohortsCollection.document(cohort.cohortUid).delete().await()
+            Result.Success(Any())
+        }
+    }
 }

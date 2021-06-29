@@ -33,6 +33,9 @@ class ViewPagerViewModel @Inject constructor(
     private val _errorOccurred = MutableLiveData("")
     val errorOccurred: LiveData<String> = _errorOccurred
 
+    private val _cohortDeleted = MutableLiveData(false)
+    val cohortDeleted: LiveData<Boolean> = _cohortDeleted
+
     fun startNewMeeting(ofCohort: Cohort, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = repository.startNewMeeting(ofCohort)
@@ -65,6 +68,19 @@ class ViewPagerViewModel @Inject constructor(
             } else {
                 result as Result.Error
                 Timber.e(result.exception)
+            }
+        }
+    }
+
+    fun deleteThisCohort(cohort: Cohort) {
+        viewModelScope.launch(coroutineDispatcher) {
+            val result = repository.deleteThisCohort(cohort)
+            if (result.succeeded) {
+                _cohortDeleted.postValue(true)
+            } else {
+                val exception = (result as Result.Error).exception
+                _cohortDeleted.postValue(false)
+                _errorOccurred.postValue(exception.message)
             }
         }
     }

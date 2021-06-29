@@ -3,6 +3,7 @@ package com.example.cohorts.ui.cohorts.viewpager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -88,6 +89,22 @@ class ViewPagerFragment : Fragment() {
                     .show()
             }
         })
+        viewPagerViewModel.cohortDeleted.observe(viewLifecycleOwner, { cohortDeleted ->
+            if (cohortDeleted) {
+                Snackbar.make(
+                    binding.rootLayoutViewPagerFragment,
+                    "This cohort was deleted!",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                object : CountDownTimer(1500L, 500L) {
+                    override fun onTick(millisUntilFinished: Long) {}
+
+                    override fun onFinish() {
+                        navController.navigateUp()
+                    }
+                }.start()
+            }
+        })
 
         val tabTitles = listOf("Chat", "Files")
         binding.viewpager2Cohorts.adapter = viewPagerAdapter
@@ -118,6 +135,9 @@ class ViewPagerFragment : Fragment() {
                 Timber.d( "onOptionsItemSelected: start video call button clicked")
                 startMeeting()
                 true
+            } R.id.delete_cohort_menu_item -> {
+                deleteThisCohort()
+                true
             } else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -126,6 +146,10 @@ class ViewPagerFragment : Fragment() {
         Timber.d("onDestroy")
         viewPagerViewModel.terminateOngoingMeeting(requireContext(), broadcastReceiver)
         super.onDestroy()
+    }
+
+    private fun deleteThisCohort() {
+        viewPagerViewModel.deleteThisCohort(cohortArgument)
     }
 
     private fun startMeeting() {

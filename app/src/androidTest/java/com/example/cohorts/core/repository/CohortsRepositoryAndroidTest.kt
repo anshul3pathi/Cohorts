@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -125,6 +126,25 @@ class CohortsRepositoryAndroidTest {
         // Deleting saved cohort
         firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
         Unit // return Unit
+    }
+
+    @Test
+    fun deleteThisCohort_deletesTheGivenCohortFromFirestore() = runBlocking {
+        // Given - cohort exists in firestore
+        val cohort = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc",
+            numberOfMembers = 1,
+            cohortMembers = mutableListOf(auth.currentUser!!.uid),
+        )
+        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        // When - this cohort is deleted
+        val result = repository.deleteThisCohort(cohort)
+        // Then - the given cohort should not exist in firestore
+        assertThat(result.succeeded, `is`(true))
+        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
+            .get().await().toObject(Cohort::class.java)
+        assertThat(savedCohort, `is`(nullValue()))
     }
 
 }
