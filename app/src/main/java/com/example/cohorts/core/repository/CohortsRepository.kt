@@ -132,6 +132,7 @@ class CohortsRepository @Inject constructor(
             if (meetingCohort.membersInMeeting.size == 0) {
                 meetingCohort.isCallOngoing = false
             }
+            Timber.d("left the meeting")
             saveCohort(meetingCohort)
         }
     }

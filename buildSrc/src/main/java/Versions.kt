@@ -44,6 +44,7 @@ object Versions {
     const val FIREBASE_UI = "6.4.0"
     const val TIMBER = "4.7.1"
     const val FIREBASE_COROUTINES = "1.1.1"
+    const val FIREBASE_UI_DATABASE = "7.1.1"
 
     // Jitsi
     const val JITSI_MEET = "3.6.0"

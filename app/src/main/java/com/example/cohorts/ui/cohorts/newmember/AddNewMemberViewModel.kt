@@ -3,7 +3,6 @@ package com.example.cohorts.ui.cohorts.newmember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.repository.CohortsRepo
@@ -13,13 +12,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AddNewMemberViewModel @Inject constructor(
     private val repository: CohortsRepo,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _errorMessage = MutableLiveData("")
@@ -29,7 +27,7 @@ class AddNewMemberViewModel @Inject constructor(
     val userAddedSuccessfully: LiveData<Boolean> = _userAddedSuccessfully
 
     fun addNewMemberToCohort(cohort: Cohort, userEmail: String) {
-        CoroutineScope(dispatcher).launch {
+        CoroutineScope(coroutineDispatcher).launch {
             val result = repository.getUserByEmail(userEmail)
             if (result.succeeded) {
                 val user = (result as Result.Success).data

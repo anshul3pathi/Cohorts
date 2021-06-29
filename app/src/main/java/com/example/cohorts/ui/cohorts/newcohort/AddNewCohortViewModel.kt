@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddNewCohortViewModel @Inject constructor(
     private val repository: CohortsRepo,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _errorMessage = MutableLiveData("")
@@ -27,7 +27,7 @@ class AddNewCohortViewModel @Inject constructor(
     val cohortAddedSuccessfully: LiveData<Boolean> = _cohortAddedSuccessfully
 
     fun addNewCohort(newCohort: Cohort) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             val currentUser = repository.getCurrentUser()
             if (currentUser.succeeded) {
                 currentUser as Result.Success

@@ -123,6 +123,7 @@ class ViewPagerFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        Timber.d("onDestroy")
         viewPagerViewModel.terminateOngoingMeeting(requireContext(), broadcastReceiver)
         super.onDestroy()
     }

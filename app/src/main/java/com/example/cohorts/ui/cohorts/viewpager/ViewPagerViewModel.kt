@@ -14,15 +14,17 @@ import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jitsi.meet.sdk.BroadcastReceiver
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ViewPagerViewModel @Inject constructor(
     private val repository: CohortsRepo,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _inMeeting = MutableLiveData(false)
@@ -32,7 +34,7 @@ class ViewPagerViewModel @Inject constructor(
     val errorOccurred: LiveData<String> = _errorOccurred
 
     fun startNewMeeting(ofCohort: Cohort, context: Context) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(coroutineDispatcher) {
             val result = repository.startNewMeeting(ofCohort)
             if (result.succeeded) {
                 _inMeeting.postValue(true)
@@ -45,7 +47,7 @@ class ViewPagerViewModel @Inject constructor(
     }
 
     fun initialiseJitsi(broadcastReceiver: BroadcastReceiver, context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             val currentUser = repository.getCurrentUser()
             if (currentUser.succeeded) {
                 currentUser as Result.Success
@@ -55,9 +57,15 @@ class ViewPagerViewModel @Inject constructor(
     }
 
     fun terminateOngoingMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
-        viewModelScope.launch(dispatcher) {
-            repository.leaveOngoingMeeting()
+        CoroutineScope(coroutineDispatcher).launch {
+            val result = repository.leaveOngoingMeeting()
             destroyJitsi(context, broadcastReceiver)
+            if (result.succeeded) {
+                Timber.i("left the meeting")
+            } else {
+                result as Result.Error
+                Timber.e(result.exception)
+            }
         }
     }
 

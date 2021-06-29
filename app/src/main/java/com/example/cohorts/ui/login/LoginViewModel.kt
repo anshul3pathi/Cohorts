@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: CohortsRepo,
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _userRegistered = MutableLiveData(NetworkRequest.LOADING)
