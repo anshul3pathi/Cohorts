@@ -16,6 +16,7 @@ import com.example.cohorts.databinding.FragmentViewPagerBinding
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.cohorts.cohortschat.CohortsChatFragment
 import com.example.cohorts.ui.cohorts.cohortsfile.CohortsFilesFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,7 +94,7 @@ class ViewPagerFragment : Fragment() {
             if (cohortDeleted) {
                 Snackbar.make(
                     binding.rootLayoutViewPagerFragment,
-                    "This cohort was deleted!",
+                    "Cohort deleted!",
                     Snackbar.LENGTH_LONG
                 ).show()
                 object : CountDownTimer(1500L, 500L) {
@@ -149,7 +150,15 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun deleteThisCohort() {
-        viewPagerViewModel.deleteThisCohort(cohortArgument)
+        val context = requireContext()
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Are you sure you want to delete ${cohortArgument.cohortName}?")
+            .setNeutralButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Delete") {_, _ ->
+                viewPagerViewModel.deleteThisCohort(cohortArgument)
+            }.show()
     }
 
     private fun startMeeting() {
