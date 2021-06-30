@@ -132,6 +132,12 @@ class ViewPagerFragment : Fragment() {
                     .actionViewPagerFragmentToAddNewMemberFragment(cohortArgument)
                 navController.navigate(action)
                 true
+            } R.id.cohort_info_menu_item -> {
+                navController.navigate(
+                    ViewPagerFragmentDirections
+                        .actionViewPagerFragmentToCohortInfoFragment(cohortArgument)
+                )
+                true
             } R.id.start_video_call_menu_button -> {
                 Timber.d( "onOptionsItemSelected: start video call button clicked")
                 startMeeting()

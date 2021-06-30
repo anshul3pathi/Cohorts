@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="cohort"
+            type="com.example.cohorts.core.model.Cohort" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/info_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <LinearLayout
+                android:id="@+id/info_edit_cohort_info_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/info_edit_or_done_button">
+
+                <TextView
+                    android:id="@+id/info_cohort_name_label_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                    android:text="@string/cohort_name"/>
+
+                <EditText
+                    android:id="@+id/info_cohort_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/letters_numbers_and_spaces_are_allowed"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="@{cohort.cohortName}"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/info_cohort_description_label_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                    android:text="@string/description_optional"/>
+
+                <EditText
+                    android:id="@+id/info_cohort_description_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/write_something_about_the_cohort"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="@{cohort.cohortDescription}"
+                    android:layout_marginTop="4dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/info_cohort_info_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/info_edit_or_done_button">
+
+                <TextView
+                    android:id="@+id/info_cohort_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Headline5"
+                    android:text="@{cohort.cohortName}"
+                    tools:text="CohortName"/>
+
+                <TextView
+                    android:id="@+id/info_cohort_desc_label_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Subtitle1"
+                    android:textStyle="bold"
+                    android:text="@string/description"/>
+
+                <TextView
+                    android:id="@+id/info_cohort_desc_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Body1."
+                    android:text="@{cohort.cohortDescription}"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/info_edit_or_done_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/edit"
+                style="?attr/borderlessButtonStyle"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/scrimBackground"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.Cohorts.Subtitle1"
+            android:textStyle="bold"
+            android:text="@string/members"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/info_user_rcv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            tools:listitem="@layout/item_info_user"/>
+
+    </LinearLayout>
+
+</layout>

@@ -83,6 +83,8 @@ dependencies {
     implementation(Dependency.FRAGMENT_KTX)
     implementation(Dependency.KOTLIN_STDLIB)
     implementation(Dependency.LEGACY_SUPPORT)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlin_version"]}")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     // Android Testing
     androidTestImplementation(Dependency.EXT_JUNIT)

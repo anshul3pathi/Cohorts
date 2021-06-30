@@ -23,25 +23,16 @@ class AddNewMemberViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData("")
     val errorMessage: LiveData<String> = _errorMessage
 
-    private val _userAddedSuccessfully = MutableLiveData(false)
-    val userAddedSuccessfully: LiveData<Boolean> = _userAddedSuccessfully
+    private val _userAddedSuccessfully = MutableLiveData("")
+    val userAddedSuccessfully: LiveData<String> = _userAddedSuccessfully
 
     fun addNewMemberToCohort(cohort: Cohort, userEmail: String) {
         CoroutineScope(coroutineDispatcher).launch {
-            val result = repository.getUserByEmail(userEmail)
+            val result = repository.addNewMemberToCohort(cohort, userEmail)
             if (result.succeeded) {
-                val user = (result as Result.Success).data
-                if (user.uid!! !in cohort.cohortMembers) {
-                    cohort.cohortMembers.add(user.uid!!)
-                    cohort.numberOfMembers += 1
-                    repository.saveCohort(cohort)
-                    _userAddedSuccessfully.postValue(true)
-                } else {
-                    _errorMessage.postValue("User is already in Cohort!")
-                }
+                _userAddedSuccessfully.postValue((result as Result.Success).data.toString())
             } else {
-                val exception = (result as Result.Error).exception
-                _errorMessage.postValue(exception.message)
+                _errorMessage.postValue((result as Result.Error).exception.message)
             }
         }
     }

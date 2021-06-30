@@ -67,10 +67,10 @@ class AddNewMemberFragment : BottomSheetDialogFragment() {
         }
 
         addNewMemberViewModel.userAddedSuccessfully.observe(viewLifecycleOwner, { userAdded ->
-            if (userAdded) {
+            if (userAdded.isNotEmpty()) {
                 Snackbar.make(
                     binding.fragmentAddNewMemberRootLayout,
-                    "User added successfully to Cohort",
+                    userAdded,
                     Snackbar.LENGTH_LONG
                 ).show()
             }

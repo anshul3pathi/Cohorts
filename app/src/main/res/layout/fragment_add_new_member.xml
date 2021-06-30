@@ -33,6 +33,8 @@
                 app:layout_constraintEnd_toEndOf="@id/email_address_label_tv"
                 android:backgroundTint="?attr/colorPrimary"
                 android:hint="@string/email_address_hint"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionSearch"
                 android:layout_marginTop="12dp"/>
 
             <LinearLayout

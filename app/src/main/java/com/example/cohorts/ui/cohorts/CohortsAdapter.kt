@@ -14,6 +14,7 @@ class CohortsAdapter(
     options: FirestoreRecyclerOptions<Cohort>,
     private val itemClickListener: CohortClickListener
 ) : FirestoreRecyclerAdapter<Cohort, ViewHolder>(options) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCohortBinding.inflate(inflater, parent, false)

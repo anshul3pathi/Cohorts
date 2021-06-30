@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="user"
+            type="com.example.cohorts.core.model.User" />
+        <variable
+            name="currentUser"
+            type="com.example.cohorts.core.model.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_info_user_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:id="@+id/item_info_userInfo_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/item_info_remove_button">
+
+            <TextView
+                android:id="@+id/item_info_userName_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{user.userName}"
+                android:textAppearance="@style/TextAppearance.Cohorts.Body1."
+                android:textStyle="bold"
+                tools:text="Ram Lakhan"/>
+
+            <TextView
+                android:id="@+id/item_info_userEmail_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{user.userEmail}"
+                android:textAppearance="@style/TextAppearance.Cohorts.Body2."
+                tools:text="ram.lakhan@domain.com"/>
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/item_info_remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:user="@{user}"
+            app:currentUser="@{currentUser}"
+            android:textAllCaps="false"
+            style="?borderlessButtonStyle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_info_userInfo_layout"
+            app:layout_constraintBottom_toBottomOf="@+id/item_info_userInfo_layout"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

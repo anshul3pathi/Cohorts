@@ -11,9 +11,10 @@ import com.example.cohorts.utils.safeCall
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
+import kotlin.IllegalArgumentException
 
 class CohortsRepository @Inject constructor(
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : CohortsRepo {
 
@@ -27,6 +28,13 @@ class CohortsRepository @Inject constructor(
 
     override suspend fun registerCurrentUser(): Result<Any> {
         return safeCall {
+            val userAlreadyRegistered = getUserByUid(auth.currentUser!!.uid)
+            if (userAlreadyRegistered.succeeded) {
+                Timber.d("User exists in user collection")
+                Result.Success(Any())
+            } else {
+                Timber.e((userAlreadyRegistered as Result.Error).exception)
+            }
             val currentUser = auth.currentUser!!
             val user = User(
                 uid = currentUser.uid,
@@ -46,6 +54,14 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    override fun fetchUsersQuery(cohortUid: String): Result<Query> {
+        return safeCall {
+            Result.Success(
+                usersCollection.whereArrayContains("cohortsIn", cohortUid)
+            )
+        }
+    }
+
     override suspend fun getUserByEmail(userEmail: String): Result<User> {
         return safeCall {
             val users = usersCollection
@@ -53,8 +69,10 @@ class CohortsRepository @Inject constructor(
                 .get()
                 .await()
                 .toObjects(User::class.java)
-            if (users.size != 1) {
+            if (users.size > 1) {
                 throw IllegalStateException("More than one user found with given email!")
+            } else if (users.size == 0) {
+                throw IllegalStateException("No user found with the given email!")
             }
             Result.Success(users[0])
         }
@@ -81,6 +99,13 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    override suspend fun saveUser(user: User): Result<Any> {
+        return safeCall {
+            usersCollection.document(user.uid!!).set(user).await()
+            Result.Success(Any())
+        }
+    }
+
     override suspend fun getCurrentUser(): Result<User> {
         return safeCall {
             val currentUser = auth.currentUser!!
@@ -90,6 +115,64 @@ class CohortsRepository @Inject constructor(
                 userName = currentUser.displayName
             )
             Result.Success(user)
+        }
+    }
+
+    override suspend fun getUserByUid(userUid: String): Result<User> {
+        return safeCall {
+            val searchedUser =
+                usersCollection.document(userUid).get().await().toObject(User::class.java)
+            Result.Success(searchedUser!!)
+        }
+    }
+
+    override suspend fun addNewCohort(newCohort: Cohort): Result<Any> {
+        return safeCall {
+            val currentUser = getUserByUid(auth.currentUser!!.uid)
+            if (!currentUser.succeeded) currentUser as Result.Error
+
+            currentUser as Result.Success
+            newCohort.numberOfMembers += 1
+            newCohort.cohortMembers.add(currentUser.data.uid!!)
+
+            currentUser.data.cohortsIn.add(newCohort.cohortUid)
+
+            val saveUserResult = saveUser(currentUser.data)
+            val saveCohortResult = saveCohort(newCohort)
+
+            if (!saveCohortResult.succeeded) return saveCohortResult
+            if (!saveUserResult.succeeded) return saveUserResult
+
+            Result.Success(Any())
+        }
+    }
+
+    override suspend fun addNewMemberToCohort(cohort: Cohort, userEmail: String): Result<Any> {
+        return safeCall {
+            val result = getUserByEmail(userEmail)
+
+            // user with the given name doesn't exist
+            if (!result.succeeded) {
+                throw IllegalArgumentException("User not found with the given email.")
+            }
+
+            val userToAdd = (result as Result.Success).data
+            if (userToAdd.uid!! in cohort.cohortMembers) {
+                throw IllegalArgumentException("${userToAdd.userName} is already in cohort!")
+            }
+
+            // adding the cohort to list of cohorts this user is in
+            userToAdd.cohortsIn.add(cohort.cohortUid)
+
+            // adding this user to cohorts members list
+            cohort.cohortMembers.add(userToAdd.uid!!)
+            cohort.numberOfMembers += 1
+
+            // saving the updated user and cohort to firestore
+            saveCohort(cohort)
+            saveUser(userToAdd)
+
+            Result.Success("${userToAdd.userName} added to cohort successfully!")
         }
     }
 
@@ -123,6 +206,7 @@ class CohortsRepository @Inject constructor(
                 "membersInMeeting",
                 auth.currentUser!!.uid
             ).get().await().toObjects(Cohort::class.java)
+
             Timber.d("${cohorts[0]}")
             if (cohorts.size > 1) {
                 throw IllegalStateException("More than one cohort found in whose meeting user is in!")
@@ -139,8 +223,43 @@ class CohortsRepository @Inject constructor(
 
     override suspend fun deleteThisCohort(cohort: Cohort): Result<Any> {
         return safeCall {
+            val batch = firestore.batch()
+
+            // find users who are members of this cohort
+            val usersInThisCohort = usersCollection
+                .whereArrayContains("cohortsIn", cohort.cohortUid)
+                .get()
+                .await()
+
+            // remove this cohort from the list of cohorts the users are in
+            usersInThisCohort.documents.forEach { document ->
+                val updatedCohortsIn = document.data!!["cohortsIn"]!! as MutableList<*>
+                updatedCohortsIn.remove(cohort.cohortUid)
+                batch.update(document.reference, "cohortsIn", updatedCohortsIn)
+            }
+
+            batch.commit().await()
+
+            // finally delete the cohort
             cohortsCollection.document(cohort.cohortUid).delete().await()
+
             Result.Success(Any())
+        }
+    }
+
+    override suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any> {
+        return safeCall {
+            // remove this cohort from the list of cohorts the user is in
+            user.cohortsIn.remove(cohort.cohortUid)
+
+            // remove this user from the list of users that are in this cohort
+            cohort.cohortMembers.remove(user.uid!!)
+
+            saveCohort(cohort)
+            saveUser(user)
+            Result.Success(
+                "${user.userName} was successfully removed from ${cohort.cohortName}"
+            )
         }
     }
 }

@@ -15,8 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.CoreMatchers.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -99,11 +98,11 @@ class CohortsRepositoryAndroidTest {
         // Then - it should be saved in firestore
         val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
             .get().await().toObject(Cohort::class.java)
-        assertThat(savedCohort!!.cohortUid, `is`(cohort.cohortUid))
 
         // Deleting the saved cohort
         firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
-        Unit // return Unit
+
+        assertThat(savedCohort!!.cohortUid, `is`(cohort.cohortUid))
     }
 
     @Test
@@ -118,14 +117,14 @@ class CohortsRepositoryAndroidTest {
         firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
         // When - cohort is searched by id
         val searchedCohort = repository.getCohortById(cohort.cohortUid)
+
+        // Deleting saved cohort
+        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+
         // Then - it should return the saved cohort
         assertThat(searchedCohort.succeeded, `is`(true))
         searchedCohort as Result.Success
         assertThat(searchedCohort.data.cohortUid, `is`(cohort.cohortUid))
-
-        // Deleting saved cohort
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
-        Unit // return Unit
     }
 
     @Test
@@ -145,6 +144,30 @@ class CohortsRepositoryAndroidTest {
         val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
             .get().await().toObject(Cohort::class.java)
         assertThat(savedCohort, `is`(nullValue()))
+    }
+
+    @Test
+    fun addNewCohort_addsNewCohortToFirebase() = runBlocking {
+        // Given - data for creating cohort
+        val cohort = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc"
+        )
+        // When - new cohort is created
+        val result = repository.addNewCohort(cohort)
+        // Then - the given cohort should be added to firestore
+        assertThat(result.succeeded, `is`(true))
+        result as Result.Success
+
+        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
+            .get().await().toObject(Cohort::class.java)
+
+        // Deleting this cohort from firestore
+        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+
+        assertThat(savedCohort, `is`(notNullValue()))
+        assertThat(savedCohort!!.cohortMembers.contains(auth.currentUser!!.uid), `is`(true))
+        assertThat(savedCohort.numberOfMembers, `is`(1))
     }
 
 }

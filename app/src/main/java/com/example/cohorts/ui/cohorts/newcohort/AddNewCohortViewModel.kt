@@ -28,21 +28,12 @@ class AddNewCohortViewModel @Inject constructor(
 
     fun addNewCohort(newCohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
-            val currentUser = repository.getCurrentUser()
-            if (currentUser.succeeded) {
-                currentUser as Result.Success
-                // adding currently logged user to the new Cohort
-                newCohort.numberOfMembers += 1
-                newCohort.cohortMembers.add(currentUser.data.uid!!)
+            val result = repository.addNewCohort(newCohort)
+            if (result.succeeded) {
                 _cohortAddedSuccessfully.postValue(true)
             } else {
-                _errorMessage.postValue("User not logged in!")
-                return@launch
-            }
-            val result = repository.saveCohort(newCohort)
-            if (!result.succeeded) {
-                val error = (result as Result.Error).exception
-                _errorMessage.postValue(error.message)
+                result as Result.Error
+                _errorMessage.postValue(result.exception.message)
             }
         }
     }

@@ -7,6 +7,10 @@
         android:title="@string/add_member"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/cohort_info_menu_item"
+        android:title="@string/cohort_info"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/start_video_call_menu_button"
         android:title="@string/start_video_call"
         app:showAsAction="always"
