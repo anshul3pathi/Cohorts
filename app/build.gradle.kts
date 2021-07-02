@@ -76,6 +76,8 @@ dependencies {
     implementation(Dependency.APP_COMPAT)
     implementation(Dependency.MATERIAL)
     implementation(Dependency.CONSTRAINT_LAYOUT)
+    // Circle ImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // ViewModel and LiveData
     implementation(Dependency.LIFECYCLE_EXTENSIONS)

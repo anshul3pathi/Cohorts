@@ -4,10 +4,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 import com.example.cohorts.core.Result
+import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.safeCall
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -15,16 +18,19 @@ import kotlin.IllegalArgumentException
 
 class CohortsRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val firebaseDatabase: FirebaseDatabase
 ) : CohortsRepo {
 
     companion object {
         private const val USERS_COLLECTION = "users"
         private const val COHORTS_COLLECTION = "cohorts"
+        private const val CHAT_CHILD = "chats"
     }
 
     private val usersCollection = firestore.collection(USERS_COLLECTION)
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
+    private val chatReference = firebaseDatabase.reference.child(CHAT_CHILD)
 
     override suspend fun registerCurrentUser(): Result<Any> {
         return safeCall {
@@ -51,6 +57,12 @@ class CohortsRepository @Inject constructor(
             Result.Success(
                 cohortsCollection.whereArrayContains("cohortMembers", auth.currentUser!!.uid)
             )
+        }
+    }
+
+    override fun fetchChatReference(cohortUid: String): Result<DatabaseReference> {
+        return safeCall {
+            Result.Success(chatReference.child(cohortUid))
         }
     }
 
@@ -260,6 +272,13 @@ class CohortsRepository @Inject constructor(
             Result.Success(
                 "${user.userName} was successfully removed from ${cohort.cohortName}"
             )
+        }
+    }
+
+    override suspend fun sendNewChatMessage(chatMessage: ChatMessage): Result<Any> {
+        return safeCall {
+            chatReference.child(chatMessage.chatOfCohort).push().setValue(chatMessage).await()
+            Result.Success(Any())
         }
     }
 }

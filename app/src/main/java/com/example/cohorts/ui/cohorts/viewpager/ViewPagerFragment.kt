@@ -14,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentViewPagerBinding
 import com.example.cohorts.core.model.Cohort
-import com.example.cohorts.ui.cohorts.cohortschat.CohortsChatFragment
-import com.example.cohorts.ui.cohorts.cohortsfile.CohortsFilesFragment
+import com.example.cohorts.ui.chat.ChatFragment
+import com.example.cohorts.ui.files.FilesFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -33,7 +33,7 @@ class ViewPagerFragment : Fragment() {
 
     private lateinit var binding: FragmentViewPagerBinding
     private lateinit var navController: NavController
-    private val fragmentList = listOf(CohortsChatFragment(), CohortsFilesFragment())
+    private val fragmentList = listOf(ChatFragment(), FilesFragment())
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var cohortArgument: Cohort
 //    @Inject lateinit var jitsi: Jitsi
@@ -60,6 +60,10 @@ class ViewPagerFragment : Fragment() {
             cohortArgument = ViewPagerFragmentArgs.fromBundle(it).cohort!!
             (activity as AppCompatActivity).supportActionBar?.title = cohortArgument.cohortName
         }
+
+        val bundle = Bundle()
+        bundle.putString("cohortUid", cohortArgument.cohortUid)
+        fragmentList[0].arguments = bundle
 
         setHasOptionsMenu(true)
 

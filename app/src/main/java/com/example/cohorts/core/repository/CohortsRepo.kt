@@ -1,8 +1,10 @@
 package com.example.cohorts.core.repository
 
 import com.example.cohorts.core.Result
+import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.Query
 
 interface CohortsRepo {
@@ -23,5 +25,7 @@ interface CohortsRepo {
     suspend fun deleteThisCohort(cohort: Cohort): Result<Any>
     suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any>
     fun fetchUsersQuery(cohortUid: String): Result<Query>
+    fun fetchChatReference(cohortUid: String): Result<DatabaseReference>
+    suspend fun sendNewChatMessage(chatMessage: ChatMessage): Result<Any>
 
 }

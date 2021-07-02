@@ -1,6 +1,8 @@
 package com.example.cohorts.core.model
 
+import com.firebase.ui.database.paging.FirebaseDataSource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
@@ -19,5 +21,9 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideFirebaseAuth() = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDatabase() = FirebaseDatabase.getInstance()
 
 }
