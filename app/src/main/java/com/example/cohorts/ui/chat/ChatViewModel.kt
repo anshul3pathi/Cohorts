@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,8 +56,11 @@ class ChatViewModel @Inject constructor(
                 text = textMessage,
                 name = _currentUser.value!!.userName,
                 userUid = _currentUser.value!!.uid,
-                chatOfCohort = cohortUid
+                chatOfCohort = cohortUid,
+                photoUrl = _currentUser.value!!.photoUrl
             )
+            Timber.d("$newMessage")
+            Timber.d("${_currentUser.value!!.photoUrl}")
             val result = repository.sendNewChatMessage(newMessage)
             if (!result.succeeded) {
                 _errorMessage.postValue((result as Result.Error).exception.message)

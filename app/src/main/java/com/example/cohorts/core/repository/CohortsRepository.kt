@@ -45,7 +45,8 @@ class CohortsRepository @Inject constructor(
             val user = User(
                 uid = currentUser.uid,
                 userName = currentUser.displayName,
-                userEmail = currentUser.email
+                userEmail = currentUser.email,
+                photoUrl = currentUser.photoUrl?.toString()
             )
             usersCollection.document(user.uid!!).set(user).await()
             Result.Success(Any())
@@ -124,7 +125,8 @@ class CohortsRepository @Inject constructor(
             val user = User(
                 uid = currentUser.uid,
                 userEmail = currentUser.email,
-                userName = currentUser.displayName
+                userName = currentUser.displayName,
+                photoUrl = currentUser.photoUrl?.toString()
             )
             Result.Success(user)
         }
@@ -251,6 +253,9 @@ class CohortsRepository @Inject constructor(
             }
 
             batch.commit().await()
+
+            // delete the chats associated with the cohort
+            chatReference.child(cohort.cohortUid).removeValue().await()
 
             // finally delete the cohort
             cohortsCollection.document(cohort.cohortUid).delete().await()
