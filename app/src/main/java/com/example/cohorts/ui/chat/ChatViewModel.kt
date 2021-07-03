@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.chat
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -62,6 +64,22 @@ class ChatViewModel @Inject constructor(
             Timber.d("$newMessage")
             Timber.d("${_currentUser.value!!.photoUrl}")
             val result = repository.sendNewChatMessage(newMessage)
+            if (!result.succeeded) {
+                _errorMessage.postValue((result as Result.Error).exception.message)
+            }
+        }
+    }
+
+    fun sendImageMessage(imageUri: Uri?, cohortUid: String) {
+        val newImageMessage = ChatMessage(
+            text = null,
+            name = _currentUser.value!!.userName,
+            userUid = _currentUser.value!!.uid,
+            chatOfCohort = cohortUid,
+            photoUrl = _currentUser.value!!.photoUrl
+        )
+        GlobalScope.launch(coroutineDispatcher) {
+            val result = repository.sendImageMessage(newImageMessage, imageUri)
             if (!result.succeeded) {
                 _errorMessage.postValue((result as Result.Error).exception.message)
             }

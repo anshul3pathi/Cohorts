@@ -2,14 +2,10 @@ package com.example.cohorts.ui.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.cohorts.R
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.User
-import com.example.cohorts.databinding.ItemChatImageBinding
-import com.example.cohorts.databinding.ItemChatReceivedBinding
-import com.example.cohorts.databinding.ItemChatSentBinding
+import com.example.cohorts.databinding.*
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 
@@ -18,9 +14,10 @@ class ChatMessageAdapter(
 ) : FirebaseRecyclerAdapter<ChatMessage, ViewHolder>(options) {
 
     companion object {
-        private const val VIEW_TYPE_TEXT_SENT = 69
-        private const val VIEW_TYPE_TEXT_RECEIVED = 696969
-        private const val VIEW_TYPE_IMAGE = 6969
+        private const val VIEW_TYPE_TEXT_SENT = 6
+        private const val VIEW_TYPE_TEXT_RECEIVED = 69
+        private const val VIEW_TYPE_IMAGE_SENT = 696
+        private const val VIEW_TYPE_IMAGE_RECEIVED = 6969
     }
 
     private lateinit var currentUser: User
@@ -29,16 +26,22 @@ class ChatMessageAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TEXT_SENT -> {
-                val binding = ItemChatSentBinding.inflate(inflater, parent, false)
+                val binding = ItemChatTextSentBinding.inflate(inflater, parent, false)
                 return SentTextViewHolder(binding)
             }
             VIEW_TYPE_TEXT_RECEIVED -> {
-                val binding = ItemChatReceivedBinding.inflate(inflater, parent, false)
+                val binding =
+                    ItemChatTextReceivedBinding.inflate(inflater, parent, false)
                 return ReceivedTextViewHolder(binding)
             }
+            VIEW_TYPE_IMAGE_RECEIVED -> {
+                val binding =
+                    ItemChatImageReceivedBinding.inflate(inflater, parent, false)
+                return ImageMessageReceivedViewHolder(binding)
+            }
             else -> {
-                val binding = ItemChatImageBinding.inflate(inflater, parent, false)
-                ImageMessageViewHolder(binding)
+                val binding = ItemChatImageSentBinding.inflate(inflater, parent, false)
+                ImageMessageSentViewHolder(binding)
             }
         }
     }
@@ -51,7 +54,11 @@ class ChatMessageAdapter(
                 (holder as ReceivedTextViewHolder).bind(model)
             }
         } else {
-            (holder as ImageMessageViewHolder).bind(model)
+            if (options.snapshots[position].userUid == currentUser.uid) {
+                (holder as ImageMessageSentViewHolder).bind(model)
+            } else {
+                (holder as ImageMessageReceivedViewHolder).bind(model)
+            }
         }
     }
 
@@ -63,7 +70,11 @@ class ChatMessageAdapter(
                 VIEW_TYPE_TEXT_RECEIVED
             }
         } else {
-            VIEW_TYPE_IMAGE
+            if (options.snapshots[position].userUid == currentUser.uid) {
+                VIEW_TYPE_IMAGE_SENT
+            } else {
+                VIEW_TYPE_IMAGE_RECEIVED
+            }
         }
     }
 
@@ -71,7 +82,7 @@ class ChatMessageAdapter(
         currentUser = user
     }
 
-    inner class ReceivedTextViewHolder(private val binding: ItemChatReceivedBinding) :
+    inner class ReceivedTextViewHolder(private val binding: ItemChatTextReceivedBinding) :
         ViewHolder(binding.root) {
 
         fun bind(chat: ChatMessage) {
@@ -80,7 +91,8 @@ class ChatMessageAdapter(
 
     }
 
-    inner class SentTextViewHolder(private val binding: ItemChatSentBinding) : ViewHolder(binding.root) {
+    inner class SentTextViewHolder(private val binding: ItemChatTextSentBinding) :
+        ViewHolder(binding.root) {
 
         fun bind(chat: ChatMessage) {
             binding.chat = chat
@@ -88,20 +100,20 @@ class ChatMessageAdapter(
 
     }
 
-    inner class ImageMessageViewHolder(private val binding: ItemChatImageBinding) :
+    inner class ImageMessageReceivedViewHolder(private val binding: ItemChatImageReceivedBinding) :
         ViewHolder(binding.root) {
 
         fun bind(chat: ChatMessage) {
-            loadImageIntoView(binding.itemChatImageIv, chat.imageUrl!!)
-            if (chat.photoUrl != null) {
-                loadImageIntoView(binding.itemChatImageIv, chat.imageUrl!!)
-            } else {
-                binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
-            }
+            binding.chat = chat
         }
 
-        private fun loadImageIntoView(view: ImageView, url: String) {
-            TODO()
+    }
+
+    inner class ImageMessageSentViewHolder(private val binding: ItemChatImageSentBinding) :
+        ViewHolder(binding.root) {
+
+        fun bind(chat: ChatMessage) {
+            binding.chat = chat
         }
 
     }

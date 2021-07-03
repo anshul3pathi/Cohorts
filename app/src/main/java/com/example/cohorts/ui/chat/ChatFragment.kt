@@ -1,5 +1,7 @@
 package com.example.cohorts.ui.chat
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,6 +27,10 @@ class ChatFragment : Fragment() {
     private lateinit var manager: LinearLayoutManager
     private val chatViewModel: ChatViewModel by viewModels()
 
+    companion object {
+        private const val RC_PHOTO_PICKER = 100
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,12 +46,30 @@ class ChatFragment : Fragment() {
         setupChatRcv()
         subscribeToObservers()
         binding.messageEditText.addTextChangedListener(ChatTextObserver(binding.sendButton))
+        binding.addMessageImageView.setOnClickListener {
+            val photoPickerIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            photoPickerIntent.type = "image/*"
+            startActivityForResult(photoPickerIntent, RC_PHOTO_PICKER)
+        }
         binding.sendButton.setOnClickListener {
             val textMessage = binding.messageEditText.text.toString()
             chatViewModel.sendNewMessage(textMessage, cohortUid)
             binding.messageEditText.setText("")
         }
         binding.chatProgressBar.visibility = View.INVISIBLE
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Timber.d("requestCode = $requestCode, resultCode = $resultCode")
+        if (requestCode == RC_PHOTO_PICKER) {
+            if (resultCode == RESULT_OK && data != null) {
+                val uri = data.data
+                Timber.d("Uri: ${uri.toString()}")
+                chatViewModel.sendImageMessage(uri, cohortUid)
+            }
+        }
     }
 
     override fun onStart() {

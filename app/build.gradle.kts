@@ -130,6 +130,7 @@ dependencies {
     implementation(Dependency.FIREBASE_FIRESTORE_KTX)
     implementation(Dependency.FIREBASE_UI_DATABASE)
     implementation(Dependency.FIREBASE_UI_FIRESTORE)
+    implementation("com.google.firebase:firebase-storage-ktx")
 
     /* coroutines support for firebase operations */
     implementation(Dependency.FIREBASE_COROUTINES_PLAY_SERVICES)

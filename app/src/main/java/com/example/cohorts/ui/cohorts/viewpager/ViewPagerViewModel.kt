@@ -13,10 +13,7 @@ import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 import javax.inject.Inject
@@ -76,7 +73,7 @@ class ViewPagerViewModel @Inject constructor(
     }
 
     fun deleteThisCohort(cohort: Cohort) {
-        viewModelScope.launch(coroutineDispatcher) {
+        GlobalScope.launch(coroutineDispatcher) {
             val result = repository.deleteThisCohort(cohort)
             if (result.succeeded) {
                 _cohortDeleted.postValue(true)

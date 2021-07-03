@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.binding
 
+import android.media.Image
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -19,5 +20,12 @@ fun photoUrl(view: ImageView, url: String?) {
         Glide.with(view.context).load(url).into(view)
     } else {
         Glide.with(view.context).load(R.drawable.ic_account_circle_black_36dp).into(view)
+    }
+}
+
+@BindingAdapter("imageUrl")
+fun imageUrl(view: ImageView, url: String?) {
+    if (url != null) {
+        Glide.with(view.context).load(url).into(view)
     }
 }
