@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.databinding.FragmentChatBinding
+import com.example.cohorts.ui.cohorts.viewpager.ViewPagerFragmentDirections
 import com.example.cohorts.utils.snackbar
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +28,7 @@ class ChatFragment : Fragment() {
     private lateinit var chatMessageAdapter: ChatMessageAdapter
     private lateinit var cohortUid: String
     private lateinit var manager: LinearLayoutManager
+    private lateinit var navController: NavController
     private val chatViewModel: ChatViewModel by viewModels()
 
     companion object {
@@ -43,6 +47,7 @@ class ChatFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        navController = findNavController()
         setupChatRcv()
         subscribeToObservers()
         binding.messageEditText.addTextChangedListener(ChatTextObserver(binding.sendButton))
@@ -96,7 +101,11 @@ class ChatFragment : Fragment() {
         val options = FirebaseRecyclerOptions.Builder<ChatMessage>()
             .setQuery(chatRef!!, ChatMessage::class.java)
             .build()
-        chatMessageAdapter = ChatMessageAdapter(options)
+        chatMessageAdapter = ChatMessageAdapter(options) { imageUrl ->
+            navController.navigate(
+                ViewPagerFragmentDirections.actionZoomedImage(imageUrl)
+            )
+        }
         chatViewModel.getCurrentUser()
         binding.chatRcv.apply {
             manager = LinearLayoutManager(requireContext())

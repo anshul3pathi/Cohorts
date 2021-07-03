@@ -10,7 +10,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 
 class ChatMessageAdapter(
-    private val options: FirebaseRecyclerOptions<ChatMessage>
+    private val options: FirebaseRecyclerOptions<ChatMessage>,
+    private val imageClickListener: (String?) -> Unit
 ) : FirebaseRecyclerAdapter<ChatMessage, ViewHolder>(options) {
 
     companion object {
@@ -103,6 +104,12 @@ class ChatMessageAdapter(
     inner class ImageMessageReceivedViewHolder(private val binding: ItemChatImageReceivedBinding) :
         ViewHolder(binding.root) {
 
+        init {
+            binding.itemChatImageIv.setOnClickListener {
+                imageClickListener(getItem(layoutPosition).imageUrl)
+            }
+        }
+
         fun bind(chat: ChatMessage) {
             binding.chat = chat
         }
@@ -111,6 +118,12 @@ class ChatMessageAdapter(
 
     inner class ImageMessageSentViewHolder(private val binding: ItemChatImageSentBinding) :
         ViewHolder(binding.root) {
+
+        init {
+            binding.itemChatImageSentIv.setOnClickListener {
+                imageClickListener(getItem(layoutPosition).imageUrl)
+            }
+        }
 
         fun bind(chat: ChatMessage) {
             binding.chat = chat

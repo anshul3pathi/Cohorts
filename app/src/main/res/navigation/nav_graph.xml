@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_viewPagerFragment_to_cohortInfoFragment"
             app:destination="@id/cohortInfoFragment" />
+        <action
+            android:id="@+id/action_zoomed_image"
+            app:destination="@id/zoomedImageFragment" />
     </fragment>
 
     <fragment
@@ -76,6 +79,15 @@
             app:argType="com.example.cohorts.core.model.Cohort"
             app:nullable="true"
             android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/zoomedImageFragment"
+        android:name="com.example.cohorts.ui.zoomedimage.ZoomedImageFragment">
+        <argument
+            android:name="imageUrl"
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
