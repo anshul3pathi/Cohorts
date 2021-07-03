@@ -77,9 +77,9 @@ dependencies {
     implementation(Dependency.MATERIAL)
     implementation(Dependency.CONSTRAINT_LAYOUT)
     // Circle ImageView
-    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation(Dependency.CIRCLE_IMAGEVIEW)
     // Glide
-    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(Dependency.GLIDE)
 
     // ViewModel and LiveData
     implementation(Dependency.LIFECYCLE_EXTENSIONS)
@@ -87,8 +87,8 @@ dependencies {
     implementation(Dependency.FRAGMENT_KTX)
     implementation(Dependency.KOTLIN_STDLIB)
     implementation(Dependency.LEGACY_SUPPORT)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:${rootProject.extra["kotlin_version"]}")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation(Dependency.KOTLIN_STDLIB)
+    implementation(Dependency.LEGACY_SUPPORT)
 
     // Android Testing
     androidTestImplementation(Dependency.EXT_JUNIT)
@@ -130,7 +130,7 @@ dependencies {
     implementation(Dependency.FIREBASE_FIRESTORE_KTX)
     implementation(Dependency.FIREBASE_UI_DATABASE)
     implementation(Dependency.FIREBASE_UI_FIRESTORE)
-    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation(Dependency.FIREBASE_STORAGE)
 
     /* coroutines support for firebase operations */
     implementation(Dependency.FIREBASE_COROUTINES_PLAY_SERVICES)

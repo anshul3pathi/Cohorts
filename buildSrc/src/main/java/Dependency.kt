@@ -8,6 +8,7 @@ object Dependency {
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINT_LAYOUT}"
     const val CONSTRAINT_LAYOUT_COMPOSE = "androidx.constraintlayout:constraintlayout-compose:${Versions.CONSTRAINT_LAYOUT}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
+    const val CIRCLE_IMAGEVIEW = "de.hdodenhof:circleimageview:${Versions.CIRCLE_IMAGEVIEW}"
 
     // VIEW MODEL AND LIVE DATA
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${Versions.LIFECYCLE_EXTENSIONS}"
@@ -68,6 +69,7 @@ object Dependency {
     const val FIREBASE_UI_FIRESTORE = "com.firebaseui:firebase-ui-firestore:${Versions.FIREBASE_UI}"
     const val FIREBASE_COROUTINES_PLAY_SERVICES = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.FIREBASE_COROUTINES}"
     const val FIREBASE_UI_DATABASE = "com.firebaseui:firebase-ui-database:${Versions.FIREBASE_UI_DATABASE}"
+    const val FIREBASE_STORAGE = "com.google.firebase:firebase-storage-ktx"
 
     // Jitsi Meet
     const val JITSI_MEET_SDK = "org.jitsi.react:jitsi-meet-sdk:${Versions.JITSI_MEET}"

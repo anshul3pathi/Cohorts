@@ -7,7 +7,7 @@ object Versions {
     const val TARGET_SDK = 30
     const val GRADLE_BUILD_TOOLS = "4.2.1"
     const val APP_VERSION = 2
-    const val APP_VERSION_NAME = "2.0.0"
+    const val APP_VERSION_NAME = "2.1.0"
 
 
     const val NAVIGATION = "2.3.0-alpha01"
@@ -17,11 +17,12 @@ object Versions {
     const val CORE = "1.3.2"
     const val OKHTTP = "4.9.0"
     const val CONSTRAINT_LAYOUT = "2.0.4"
-    const val GLIDE = "4.11.0"
+    const val GLIDE = "4.12.0"
     const val KOTLIN_COROUTINES = "1.4.1"
     const val LIFECYCLE = "2.3.1"
     const val MOSHI = "1.11.0"
     const val RETROFIT = "2.9.0"
+    const val CIRCLE_IMAGEVIEW = "3.1.0"
     const val RETROFIT_COROUTINES_ADAPTER = "0.9.2"
     const val RECYCLERVIEW = "1.2.0"
     const val LEGACY_SUPPORT = "1.0.0"
