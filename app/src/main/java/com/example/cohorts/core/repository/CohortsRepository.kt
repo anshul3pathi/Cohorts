@@ -152,13 +152,14 @@ class CohortsRepository @Inject constructor(
             newCohort.numberOfMembers += 1
             newCohort.cohortMembers.add(currentUser.data.uid!!)
 
-            currentUser.data.cohortsIn.add(newCohort.cohortUid)
+//            currentUser.data.cohortsIn.add(newCohort.cohortUid)
+            // adding this new cohort to the list of cohorts current user is in
+            usersCollection.document(currentUser.data.uid!!)
+                .update("cohortsIn", FieldValue.arrayUnion(newCohort.cohortUid))
 
-            val saveUserResult = saveUser(currentUser.data)
             val saveCohortResult = saveCohort(newCohort)
 
             if (!saveCohortResult.succeeded) return saveCohortResult
-            if (!saveUserResult.succeeded) return saveUserResult
 
             Result.Success(Any())
         }
@@ -170,24 +171,35 @@ class CohortsRepository @Inject constructor(
 
             // user with the given name doesn't exist
             if (!result.succeeded) {
-                throw IllegalArgumentException("User not found with the given email.")
+                throw IllegalArgumentException("User with given email is not found!")
             }
 
             val userToAdd = (result as Result.Success).data
-            if (userToAdd.uid!! in cohort.cohortMembers) {
+
+            // check if the user is already a member of the given cohort
+            if (cohort.cohortUid in userToAdd.cohortsIn) {
                 throw IllegalArgumentException("${userToAdd.userName} is already in cohort!")
             }
 
             // adding the cohort to list of cohorts this user is in
-            userToAdd.cohortsIn.add(cohort.cohortUid)
+//            userToAdd.cohortsIn.add(cohort.cohortUid)
+            usersCollection.document(userToAdd.uid!!)
+                .update("cohortsIn", FieldValue.arrayUnion(cohort.cohortUid))
+                .await()
 
             // adding this user to cohorts members list
-            cohort.cohortMembers.add(userToAdd.uid!!)
-            cohort.numberOfMembers += 1
+//            cohort.cohortMembers.add(userToAdd.uid!!)
+//            cohort.numberOfMembers += 1
+            cohortsCollection.document(cohort.cohortUid)
+                .update("cohortMembers", FieldValue.arrayUnion(userToAdd.uid!!))
+                .await()
+            cohortsCollection.document(cohort.cohortUid)
+                .update("numberOfMembers", cohort.numberOfMembers + 1)
+                .await()
 
             // saving the updated user and cohort to firestore
-            saveCohort(cohort)
-            saveUser(userToAdd)
+//            saveCohort(cohort)
+//            saveUser(userToAdd)
 
             Result.Success("${userToAdd.userName} added to cohort successfully!")
         }
