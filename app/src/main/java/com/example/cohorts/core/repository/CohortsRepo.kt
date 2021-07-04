@@ -28,6 +28,6 @@ interface CohortsRepo {
     suspend fun deleteThisCohort(cohort: Cohort): Result<Any>
     suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any>
     suspend fun sendNewChatMessage(chatMessage: ChatMessage): Result<Any>
-    suspend fun sendImageMessage(chatMessage: ChatMessage, imageUri: Uri?): Result<Any>
+    suspend fun sendImageMessage(tempMessage: ChatMessage, imageUri: Uri?): Result<Any>
 
 }

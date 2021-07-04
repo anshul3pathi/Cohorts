@@ -1,7 +1,9 @@
 package com.example.cohorts.ui.chat
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.User
@@ -11,6 +13,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 
 class ChatMessageAdapter(
     private val options: FirebaseRecyclerOptions<ChatMessage>,
+    private val progressBar: ProgressBar,
     private val imageClickListener: (String?) -> Unit
 ) : FirebaseRecyclerAdapter<ChatMessage, ViewHolder>(options) {
 
@@ -86,6 +89,10 @@ class ChatMessageAdapter(
     inner class ReceivedTextViewHolder(private val binding: ItemChatTextReceivedBinding) :
         ViewHolder(binding.root) {
 
+        init {
+            hideProgressBar()
+        }
+
         fun bind(chat: ChatMessage) {
             binding.chat = chat
         }
@@ -94,6 +101,10 @@ class ChatMessageAdapter(
 
     inner class SentTextViewHolder(private val binding: ItemChatTextSentBinding) :
         ViewHolder(binding.root) {
+
+        init {
+            hideProgressBar()
+        }
 
         fun bind(chat: ChatMessage) {
             binding.chat = chat
@@ -108,6 +119,7 @@ class ChatMessageAdapter(
             binding.itemChatImageIv.setOnClickListener {
                 imageClickListener(getItem(layoutPosition).imageUrl)
             }
+            hideProgressBar()
         }
 
         fun bind(chat: ChatMessage) {
@@ -123,12 +135,17 @@ class ChatMessageAdapter(
             binding.itemChatImageSentIv.setOnClickListener {
                 imageClickListener(getItem(layoutPosition).imageUrl)
             }
+            hideProgressBar()
         }
 
         fun bind(chat: ChatMessage) {
             binding.chat = chat
         }
 
+    }
+
+    private fun hideProgressBar() {
+        progressBar.visibility = View.INVISIBLE
     }
 
 }

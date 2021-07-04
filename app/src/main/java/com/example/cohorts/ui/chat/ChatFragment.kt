@@ -62,7 +62,6 @@ class ChatFragment : Fragment() {
             chatViewModel.sendNewMessage(textMessage, cohortUid)
             binding.messageEditText.setText("")
         }
-        binding.chatProgressBar.visibility = View.INVISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -101,7 +100,7 @@ class ChatFragment : Fragment() {
         val options = FirebaseRecyclerOptions.Builder<ChatMessage>()
             .setQuery(chatRef!!, ChatMessage::class.java)
             .build()
-        chatMessageAdapter = ChatMessageAdapter(options) { imageUrl ->
+        chatMessageAdapter = ChatMessageAdapter(options, binding.chatProgressBar) { imageUrl ->
             navController.navigate(
                 ViewPagerFragmentDirections.actionZoomedImage(imageUrl)
             )

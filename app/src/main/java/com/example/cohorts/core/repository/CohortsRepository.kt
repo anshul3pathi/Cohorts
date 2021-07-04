@@ -23,8 +23,8 @@ import kotlin.IllegalArgumentException
 class CohortsRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val firebaseDatabase: FirebaseDatabase,
-    private val storage: FirebaseStorage
+    firebaseDatabase: FirebaseDatabase,
+    storage: FirebaseStorage
 ) : CohortsRepo {
 
     companion object {
@@ -203,18 +203,6 @@ class CohortsRepository @Inject constructor(
 
     override suspend fun startNewMeeting(ofCohortUid: String): Result<Any> {
         return safeCall {
-//            if (!ofCohort.isCallOngoing) {
-//                ofCohort.isCallOngoing = true
-//                val result = addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
-//                if (result.succeeded) {
-//                    Result.Success(Any())
-//                } else {
-//                    Result.Error(Exception("Couldn't add to meeting!"))
-//                }
-//            } else {
-//                throw IllegalStateException("Meeting already going on!")
-//            }
-
             // retrieving the cohort from firestore
             val meetingCohort = cohortsCollection.document(ofCohortUid)
                 .get()
