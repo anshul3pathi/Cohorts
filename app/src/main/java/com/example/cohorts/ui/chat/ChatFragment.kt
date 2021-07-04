@@ -18,6 +18,9 @@ import com.example.cohorts.databinding.FragmentChatBinding
 import com.example.cohorts.ui.cohorts.viewpager.ViewPagerFragmentDirections
 import com.example.cohorts.utils.snackbar
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -96,9 +99,26 @@ class ChatFragment : Fragment() {
     }
 
     private fun setupChatRcv() {
-        val chatRef = chatViewModel.fetchChatReference(cohortUid)
+        val chatRef = chatViewModel.fetchChatReference(cohortUid)!!
+
+        // see if chats exist
+        // if chats exist then show them in recycler view otherwise show the start new chat TV
+        chatRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    Timber.d("data exists")
+                    binding.chatStartChatTv.visibility = View.INVISIBLE
+                } else {
+                    binding.chatStartChatTv.visibility = View.VISIBLE
+                    binding.chatProgressBar.visibility = View.INVISIBLE
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+
         val options = FirebaseRecyclerOptions.Builder<ChatMessage>()
-            .setQuery(chatRef!!, ChatMessage::class.java)
+            .setQuery(chatRef, ChatMessage::class.java)
             .build()
         chatMessageAdapter = ChatMessageAdapter(options, binding.chatProgressBar) { imageUrl ->
             navController.navigate(
@@ -115,5 +135,6 @@ class ChatFragment : Fragment() {
         chatMessageAdapter.registerAdapterDataObserver(
             ScrollToBottomObserver(binding.chatRcv, chatMessageAdapter, manager)
         )
+
     }
 }

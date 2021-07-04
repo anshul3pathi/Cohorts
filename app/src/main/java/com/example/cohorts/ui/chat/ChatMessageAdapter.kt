@@ -10,6 +10,8 @@ import com.example.cohorts.core.model.User
 import com.example.cohorts.databinding.*
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
+import timber.log.Timber
 
 class ChatMessageAdapter(
     private val options: FirebaseRecyclerOptions<ChatMessage>,
@@ -25,9 +27,15 @@ class ChatMessageAdapter(
     }
 
     private lateinit var currentUser: User
+    private var isProgressBarVisible = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
+
+        if (isProgressBarVisible) {
+            hideProgressBar()
+        }
+
         return when (viewType) {
             VIEW_TYPE_TEXT_SENT -> {
                 val binding = ItemChatTextSentBinding.inflate(inflater, parent, false)
@@ -48,6 +56,16 @@ class ChatMessageAdapter(
                 ImageMessageSentViewHolder(binding)
             }
         }
+    }
+
+    override fun getSnapshots(): ObservableSnapshotArray<ChatMessage> {
+        Timber.d("getting snapshots")
+        return super.getSnapshots()
+    }
+
+    override fun updateOptions(options: FirebaseRecyclerOptions<ChatMessage>) {
+        Timber.d("updating options")
+        super.updateOptions(options)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ChatMessage) {
@@ -145,7 +163,10 @@ class ChatMessageAdapter(
     }
 
     private fun hideProgressBar() {
-        progressBar.visibility = View.INVISIBLE
+        if (isProgressBarVisible) {
+            progressBar.visibility = View.INVISIBLE
+            isProgressBarVisible = false
+        }
     }
 
 }
