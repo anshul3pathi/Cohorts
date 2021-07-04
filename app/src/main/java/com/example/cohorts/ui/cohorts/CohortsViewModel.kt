@@ -48,7 +48,7 @@ class CohortsViewModel @Inject constructor(
         context: Context
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            val addedUser = repository.addCurrentUserToOngoingMeeting(ofCohort)
+            val addedUser = repository.addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
             if (addedUser.succeeded) {
                 addedUser as Result.Success
                 _userAddedToMeeting.postValue(true)

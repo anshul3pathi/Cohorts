@@ -35,7 +35,7 @@ class ViewPagerViewModel @Inject constructor(
 
     fun startNewMeeting(ofCohort: Cohort, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.startNewMeeting(ofCohort)
+            val result = repository.startNewMeeting(ofCohort.cohortUid)
             if (result.succeeded) {
                 _inMeeting.postValue(true)
                 launchJitsi(context, ofCohort.cohortRoomCode)

@@ -12,6 +12,7 @@ import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.safeCall
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -97,17 +98,13 @@ class CohortsRepository @Inject constructor(
         }
     }
 
-    override suspend fun addCurrentUserToOngoingMeeting(ofCohort: Cohort): Result<User> {
+    override suspend fun addCurrentUserToOngoingMeeting(ofCohortUid: String): Result<User> {
         return safeCall {
-            val currentUser = auth.currentUser!!
-            ofCohort.membersInMeeting.add(currentUser.uid)
-            saveCohort(ofCohort)
-            val user = User(
-                uid = currentUser.uid,
-                userEmail = currentUser.email,
-                userName = currentUser.displayName
-            )
-            Result.Success(user)
+            // add currently logged in user to the ongoing meeting of the
+            cohortsCollection.document(ofCohortUid)
+                .update("membersInMeeting", FieldValue.arrayUnion(auth.currentUser!!.uid))
+                .await()
+            getCurrentUser()
         }
     }
 
@@ -204,40 +201,93 @@ class CohortsRepository @Inject constructor(
         }
     }
 
-    override suspend fun startNewMeeting(ofCohort: Cohort): Result<Any> {
+    override suspend fun startNewMeeting(ofCohortUid: String): Result<Any> {
         return safeCall {
-            if (!ofCohort.isCallOngoing) {
-                ofCohort.isCallOngoing = true
-                val result = addCurrentUserToOngoingMeeting(ofCohort)
+//            if (!ofCohort.isCallOngoing) {
+//                ofCohort.isCallOngoing = true
+//                val result = addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
+//                if (result.succeeded) {
+//                    Result.Success(Any())
+//                } else {
+//                    Result.Error(Exception("Couldn't add to meeting!"))
+//                }
+//            } else {
+//                throw IllegalStateException("Meeting already going on!")
+//            }
+
+            // retrieving the cohort from firestore
+            val meetingCohort = cohortsCollection.document(ofCohortUid)
+                .get()
+                .await()
+                .toObject(Cohort::class.java)!!
+
+            // checking if a call in this cohort already going on
+            if (meetingCohort.isCallOngoing) {
+                throw IllegalStateException("Meeting already going on!")
+            } else {
+                // when there is no call ongoing, start the call and add this user to
+                // list of members in call
+                cohortsCollection.document(ofCohortUid)
+                    .update("callOngoing", true)
+                    .await()
+                val result = addCurrentUserToOngoingMeeting(ofCohortUid)
                 if (result.succeeded) {
                     Result.Success(Any())
                 } else {
-                    Result.Error(Exception("Couldn't add to meeting!"))
+                    throw Exception("Couldn't start a new meeting!")
                 }
-            } else {
-                throw IllegalStateException("Meeting already going on!")
             }
         }
     }
 
     override suspend fun leaveOngoingMeeting(): Result<Any> {
         return safeCall {
+            // retrieving the cohort in whose meeting the user is in
             val cohorts = cohortsCollection.whereArrayContains(
                 "membersInMeeting",
                 auth.currentUser!!.uid
             ).get().await().toObjects(Cohort::class.java)
 
+            var isCallOngoing = true
+
             Timber.d("${cohorts[0]}")
+
+            // the user is in multiple meetings, this should not happen
             if (cohorts.size > 1) {
                 throw IllegalStateException("More than one cohort found in whose meeting user is in!")
             }
-            val meetingCohort = cohorts[0]
-            meetingCohort.membersInMeeting.remove(auth.currentUser!!.uid)
-            if (meetingCohort.membersInMeeting.size == 0) {
-                meetingCohort.isCallOngoing = false
+
+            val meetingCohortUid = cohorts[0].cohortUid
+            val meetingCohortReference = cohortsCollection.document(meetingCohortUid)
+
+            // attaching a realtime listener to the list of members in meeting
+            // if members in meeting is 0 then the call has ended otherwise call is ongoing
+            meetingCohortReference.addSnapshotListener { value, error ->
+                if (error != null) {
+                    Timber.e(error)
+                    return@addSnapshotListener
+                }
+                if (value != null && value.exists()) {
+                    Timber.d("CurrentData - ${value.data}")
+                    val membersInMeeting = value.data?.get("membersInMeeting") as List<*>
+                    isCallOngoing = (membersInMeeting.isNotEmpty())
+                    Timber.d("$isCallOngoing")
+                } else {
+                    Timber.d("Value doesn't exist!")
+                }
             }
-            Timber.d("left the meeting")
-            saveCohort(meetingCohort)
+
+            // removing currently logged in user from the ongoing meeting
+            meetingCohortReference
+                .update("membersInMeeting", FieldValue.arrayRemove(auth.currentUser!!.uid))
+                .await()
+
+            // updating the call ongoing field
+            meetingCohortReference
+                .update("callOngoing", isCallOngoing)
+                .await()
+
+            Result.Success(Any())
         }
     }
 
