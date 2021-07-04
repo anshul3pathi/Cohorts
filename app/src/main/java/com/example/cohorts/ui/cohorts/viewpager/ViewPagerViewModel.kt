@@ -56,22 +56,6 @@ class ViewPagerViewModel @Inject constructor(
         }
     }
 
-    fun terminateOngoingMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
-        if (!_inMeeting.value!!) return
-
-        CoroutineScope(coroutineDispatcher).launch {
-            val result = repository.leaveOngoingMeeting()
-            destroyJitsi(context, broadcastReceiver)
-            if (result.succeeded) {
-                Timber.i("left the meeting")
-                _inMeeting.postValue(false)
-            } else {
-                result as Result.Error
-                Timber.e(result.exception)
-            }
-        }
-    }
-
     fun deleteThisCohort(cohort: Cohort) {
         GlobalScope.launch(coroutineDispatcher) {
             val result = repository.deleteThisCohort(cohort)

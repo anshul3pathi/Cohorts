@@ -62,13 +62,6 @@ class CohortsViewModel @Inject constructor(
         }
     }
 
-    fun terminateMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
-        viewModelScope.launch {
-            repository.leaveOngoingMeeting()
-            destroyJitsi(context, broadcastReceiver)
-        }
-    }
-
     fun resetUserAddedToMeeting() {
         _userAddedToMeeting.postValue(false)
     }

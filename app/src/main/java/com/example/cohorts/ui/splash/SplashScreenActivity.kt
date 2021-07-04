@@ -8,10 +8,9 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivitySplashScreenBinding
-import com.example.cohorts.ui.MainActivity
+import com.example.cohorts.ui.main.MainActivity
 import com.example.cohorts.ui.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

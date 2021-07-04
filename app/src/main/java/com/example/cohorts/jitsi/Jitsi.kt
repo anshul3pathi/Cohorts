@@ -6,7 +6,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.cohorts.core.model.User
-import com.example.cohorts.utils.safeCall
 import org.jitsi.meet.sdk.*
 import java.lang.RuntimeException
 import java.net.MalformedURLException

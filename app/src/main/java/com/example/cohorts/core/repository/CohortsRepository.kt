@@ -32,12 +32,13 @@ class CohortsRepository @Inject constructor(
         private const val COHORTS_COLLECTION = "cohorts"
         private const val CHAT_CHILD = "chats"
         private const val LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif"
+        private const val CHAT_PHOTOS = "chat_photos"
     }
 
     private val usersCollection = firestore.collection(USERS_COLLECTION)
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
     private val chatReference = firebaseDatabase.reference.child(CHAT_CHILD)
-    private val storageReference = storage.reference.child("chat_photos")
+    private val storageReference = storage.reference.child(CHAT_PHOTOS)
 
     override suspend fun registerCurrentUser(): Result<Any> {
         return safeCall {
@@ -152,7 +153,6 @@ class CohortsRepository @Inject constructor(
             newCohort.numberOfMembers += 1
             newCohort.cohortMembers.add(currentUser.data.uid!!)
 
-//            currentUser.data.cohortsIn.add(newCohort.cohortUid)
             // adding this new cohort to the list of cohorts current user is in
             usersCollection.document(currentUser.data.uid!!)
                 .update("cohortsIn", FieldValue.arrayUnion(newCohort.cohortUid))
@@ -182,24 +182,17 @@ class CohortsRepository @Inject constructor(
             }
 
             // adding the cohort to list of cohorts this user is in
-//            userToAdd.cohortsIn.add(cohort.cohortUid)
             usersCollection.document(userToAdd.uid!!)
                 .update("cohortsIn", FieldValue.arrayUnion(cohort.cohortUid))
                 .await()
 
             // adding this user to cohorts members list
-//            cohort.cohortMembers.add(userToAdd.uid!!)
-//            cohort.numberOfMembers += 1
             cohortsCollection.document(cohort.cohortUid)
                 .update("cohortMembers", FieldValue.arrayUnion(userToAdd.uid!!))
                 .await()
             cohortsCollection.document(cohort.cohortUid)
                 .update("numberOfMembers", cohort.numberOfMembers + 1)
                 .await()
-
-            // saving the updated user and cohort to firestore
-//            saveCohort(cohort)
-//            saveUser(userToAdd)
 
             Result.Success("${userToAdd.userName} added to cohort successfully!")
         }
@@ -254,7 +247,9 @@ class CohortsRepository @Inject constructor(
 
             // the user is in multiple meetings, this should not happen
             if (cohorts.size > 1) {
-                throw IllegalStateException("More than one cohort found in whose meeting user is in!")
+                throw IllegalStateException(
+                    "More than one cohort found in whose meeting user is in!"
+                )
             }
 
             val meetingCohortUid = cohorts[0].cohortUid
