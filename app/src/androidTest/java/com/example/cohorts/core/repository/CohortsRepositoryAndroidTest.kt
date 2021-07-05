@@ -8,6 +8,7 @@ import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
 import com.example.cohorts.core.succeeded
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -66,17 +67,21 @@ class CohortsRepositoryAndroidTest {
     @Test
     // You should be logged in for this test to pass
     fun getUserByEmail_givenUserEmail_getsUserInfo() = runBlocking {
-        val email =  auth.currentUser!!.email!!
+        val email = "fakeemail@whatever.com"
         // Given - user with provided email exists in database
+        // fake user data
         val user = User(
-            uid = auth.currentUser!!.uid,
-            userName = auth.currentUser!!.displayName,
-            userEmail = auth.currentUser!!.email
+            uid = "fakeuid",
+            userName = "fakeusername",
+            userEmail = email
         )
         firestore.collection("users").document(user.uid!!).set(user)
 
         // When - this user is searched using provided email
         val searchedUser = repository.getUserByEmail(email)
+
+        // delete fake user data from firestore
+        firestore.collection("users").document(user.uid!!).delete().await()
 
         // Then - it should be same as the saved user
         assertThat(searchedUser.succeeded, `is`(true))
@@ -91,7 +96,7 @@ class CohortsRepositoryAndroidTest {
             cohortName = "RandomName",
             cohortDescription = "RandomDesc",
             numberOfMembers = 1,
-            cohortMembers = mutableListOf(auth.currentUser!!.uid),
+            cohortMembers = mutableListOf("fake user uid"),
         )
         // When - cohort is saved
         repository.saveCohort(cohort)
@@ -164,6 +169,9 @@ class CohortsRepositoryAndroidTest {
 
         // Deleting this cohort from firestore
         firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        // Deleting this cohort from the list of cohorts the logged in user is in
+        firestore.collection("users").document(auth.currentUser!!.uid)
+            .update("cohortsIn", FieldValue.arrayRemove(cohort.cohortUid))
 
         assertThat(savedCohort, `is`(notNullValue()))
         assertThat(savedCohort!!.cohortMembers.contains(auth.currentUser!!.uid), `is`(true))

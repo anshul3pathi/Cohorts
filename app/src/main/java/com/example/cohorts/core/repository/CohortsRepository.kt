@@ -42,22 +42,25 @@ class CohortsRepository @Inject constructor(
 
     override suspend fun registerCurrentUser(): Result<Any> {
         return safeCall {
+            // check if the current user already exist in users collection in firestore
             val userAlreadyRegistered = getUserByUid(auth.currentUser!!.uid)
             if (userAlreadyRegistered.succeeded) {
+                // user exists in firestore, no need to save user info again
                 Timber.d("User exists in user collection")
                 Result.Success(Any())
             } else {
+                // user doesn't exist in firestore, save user info
                 Timber.e((userAlreadyRegistered as Result.Error).exception)
+                val currentUser = auth.currentUser!!
+                val user = User(
+                    uid = currentUser.uid,
+                    userName = currentUser.displayName,
+                    userEmail = currentUser.email,
+                    photoUrl = currentUser.photoUrl?.toString()
+                )
+                usersCollection.document(user.uid!!).set(user).await()
+                Result.Success(Any())
             }
-            val currentUser = auth.currentUser!!
-            val user = User(
-                uid = currentUser.uid,
-                userName = currentUser.displayName,
-                userEmail = currentUser.email,
-                photoUrl = currentUser.photoUrl?.toString()
-            )
-            usersCollection.document(user.uid!!).set(user).await()
-            Result.Success(Any())
         }
     }
 
