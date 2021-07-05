@@ -3,6 +3,7 @@ package com.example.cohorts.ui.cohorts.newcohort
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -43,27 +44,12 @@ class AddNewCohort : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        addNewCohortViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage.isNotEmpty()) {
-                Snackbar.make(
-                    binding.addNewCohortFragmentRoot,
-                    errorMessage,
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
-        })
-        addNewCohortViewModel.cohortAddedSuccessfully.observe(
-            viewLifecycleOwner,
-            { cohortAddedSuccessfully ->
-                if (cohortAddedSuccessfully) {
-                    Snackbar.make(
-                        binding.addNewCohortFragmentRoot,
-                        "Cohort created successfully!",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            }
-        )
+        subscribeToObservers()
+
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_cancel)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -98,6 +84,30 @@ class AddNewCohort : Fragment() {
             cohortDescription = binding.cohortDescriptionEt.text.toString()
         )
         addNewCohortViewModel.addNewCohort(newCohort)
+    }
+
+    private fun subscribeToObservers() {
+        addNewCohortViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Snackbar.make(
+                    binding.addNewCohortFragmentRoot,
+                    errorMessage,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        })
+        addNewCohortViewModel.cohortAddedSuccessfully.observe(
+            viewLifecycleOwner,
+            { cohortAddedSuccessfully ->
+                if (cohortAddedSuccessfully) {
+                    Snackbar.make(
+                        binding.addNewCohortFragmentRoot,
+                        "Cohort created successfully!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        )
     }
 
 }

@@ -246,7 +246,6 @@ class CohortsRepository @Inject constructor(
 
             var isCallOngoing = true
 
-            Timber.d("${cohorts[0]}")
 
             // the user is in multiple meetings, this should not happen
             if (cohorts.size > 1) {

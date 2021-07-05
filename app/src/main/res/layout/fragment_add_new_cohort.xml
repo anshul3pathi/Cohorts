@@ -3,55 +3,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/add_new_cohort_fragment_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp">
 
-        <TextView
-            android:id="@+id/cohort_name_label_tv"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
-            android:text="@string/cohort_name"/>
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/cohort_name_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/letters_numbers_and_spaces_are_allowed"
-            android:backgroundTint="?attr/colorPrimary"
-            app:layout_constraintStart_toStartOf="@id/cohort_name_label_tv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cohort_name_label_tv"
-            android:layout_marginTop="4dp"/>
+            <TextView
+                android:id="@+id/cohort_name_label_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                android:text="@string/cohort_name"/>
 
-        <TextView
-            android:id="@+id/cohort_description_label_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/cohort_name_et"
-            app:layout_constraintStart_toStartOf="@id/cohort_name_et"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
-            android:text="@string/description_optional"/>
+            <EditText
+                android:id="@+id/cohort_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/letters_numbers_and_spaces_are_allowed"
+                android:backgroundTint="?attr/colorPrimary"
+                app:layout_constraintStart_toStartOf="@id/cohort_name_label_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cohort_name_label_tv"
+                android:layout_marginTop="4dp"/>
 
-        <EditText
-            android:id="@+id/cohort_description_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/write_something_about_the_cohort"
-            android:backgroundTint="?attr/colorPrimary"
-            app:layout_constraintStart_toStartOf="@id/cohort_description_label_tv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cohort_description_label_tv"
-            android:layout_marginTop="4dp"/>
+            <TextView
+                android:id="@+id/cohort_description_label_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/cohort_name_et"
+                app:layout_constraintStart_toStartOf="@id/cohort_name_et"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                android:text="@string/description_optional"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/cohort_description_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/write_something_about_the_cohort"
+                android:backgroundTint="?attr/colorPrimary"
+                app:layout_constraintStart_toStartOf="@id/cohort_description_label_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cohort_description_label_tv"
+                android:layout_marginTop="4dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

@@ -79,6 +79,6 @@ private fun unregisterBroadcastReceiver(context: Context, broadcastReceiver: Bro
 private fun hangUp(context: Context) {
     val hangupBroadcastIntent: Intent = BroadcastIntentHelper.buildHangUpIntent()
     LocalBroadcastManager
-        .getInstance(context)
+        .getInstance(org.webrtc.ContextUtils.getApplicationContext())
         .sendBroadcast(hangupBroadcastIntent)
 }

@@ -27,3 +27,7 @@ enum class NetworkRequest {
 fun snackbar(view: View, message: String) {
     Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
 }
+
+enum class Theme {
+    LIGHT, DARK, SYSTEM_DEFAULT
+}

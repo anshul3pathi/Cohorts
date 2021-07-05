@@ -42,7 +42,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"/>
 
         <LinearLayout
             android:id="@+id/chat_input_layout"
@@ -70,7 +70,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/edit_text_shadow"
-                android:hint="Say something..."
+                android:hint="@string/say_something"
                 android:inputType="text"
                 android:padding="10dp" />
 

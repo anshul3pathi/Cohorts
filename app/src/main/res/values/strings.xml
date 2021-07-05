@@ -29,4 +29,6 @@
     <string name="you">You</string>
     <string name="start_new_chat">Start new chat.</string>
     <string name="new_cohort">New Cohort</string>
+    <string name="theme">Theme</string>
+    <string name="say_something">Say something...</string>
 </resources>
