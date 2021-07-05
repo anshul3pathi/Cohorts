@@ -322,13 +322,22 @@ class CohortsRepository @Inject constructor(
     override suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any> {
         return safeCall {
             // remove this cohort from the list of cohorts the user is in
-            user.cohortsIn.remove(cohort.cohortUid)
+//            user.cohortsIn.remove(cohort.cohortUid)
+            usersCollection.document(user.uid!!)
+                .update("cohortsIn", FieldValue.arrayRemove(cohort.cohortUid))
+                .await()
 
             // remove this user from the list of users that are in this cohort
-            cohort.cohortMembers.remove(user.uid!!)
+//            cohort.cohortMembers.remove(user.uid!!)
+            cohortsCollection.document(cohort.cohortUid)
+                .update("cohortMembers", FieldValue.arrayRemove(user.uid!!))
 
-            saveCohort(cohort)
-            saveUser(user)
+            // number of members in the cohort are on less now
+            cohortsCollection.document(cohort.cohortUid)
+                .update("numberOfMembers", cohort.numberOfMembers - 1)
+                .await()
+//            saveCohort(cohort)
+//            saveUser(user)
             Result.Success(
                 "${user.userName} was successfully removed from ${cohort.cohortName}"
             )

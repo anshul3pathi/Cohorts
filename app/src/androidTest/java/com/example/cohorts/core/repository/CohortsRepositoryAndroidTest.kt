@@ -75,7 +75,7 @@ class CohortsRepositoryAndroidTest {
             userName = "fakeusername",
             userEmail = email
         )
-        firestore.collection("users").document(user.uid!!).set(user)
+        firestore.collection("users").document(user.uid!!).set(user).await()
 
         // When - this user is searched using provided email
         val searchedUser = repository.getUserByEmail(email)
@@ -176,6 +176,52 @@ class CohortsRepositoryAndroidTest {
         assertThat(savedCohort, `is`(notNullValue()))
         assertThat(savedCohort!!.cohortMembers.contains(auth.currentUser!!.uid), `is`(true))
         assertThat(savedCohort.numberOfMembers, `is`(1))
+    }
+
+    @Test
+    fun removeThisUserFromCohort_removesTheGivenUserFromTheGivenCohort() = runBlocking {
+        // Given - the given user and given cohort exist in firestore
+        val fakeCohort = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc",
+            cohortMembers = mutableListOf("fakeuseruid"),
+            numberOfMembers = 5
+        )
+        val fakeUser = User(
+            uid = "fakeuseruid",
+            cohortsIn = mutableListOf(fakeCohort.cohortUid)
+        )
+        // save this fake user
+        firestore.collection("users").document(fakeUser.uid!!).set(fakeUser).await()
+        // save this fake cohort
+        firestore.collection("cohorts").document(fakeCohort.cohortUid)
+            .set(fakeCohort)
+            .await()
+
+        // When - a user is removed from a cohort
+        val result = repository.removeThisUserFromCohort(fakeUser, fakeCohort)
+
+        // Then - the association of user with the cohort should be deleted
+        assertThat(result.succeeded, `is`(true))
+        val savedFakeUser = firestore.collection("users").document(fakeUser.uid!!)
+            .get()
+            .await()
+            .toObject(User::class.java)!!
+        val savedFakeCohort = firestore.collection("cohorts")
+            .document(fakeCohort.cohortUid)
+            .get()
+            .await()
+            .toObject(Cohort::class.java)!!
+
+        // ensure that the saved fake cohort and user data is deleted from firestore even if this
+        // test fails
+        firestore.collection("users").document(fakeUser.uid!!).delete().await()
+        firestore.collection("cohorts").document(fakeCohort.cohortUid).delete().await()
+
+        // assertions
+        assertThat(savedFakeUser.cohortsIn, `is`(emptyList()))
+        assertThat(savedFakeCohort.cohortMembers, `is`(emptyList()))
+        assertThat(savedFakeCohort.numberOfMembers, `is`(fakeCohort.numberOfMembers - 1))
     }
 
 }
