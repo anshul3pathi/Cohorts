@@ -194,7 +194,7 @@ class CohortsRepository @Inject constructor(
                 .update("cohortMembers", FieldValue.arrayUnion(userToAdd.uid!!))
                 .await()
             cohortsCollection.document(cohort.cohortUid)
-                .update("numberOfMembers", cohort.numberOfMembers + 1)
+                .update("numberOfMembers", FieldValue.increment(1))
                 .await()
 
             Result.Success("${userToAdd.userName} added to cohort successfully!")

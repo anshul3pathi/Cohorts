@@ -11,4 +11,5 @@
     <color name="colorLightGray">#ececec</color>
     <color name="colorBlue">#2962FF</color>
     <color name="colorGray">#dedede</color>
+    <color name="mainColor">#523C80</color>
 </resources>

@@ -7,15 +7,22 @@
         android:id="@+id/main_activity_root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:orientation="vertical"
         tools:context=".ui.main.MainActivity">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            style="@style/Widget.Cohorts.Toolbar"/>
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                style="@style/Widget.Cohorts.Toolbar"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <fragment
             android:id="@+id/nav_host_fragment"

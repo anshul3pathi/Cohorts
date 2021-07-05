@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
+import com.example.cohorts.core.model.User
 import com.example.cohorts.core.repository.CohortsRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.destroyJitsi
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
+import java.net.UnknownServiceException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,8 +35,21 @@ class CohortsViewModel @Inject constructor(
     private val _errorAddingUserToMeeting = MutableLiveData(false)
     val errorAddingUserToMeeting: LiveData<Boolean> = _errorAddingUserToMeeting
 
-    private var _cohort: Cohort? = null
-    val cohort: Cohort? = _cohort
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
+
+    private lateinit var currentUser: User
+
+    init {
+        viewModelScope.launch(coroutineDispatcher) {
+            val userResult = repository.getCurrentUser()
+            if (userResult.succeeded) {
+                currentUser = (userResult as Result.Success).data
+            } else {
+                _errorMessage.postValue((userResult as Result.Error).exception.message)
+            }
+        }
+    }
 
     fun fetchCohortsQuery(): Query {
         val query = repository.fetchCohortsQuery()
@@ -57,10 +72,15 @@ class CohortsViewModel @Inject constructor(
             } else {
                 _errorAddingUserToMeeting.postValue(true)
                 val exception = (addedUser as Result.Error).exception
+                _errorMessage.postValue(exception.message)
                 Timber.e(exception)
             }
         }
     }
+
+    fun isCurrentUserInMeetingOfThisCohort(cohort: Cohort) =
+        (currentUser.uid!! in cohort.membersInMeeting)
+
 
     fun resetUserAddedToMeeting() {
         _userAddedToMeeting.postValue(false)

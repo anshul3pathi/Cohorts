@@ -14,6 +14,7 @@ import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentCohortsBinding
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.main.MainActivity
+import com.example.cohorts.utils.snackbar
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -24,11 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class CohortsFragment : Fragment(), CohortClickListener {
-
-    companion object {
-        private const val TAG = "CohortsFragment"
-    }
+class CohortsFragment : Fragment() {
 
     private lateinit var binding: FragmentCohortsBinding
     private lateinit var navController: NavController
@@ -51,34 +48,9 @@ class CohortsFragment : Fragment(), CohortClickListener {
         firestore = Firebase.firestore
         auth = FirebaseAuth.getInstance()
 
-        cohortsViewModel.userAddedToMeeting.observe(viewLifecycleOwner, { userAddedToMeeting ->
-            if (userAddedToMeeting) {
-                Timber.d("cohort to join - ${cohortsViewModel.cohort}")
-                cohortsViewModel.resetUserAddedToMeeting()
-            }
-        })
-        cohortsViewModel.errorAddingUserToMeeting.observe(viewLifecycleOwner, { errorAddingUser ->
-            if (errorAddingUser) {
-                Snackbar.make(
-                    binding.cohortsFragmentRootLayout,
-                    "Error adding you to meeting.",
-                    Snackbar.LENGTH_LONG
-                ).show()
-                cohortsViewModel.resetErrorAddingUserToMeeting()
-            }
-        })
+        subscribeToObservers()
 
-        val query = cohortsViewModel.fetchCohortsQuery()
-
-        val cohortAdapterOptions = FirestoreRecyclerOptions.Builder<Cohort>()
-            .setQuery(query, Cohort::class.java)
-            .build()
-
-        cohortsAdapter = CohortsAdapter(cohortAdapterOptions, this)
-        binding.cohortsRcv.apply {
-            adapter = cohortsAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
+        setupCohortRcv()
 
         binding.addCohortsFab.setOnClickListener {
             navController.navigate(R.id.cohorts_to_addNewCohorts)
@@ -95,23 +67,70 @@ class CohortsFragment : Fragment(), CohortClickListener {
         super.onStop()
     }
 
-    override fun cohortItemClicked(cohort: Cohort) {
-        Timber.d( "cohort clicked with id: $cohort")
-        val action = CohortsFragmentDirections.actionCohortsToViewPager(cohort)
-        navController.navigate(action)
+    private fun subscribeToObservers() {
+        cohortsViewModel.userAddedToMeeting.observe(viewLifecycleOwner, { userAddedToMeeting ->
+            if (userAddedToMeeting) {
+                cohortsViewModel.resetUserAddedToMeeting()
+            }
+        })
+        cohortsViewModel.errorAddingUserToMeeting.observe(viewLifecycleOwner, { errorAddingUser ->
+            if (errorAddingUser) {
+                Snackbar.make(
+                    binding.cohortsFragmentRootLayout,
+                    "Error adding you to meeting.",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                cohortsViewModel.resetErrorAddingUserToMeeting()
+            }
+        })
+        cohortsViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
+            snackbar(binding.cohortsFragmentRootLayout, errorMessage)
+        })
     }
 
-    override fun joinVideoCallButtonClicked(view: View, cohort: Cohort) {
-        if (auth.currentUser!!.uid in cohort.membersInMeeting) {
-            (view as Button).isEnabled = false
-        } else {
-            Timber.d("joinVideoCallButtonClicked: trying to join cohort - $cohort")
+    private fun setupCohortRcv() {
+        val query = cohortsViewModel.fetchCohortsQuery()
 
-            cohortsViewModel.addCurrentUserToOngoingMeeting(
-                cohort,
-                (activity as MainActivity).broadcastReceiver,
-                requireContext()
+        val cohortAdapterOptions = FirestoreRecyclerOptions.Builder<Cohort>()
+            .setQuery(query, Cohort::class.java)
+            .build()
+
+        cohortsAdapter = CohortsAdapter(cohortAdapterOptions)
+
+        // setting up onClickListeners
+        cohortsAdapter.setCohortItemClickListener { cohort ->
+            Timber.d( "cohort clicked with id: $cohort")
+            val action = CohortsFragmentDirections.actionCohortsToViewPager(cohort)
+            navController.navigate(action)
+        }
+        cohortsAdapter.setContainedJoinButtonClickListener { cohort ->
+            Timber.d( "contained button clicked - $cohort")
+            if (!cohortsViewModel.isCurrentUserInMeetingOfThisCohort(cohort)) {
+                cohortsViewModel.addCurrentUserToOngoingMeeting(
+                    cohort,
+                    (activity as MainActivity).broadcastReceiver,
+                    requireContext()
+                )
+            } else {
+                snackbar(
+                    binding.cohortsFragmentRootLayout,
+                    "You are already in this meeting!"
+                )
+            }
+        }
+        cohortsAdapter.setOutlineJoinButtonClickListener {
+            Timber.d("Outlined button clicked!")
+            snackbar(
+                binding.cohortsFragmentRootLayout,
+                "Start a new meeting from inside the cohort first!"
             )
         }
+
+        binding.cohortsRcv.apply {
+            adapter = cohortsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            addOnScrollListener(ExtendedFloatingActionButtonScrollListener(binding.addCohortsFab))
+        }
     }
+
 }

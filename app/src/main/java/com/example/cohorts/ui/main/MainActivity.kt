@@ -111,10 +111,10 @@ class MainActivity : AppCompatActivity() {
             val event = BroadcastEvent(intent)
             when (event.type) {
                 BroadcastEvent.Type.CONFERENCE_JOINED -> Toast.makeText(
-                    this, "Conference joined main", Toast.LENGTH_LONG
+                    this, "Conference joined", Toast.LENGTH_LONG
                 ).show()
                 BroadcastEvent.Type.PARTICIPANT_JOINED -> Toast.makeText(
-                    this, "User joined main - ${event.data["name"]}", Toast.LENGTH_LONG
+                    this, "User joined - ${event.data["name"]}", Toast.LENGTH_LONG
                 ).show()
                 BroadcastEvent.Type.CONFERENCE_TERMINATED -> {
                     Timber.d("on going conference terminated!")
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (event.data.get("muted") == "6.0") {
-                        Timber.d("Meeting terminated from pip")
+                        Timber.d("Meeting terminated from PIP")
                         mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
                     }
                     Timber.d( "Event - ${event.data}")
