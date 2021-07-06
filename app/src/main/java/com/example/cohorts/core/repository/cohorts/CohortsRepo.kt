@@ -12,7 +12,6 @@ interface CohortsRepo {
 
     fun fetchCohortsQuery(): Result<Query>
     fun fetchUsersQuery(cohortUid: String): Result<Query>
-    fun fetchChatReference(cohortUid: String): Result<DatabaseReference>
     suspend fun registerCurrentUser(): Result<Any>
     suspend fun saveCohort(cohort: Cohort): Result<Any>
     suspend fun saveUser(user: User): Result<Any>
@@ -24,7 +23,5 @@ interface CohortsRepo {
     suspend fun getUserByEmail(userEmail: String): Result<User>
     suspend fun deleteThisCohort(cohort: Cohort): Result<Any>
     suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any>
-    suspend fun sendNewChatMessage(chatMessage: ChatMessage): Result<Any>
-    suspend fun sendImageMessage(tempMessage: ChatMessage, imageUri: Uri?): Result<Any>
 
 }

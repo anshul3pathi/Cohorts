@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.User
+import com.example.cohorts.core.repository.chat.ChatRepo
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.succeeded
 import com.google.firebase.database.DatabaseReference
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val repository: CohortsRepo,
+    private val cohortRepository: CohortsRepo,
+    private val chatRepository: ChatRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -32,7 +34,7 @@ class ChatViewModel @Inject constructor(
     val currentUser: LiveData<User> = _currentUser
 
     fun fetchChatReference(cohortUid: String): DatabaseReference? {
-        val result = repository.fetchChatReference(cohortUid)
+        val result = chatRepository.fetchChatReference(cohortUid)
         return if (result.succeeded) {
             (result as Result.Success).data
         } else {
@@ -43,7 +45,7 @@ class ChatViewModel @Inject constructor(
 
     fun getCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.getCurrentUser()
+            val result = cohortRepository.getCurrentUser()
             if (result.succeeded) {
                 _currentUser.postValue((result as Result.Success).data!!)
             } else {
@@ -63,7 +65,7 @@ class ChatViewModel @Inject constructor(
             )
             Timber.d("$newMessage")
             Timber.d("${_currentUser.value!!.photoUrl}")
-            val result = repository.sendNewChatMessage(newMessage)
+            val result = chatRepository.sendNewChatMessage(newMessage)
             if (!result.succeeded) {
                 _errorMessage.postValue((result as Result.Error).exception.message)
             }
@@ -79,7 +81,7 @@ class ChatViewModel @Inject constructor(
             photoUrl = _currentUser.value!!.photoUrl
         )
         GlobalScope.launch(coroutineDispatcher) {
-            val result = repository.sendImageMessage(newImageMessage, imageUri)
+            val result = chatRepository.sendImageMessage(newImageMessage, imageUri)
             if (!result.succeeded) {
                 _errorMessage.postValue((result as Result.Error).exception.message)
             }
