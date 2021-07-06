@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/letters_numbers_and_spaces_are_allowed"
                     android:backgroundTint="?attr/colorPrimary"
+                    android:textCursorDrawable="@drawable/cursor_color"
                     android:text="@{cohort.cohortName}"
                     android:layout_marginTop="4dp"/>
 
@@ -60,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/write_something_about_the_cohort"
                     android:backgroundTint="?attr/colorPrimary"
+                    android:textCursorDrawable="@drawable/cursor_color"
                     android:text="@{cohort.cohortDescription}"
                     android:layout_marginTop="4dp"/>
 

@@ -79,9 +79,10 @@ class ExtendedFloatingActionButtonScrollListener(
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (dy != 0 && extendedFab.isExtended) {
-            Timber.d("scrolled")
+        if (dy > 0 && extendedFab.isExtended) {
             extendedFab.shrink()
+        } else if (dy < 0  && !extendedFab.isExtended) {
+            extendedFab.extend()
         }
         super.onScrolled(recyclerView, dx, dy)
     }

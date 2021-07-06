@@ -35,6 +35,7 @@
                 android:hint="@string/email_address_hint"
                 android:inputType="textEmailAddress"
                 android:imeOptions="actionSearch"
+                android:textCursorDrawable="@drawable/cursor_color"
                 android:layout_marginTop="12dp"/>
 
             <LinearLayout

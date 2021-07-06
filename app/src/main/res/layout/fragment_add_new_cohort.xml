@@ -32,6 +32,7 @@
                 app:layout_constraintStart_toStartOf="@id/cohort_name_label_tv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cohort_name_label_tv"
+                android:textCursorDrawable="@drawable/cursor_color"
                 android:layout_marginTop="4dp"/>
 
             <TextView
@@ -53,6 +54,7 @@
                 android:backgroundTint="?attr/colorPrimary"
                 app:layout_constraintStart_toStartOf="@id/cohort_description_label_tv"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:textCursorDrawable="@drawable/cursor_color"
                 app:layout_constraintTop_toBottomOf="@+id/cohort_description_label_tv"
                 android:layout_marginTop="4dp"/>
 

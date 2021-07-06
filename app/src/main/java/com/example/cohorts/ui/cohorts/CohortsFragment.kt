@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -55,6 +56,8 @@ class CohortsFragment : Fragment() {
         binding.addCohortsFab.setOnClickListener {
             navController.navigate(R.id.cohorts_to_addNewCohorts)
         }
+
+        (activity as AppCompatActivity).supportActionBar?.subtitle = ""
     }
 
     override fun onStart() {

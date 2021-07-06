@@ -77,7 +77,7 @@
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:textColor="?colorOnSurface"
-                    android:textCursorDrawable="@drawable/chat_cursor_color"
+                    android:textCursorDrawable="@drawable/cursor_color"
                     android:background="@drawable/edit_text_shadow"
                     android:hint="@string/say_something"
                     android:inputType="text"
