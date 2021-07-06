@@ -10,6 +10,8 @@ import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityLoginBinding
 import com.example.cohorts.ui.main.MainActivity
 import com.example.cohorts.utils.NetworkRequest
+import com.example.cohorts.utils.Theme
+import com.example.cohorts.utils.intToTheme
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
@@ -21,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         private const val RC_SIGN_IN = 1
+        private const val APP_THEME_EXTRA = "app_theme"
     }
 
     private lateinit var binding: ActivityLoginBinding
@@ -34,34 +37,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        loginViewModel.userRegistered.observe(this, { userRegistered ->
-            if (userRegistered == NetworkRequest.SUCCESS) {
-                Timber.d("Logged in!")
-                Snackbar.make(binding.loginRootLayout, "Signed in!", Snackbar.LENGTH_LONG)
-                    .show()
-            } else {
-                Timber.d("Error saving user")
-                Snackbar
-                    .make(binding.loginRootLayout, "Error saving user", Snackbar.LENGTH_LONG)
-                    .show()
-            }
-        })
+
+        subscribeToObservers()
 
         launchSignInFlow()
 
-    }
-
-    private fun launchSignInFlow() {
-        startActivityForResult(
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setIsSmartLockEnabled(false)
-                .setLogo(R.drawable.cohorts_signin_logo)
-                .setTheme(R.style.Theme_Cohorts)
-                .build(),
-            RC_SIGN_IN
-        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -83,6 +63,34 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun launchSignInFlow() {
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setIsSmartLockEnabled(false)
+                .setLogo(R.drawable.cohorts_signin_logo)
+                .setTheme(R.style.Theme_Cohorts)
+                .build(),
+            RC_SIGN_IN
+        )
+    }
+
+    private fun subscribeToObservers() {
+        loginViewModel.userRegistered.observe(this, { userRegistered ->
+            if (userRegistered == NetworkRequest.SUCCESS) {
+                Timber.d("Logged in!")
+                Snackbar.make(binding.loginRootLayout, "Signed in!", Snackbar.LENGTH_LONG)
+                    .show()
+            } else {
+                Timber.d("Error saving user")
+                Snackbar
+                    .make(binding.loginRootLayout, "Error saving user", Snackbar.LENGTH_LONG)
+                    .show()
+            }
+        })
     }
 
 }

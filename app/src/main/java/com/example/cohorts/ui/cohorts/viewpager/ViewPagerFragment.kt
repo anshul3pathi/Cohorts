@@ -42,6 +42,8 @@ class ViewPagerFragment : Fragment() {
         arguments?.let {
             cohortArgument = ViewPagerFragmentArgs.fromBundle(it).cohort!!
             (activity as AppCompatActivity).supportActionBar?.title = cohortArgument.cohortName
+            (activity as AppCompatActivity).supportActionBar?.subtitle =
+                cohortArgument.cohortDescription
         }
 
         val bundle = Bundle()

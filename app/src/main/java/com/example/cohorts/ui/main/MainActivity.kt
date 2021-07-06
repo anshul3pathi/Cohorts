@@ -20,6 +20,7 @@ import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityMainBinding
 import com.example.cohorts.ui.login.LoginActivity
 import com.example.cohorts.utils.Theme
+import com.example.cohorts.utils.intToTheme
 import com.example.cohorts.utils.snackbar
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,6 +32,10 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val APP_THEME_EXTRA = "app_theme"
+    }
+
     val broadcastReceiver: BroadcastReceiver by lazy {
         object : BroadcastReceiver(this.applicationContext) {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -40,10 +45,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val mainViewModel: MainViewModel by viewModels()
-    private var appTheme: Theme = Theme.LIGHT
+    private lateinit var appTheme: Theme
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var themeChangeItemClicked = false
 
     // overridden functions
 
@@ -61,6 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         subscribeToObservers()
 
+        appTheme = intToTheme(intent.getIntExtra(APP_THEME_EXTRA, 1))
+
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
@@ -77,7 +85,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         Timber.d("onDestroy called!")
-        mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
+        try {
+            mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
+        } catch (ex: Exception) {
+            Timber.d("exception")
+            Timber.e(ex)
+        }
         super.onDestroy()
     }
 
@@ -87,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 signOut()
                 true
             } R.id.item_theme -> {
+                themeChangeItemClicked = true
                 showChangeThemeDialog()
                 true
             }  else -> {
@@ -109,11 +123,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun subscribeToObservers() {
         mainViewModel.errorMessage.observe(this, { errorMessage ->
+            if (errorMessage != "Index: 0, Size: 0") {
             snackbar(binding.mainActivityRootLayout, errorMessage)
+            }
         })
         mainViewModel.currentAppTheme.observe(this, { appTheme ->
             this.appTheme = appTheme
-            changeAppTheme(appTheme)
+            if (themeChangeItemClicked) {
+                changeAppTheme(appTheme)
+                themeChangeItemClicked = false
+            }
         })
     }
 

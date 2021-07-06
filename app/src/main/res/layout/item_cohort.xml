@@ -12,15 +12,14 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cohort_item_mcv"
-        style="@style/Widget.MaterialComponents.CardView"
+        style="@style/Widget.Cohort.CohortItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="10dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="8dp">
+        app:cardCornerRadius="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

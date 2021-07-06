@@ -12,4 +12,6 @@
     <color name="colorBlue">#2962FF</color>
     <color name="colorGray">#dedede</color>
     <color name="mainColor">#523C80</color>
+    <color name="dark_theme_toolbar_color">#363640</color>
+    <color name="dark_theme_widgets_surface">#8124242B</color>
 </resources>

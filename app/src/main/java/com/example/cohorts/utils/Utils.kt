@@ -31,3 +31,11 @@ fun snackbar(view: View, message: String) {
 enum class Theme {
     LIGHT, DARK, SYSTEM_DEFAULT
 }
+
+fun intToTheme(value: Int): Theme {
+    return when (value) {
+        0 -> Theme.LIGHT
+        1 -> Theme.DARK
+        else -> Theme.SYSTEM_DEFAULT
+    }
+}

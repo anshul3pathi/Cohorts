@@ -44,45 +44,58 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"/>
 
-        <LinearLayout
+
+        <!-- android:background="@color/colorLightGray" -->
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/chat_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorLightGray"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
+            style="@style/Widget.Cohort.ChatLayout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <ImageView
-                android:id="@+id/addMessageImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/outline_add_photo_alternate_24" />
-
-            <EditText
-                android:id="@+id/messageEditText"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/edit_text_shadow"
-                android:hint="@string/say_something"
-                android:inputType="text"
-                android:padding="10dp" />
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp">
 
-            <ImageView
-                android:id="@+id/sendButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:enabled="false"
-                android:src="@drawable/outline_send_gray_24" />
+                <ImageView
+                    android:id="@+id/addMessageImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/outline_add_photo_alternate_24" />
 
-        </LinearLayout>
+                <EditText
+                    android:id="@+id/messageEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:textColor="?colorOnSurface"
+                    android:textCursorDrawable="@drawable/chat_cursor_color"
+                    android:background="@drawable/edit_text_shadow"
+                    android:hint="@string/say_something"
+                    android:inputType="text"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:id="@+id/sendButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:enabled="false"
+                    android:src="@drawable/outline_send_gray_24" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Cohorts" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimary">@color/purple_200</item>
         <item name="colorSecondary">@color/mainColor</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/white</item>
@@ -13,5 +13,6 @@
         <item name="colorSurface">@color/dark_surface</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="colorOnBackground">@color/white</item>
+        <item name="scrimBackground">@color/colorLightGray</item>
     </style>
 </resources>
