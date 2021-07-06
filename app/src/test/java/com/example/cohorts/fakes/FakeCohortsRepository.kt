@@ -3,11 +3,9 @@ package com.example.cohorts.fakes
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
-import com.example.cohorts.core.repository.CohortsRepo
-import com.example.cohorts.core.succeeded
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.utils.generateRandomString
 import com.example.cohorts.utils.safeCall
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 
 class FakeCohortsRepository : CohortsRepo {

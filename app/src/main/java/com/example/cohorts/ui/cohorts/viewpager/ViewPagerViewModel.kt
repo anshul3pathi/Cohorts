@@ -7,20 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
-import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.succeeded
-import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.BroadcastReceiver
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ViewPagerViewModel @Inject constructor(
-    private val repository: CohortsRepo,
+    private val cohortsRepository: CohortsRepo,
+    private val meetingRepository: MeetingRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class ViewPagerViewModel @Inject constructor(
 
     fun startNewMeeting(ofCohort: Cohort, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.startNewMeeting(ofCohort.cohortUid)
+            val result = meetingRepository.startNewMeeting(ofCohort.cohortUid)
             if (result.succeeded) {
                 _inMeeting.postValue(true)
                 launchJitsi(context, ofCohort.cohortRoomCode)
@@ -48,7 +48,7 @@ class ViewPagerViewModel @Inject constructor(
 
     fun initialiseJitsi(broadcastReceiver: BroadcastReceiver, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
-            val currentUser = repository.getCurrentUser()
+            val currentUser = cohortsRepository.getCurrentUser()
             if (currentUser.succeeded) {
                 currentUser as Result.Success
                 initJitsi(currentUser.data, broadcastReceiver, context)
@@ -58,7 +58,7 @@ class ViewPagerViewModel @Inject constructor(
 
     fun deleteThisCohort(cohort: Cohort) {
         GlobalScope.launch(coroutineDispatcher) {
-            val result = repository.deleteThisCohort(cohort)
+            val result = cohortsRepository.deleteThisCohort(cohort)
             if (result.succeeded) {
                 _cohortDeleted.postValue(true)
             } else {

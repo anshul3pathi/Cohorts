@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.User
-import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.succeeded
 import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -8,9 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
-import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.succeeded
-import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
 import com.google.firebase.firestore.Query
@@ -20,12 +20,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
-import java.net.UnknownServiceException
 import javax.inject.Inject
 
 @HiltViewModel
 class CohortsViewModel @Inject constructor(
-    private val repository: CohortsRepo,
+    private val cohortsRepository: CohortsRepo,
+    private val meetingRepository: MeetingRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -42,7 +42,7 @@ class CohortsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(coroutineDispatcher) {
-            val userResult = repository.getCurrentUser()
+            val userResult = cohortsRepository.getCurrentUser()
             if (userResult.succeeded) {
                 currentUser = (userResult as Result.Success).data
             } else {
@@ -52,7 +52,7 @@ class CohortsViewModel @Inject constructor(
     }
 
     fun fetchCohortsQuery(): Query {
-        val query = repository.fetchCohortsQuery()
+        val query = cohortsRepository.fetchCohortsQuery()
         query as Result.Success
         return query.data
     }
@@ -63,7 +63,7 @@ class CohortsViewModel @Inject constructor(
         context: Context
     ) {
         viewModelScope.launch(coroutineDispatcher) {
-            val addedUser = repository.addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
+            val addedUser = meetingRepository.addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
             if (addedUser.succeeded) {
                 addedUser as Result.Success
                 _userAddedToMeeting.postValue(true)

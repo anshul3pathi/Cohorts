@@ -1,6 +1,5 @@
 package com.example.cohorts.ui.cohorts.viewpager.info
 
-import android.app.DownloadManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,14 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
-import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.succeeded
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

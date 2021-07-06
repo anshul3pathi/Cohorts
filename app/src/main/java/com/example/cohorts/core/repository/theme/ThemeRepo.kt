@@ -1,4 +1,4 @@
-package com.example.cohorts.core.repository
+package com.example.cohorts.core.repository.theme
 
 import com.example.cohorts.utils.Theme
 

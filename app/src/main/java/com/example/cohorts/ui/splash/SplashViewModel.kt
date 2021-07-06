@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cohorts.core.repository.CohortsRepo
-import com.example.cohorts.core.repository.ThemeRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.theme.ThemeRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.Theme
 import dagger.hilt.android.lifecycle.HiltViewModel

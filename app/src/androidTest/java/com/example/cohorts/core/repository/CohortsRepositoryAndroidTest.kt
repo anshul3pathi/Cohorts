@@ -6,6 +6,7 @@ import androidx.test.filters.MediumTest
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
+import com.example.cohorts.core.repository.cohorts.CohortsRepository
 import com.example.cohorts.core.succeeded
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue

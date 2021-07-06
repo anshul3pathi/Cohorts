@@ -1,5 +1,6 @@
-package com.example.cohorts.core.repository
+package com.example.cohorts.core.repository.theme
 
+import com.example.cohorts.core.repository.theme.ThemeRepo
 import com.example.cohorts.core.storage.Storage
 import com.example.cohorts.utils.Theme
 import javax.inject.Inject

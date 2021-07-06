@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
-import com.example.cohorts.core.repository.CohortsRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.succeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

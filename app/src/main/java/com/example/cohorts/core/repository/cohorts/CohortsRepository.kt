@@ -1,4 +1,4 @@
-package com.example.cohorts.core.repository
+package com.example.cohorts.core.repository.cohorts
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
@@ -102,16 +102,6 @@ class CohortsRepository @Inject constructor(
         }
     }
 
-    override suspend fun addCurrentUserToOngoingMeeting(ofCohortUid: String): Result<User> {
-        return safeCall {
-            // add currently logged in user to the ongoing meeting of the
-            cohortsCollection.document(ofCohortUid)
-                .update("membersInMeeting", FieldValue.arrayUnion(auth.currentUser!!.uid))
-                .await()
-            getCurrentUser()
-        }
-    }
-
     override suspend fun saveCohort(cohort: Cohort): Result<Any> {
         return safeCall {
             cohortsCollection.document(cohort.cohortUid).set(cohort).await()
@@ -206,85 +196,6 @@ class CohortsRepository @Inject constructor(
             .toObject(Cohort::class.java)
         return safeCall {
             Result.Success(cohort!!)
-        }
-    }
-
-    override suspend fun startNewMeeting(ofCohortUid: String): Result<Any> {
-        return safeCall {
-            // retrieving the cohort from firestore
-            val meetingCohort = cohortsCollection.document(ofCohortUid)
-                .get()
-                .await()
-                .toObject(Cohort::class.java)!!
-
-            // checking if a call in this cohort already going on
-            if (meetingCohort.isCallOngoing) {
-                throw IllegalStateException("Meeting already going on!")
-            } else {
-                // when there is no call ongoing, start the call and add this user to
-                // list of members in call
-                cohortsCollection.document(ofCohortUid)
-                    .update("callOngoing", true)
-                    .await()
-                val result = addCurrentUserToOngoingMeeting(ofCohortUid)
-                if (result.succeeded) {
-                    Result.Success(Any())
-                } else {
-                    throw Exception("Couldn't start a new meeting!")
-                }
-            }
-        }
-    }
-
-    override suspend fun leaveOngoingMeeting(): Result<Any> {
-        return safeCall {
-            // retrieving the cohort in whose meeting the user is in
-            val cohorts = cohortsCollection.whereArrayContains(
-                "membersInMeeting",
-                auth.currentUser!!.uid
-            ).get().await().toObjects(Cohort::class.java)
-
-            var isCallOngoing = true
-
-
-            // the user is in multiple meetings, this should not happen
-            if (cohorts.size > 1) {
-                throw IllegalStateException(
-                    "More than one cohort found in whose meeting user is in!"
-                )
-            }
-
-            val meetingCohortUid = cohorts[0].cohortUid
-            val meetingCohortReference = cohortsCollection.document(meetingCohortUid)
-
-            // attaching a realtime listener to the list of members in meeting
-            // if members in meeting is 0 then the call has ended otherwise call is ongoing
-            meetingCohortReference.addSnapshotListener { value, error ->
-                if (error != null) {
-                    Timber.e(error)
-                    return@addSnapshotListener
-                }
-                if (value != null && value.exists()) {
-                    Timber.d("CurrentData - ${value.data}")
-                    val membersInMeeting = value.data?.get("membersInMeeting") as List<*>
-                    isCallOngoing = (membersInMeeting.isNotEmpty())
-                    Timber.d("$isCallOngoing")
-                } else {
-                    Timber.d("Value doesn't exist!")
-                }
-            }
-
-            // removing currently logged in user from the ongoing meeting
-            meetingCohortReference
-                .update("membersInMeeting", FieldValue.arrayRemove(auth.currentUser!!.uid))
-                .await()
-
-            // updating the call ongoing field
-            meetingCohortReference
-                .update("callOngoing", isCallOngoing)
-                .await()
-
-            Result.Success(Any())
         }
     }
 

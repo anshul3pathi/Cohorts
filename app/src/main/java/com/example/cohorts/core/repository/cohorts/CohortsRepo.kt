@@ -1,4 +1,4 @@
-package com.example.cohorts.core.repository
+package com.example.cohorts.core.repository.cohorts
 
 import android.net.Uri
 import com.example.cohorts.core.Result
@@ -21,9 +21,6 @@ interface CohortsRepo {
     suspend fun getUserByUid(userUid: String): Result<User>
     suspend fun getCohortById(cohortUid: String): Result<Cohort>
     suspend fun getCurrentUser(): Result<User>
-    suspend fun addCurrentUserToOngoingMeeting(ofCohortUid: String): Result<User>
-    suspend fun startNewMeeting(ofCohortUid: String): Result<Any>
-    suspend fun leaveOngoingMeeting(): Result<Any>
     suspend fun getUserByEmail(userEmail: String): Result<User>
     suspend fun deleteThisCohort(cohort: Cohort): Result<Any>
     suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any>

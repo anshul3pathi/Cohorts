@@ -5,8 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cohorts.core.Result
-import com.example.cohorts.core.repository.CohortsRepo
-import com.example.cohorts.core.repository.ThemeRepo
+import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.meeting.MeetingRepo
+import com.example.cohorts.core.repository.theme.ThemeRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.utils.Theme
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
     private val themeRepository: ThemeRepo,
+    private val meetingRepository: MeetingRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -32,7 +34,7 @@ class MainViewModel @Inject constructor(
 
     fun terminateOngoingMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
         CoroutineScope(coroutineDispatcher).launch {
-            val result = cohortsRepository.leaveOngoingMeeting()
+            val result = meetingRepository.leaveOngoingMeeting()
             destroyJitsi(context, broadcastReceiver)
             if (result.succeeded) {
                 Timber.i("left the meeting")
