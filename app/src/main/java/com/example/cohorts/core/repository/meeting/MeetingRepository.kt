@@ -118,7 +118,7 @@ class MeetingRepository @Inject constructor(
             val meetingCohortReference = cohortsCollection.document(meetingCohortUid)
 
             // attaching a realtime listener to the list of members in meeting
-            // if members in meeting is 0 then the call has ended otherwise call is ongoing
+            // if members in meeting is 0 then the meeting has ended otherwise meeting is ongoing
             meetingCohortReference.addSnapshotListener { value, error ->
                 if (error != null) {
                     Timber.e(error)

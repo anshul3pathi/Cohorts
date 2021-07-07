@@ -1,4 +1,4 @@
-package com.example.cohorts.core.repository
+package com.example.cohorts.core.repository.cohort
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
