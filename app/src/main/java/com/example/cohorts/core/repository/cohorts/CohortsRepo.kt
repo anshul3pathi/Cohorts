@@ -12,7 +12,6 @@ interface CohortsRepo {
 
     fun fetchCohortsQuery(): Result<Query>
     fun fetchUsersQuery(cohortUid: String): Result<Query>
-    suspend fun registerCurrentUser(): Result<Any>
     suspend fun saveCohort(cohort: Cohort): Result<Any>
     suspend fun saveUser(user: User): Result<Any>
     suspend fun addNewCohort(newCohort: Cohort): Result<Any>

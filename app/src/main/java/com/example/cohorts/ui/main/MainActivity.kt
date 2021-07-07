@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     // private functions
 
     private fun signOut() {
+        mainViewModel.signOut()
         AuthUI.getInstance()
             .signOut(this)
             .addOnCompleteListener {

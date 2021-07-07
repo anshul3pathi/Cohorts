@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.repository.theme.ThemeRepo
+import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.utils.Theme
@@ -23,6 +25,7 @@ class MainViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
     private val themeRepository: ThemeRepo,
     private val meetingRepository: MeetingRepo,
+    private val userRepository: UserRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -50,6 +53,13 @@ class MainViewModel @Inject constructor(
         val theme = intToTheme(value)
         _currentAppTheme.postValue(theme)
         themeRepository.saveAppTheme(theme)
+    }
+
+    fun signOut() {
+        Timber.d("Signing out!")
+        CoroutineScope(coroutineDispatcher).launch {
+            userRepository.signOut()
+        }
     }
 
     private fun getAppTheme() = themeRepository.getAppTheme()

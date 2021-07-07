@@ -19,10 +19,6 @@ import kotlin.properties.Delegates
 @AndroidEntryPoint
 class SplashScreenActivity : AppCompatActivity() {
 
-    companion object {
-        private const val APP_THEME_EXTRA = "app_theme"
-    }
-
     private val viewModel: SplashViewModel by viewModels()
     private lateinit var binding: ActivitySplashScreenBinding
     private var isUserLoggedIn = false
@@ -39,7 +35,7 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun subscribeToObservers() {
-        viewModel.isUserLoggedIn.observe(this, {value ->
+        viewModel.isUserLoggedIn.observe(this, { value ->
             isUserLoggedIn = value
         })
         viewModel.navigateToLiveData.observe(this, { navigateToMainActivity ->

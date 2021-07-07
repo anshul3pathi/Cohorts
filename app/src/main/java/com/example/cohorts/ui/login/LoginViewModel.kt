@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.NetworkRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repository: CohortsRepo,
+    private val userRepository: UserRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -26,7 +27,7 @@ class LoginViewModel @Inject constructor(
 
     fun registerCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.registerCurrentUser()
+            val result = userRepository.registerCurrentUser()
             if (result.succeeded) {
                 _userRegistered.postValue(NetworkRequest.SUCCESS)
             } else {

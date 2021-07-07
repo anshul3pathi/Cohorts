@@ -29,7 +29,11 @@ class MeetingRepository @Inject constructor(
     private val usersCollection = firestore.collection(USERS_COLLECTION)
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
 
-    private var currentUser: User? = null
+    private var currentUser: User? = User(
+        uid = auth.currentUser!!.uid,
+        userName = auth.currentUser!!.displayName,
+        userEmail = auth.currentUser!!.email
+    )
 
     init {
         listenToRealtimeChangesToCurrentUser()

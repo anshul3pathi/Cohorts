@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.theme.ThemeRepo
+import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.Theme
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val themeRepository: ThemeRepo,
-    private val cohortsRepo: CohortsRepo,
+    private val cohortsRepository: CohortsRepo,
+    private val userRepository: UserRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -50,8 +52,8 @@ class SplashViewModel @Inject constructor(
 
     private fun checkIfUserLoggedIn() {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = cohortsRepo.getCurrentUser()
-            if (result.succeeded) {
+            val isLoggedIn = userRepository.isUserLoggedIn()
+            if (isLoggedIn) {
                 _isUserLoggedIn.postValue(true)
             } else {
                 _isUserLoggedIn.postValue(false)

@@ -8,17 +8,20 @@ import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
+import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CohortInfoViewModel @Inject constructor(
-    private val repository: CohortsRepo,
+    private val cohortsRepository: CohortsRepo,
+    private val userRepository: UserRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -35,16 +38,18 @@ class CohortInfoViewModel @Inject constructor(
     val cohortInfoUpdatedMessage: LiveData<String> = _cohortInfoUpdatedMessage
 
     fun fetchUsersQuery(cohortUid: String): Query {
-        val result = repository.fetchUsersQuery(cohortUid)
+        val result = cohortsRepository.fetchUsersQuery(cohortUid)
         return (result as Result.Success).data
     }
 
     fun getCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.getCurrentUser()
+            val result = userRepository.getCurrentUser()
             if (result.succeeded) {
-                _currentUser.postValue((result as Result.Success).data!!)
+                Timber.d("got current user - ${(result as Result.Success).data}")
+                _currentUser.postValue(result.data!!)
             } else {
+                Timber.e((result as Result.Error).exception, "couldn't get current user")
                 _errorMessage.postValue("There was some error removing the user.")
             }
         }
@@ -52,7 +57,7 @@ class CohortInfoViewModel @Inject constructor(
 
     fun removeThisUserFromCohort(user: User, cohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.removeThisUserFromCohort(user, cohort)
+            val result = cohortsRepository.removeThisUserFromCohort(user, cohort)
             if (result.succeeded) {
                 _userSuccessfullyRemovedMessage.postValue((result as Result.Success).data as String)
             } else {
@@ -63,7 +68,7 @@ class CohortInfoViewModel @Inject constructor(
 
     fun updateThisCohort(cohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
-            val result = repository.saveCohort(cohort)
+            val result = cohortsRepository.saveCohort(cohort)
             if (result.succeeded) {
                 _cohortInfoUpdatedMessage.postValue("Cohort info was updated!")
             } else {

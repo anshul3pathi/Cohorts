@@ -31,30 +31,6 @@ class CohortsRepository @Inject constructor(
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
     private val chatReference = firebaseDatabase.reference.child(CHAT_CHILD)
 
-    override suspend fun registerCurrentUser(): Result<Any> {
-        return safeCall {
-            // check if the current user already exist in users collection in firestore
-            val userAlreadyRegistered = getUserByUid(auth.currentUser!!.uid)
-            if (userAlreadyRegistered.succeeded) {
-                // user exists in firestore, no need to save user info again
-                Timber.d("User exists in user collection")
-                Result.Success(Any())
-            } else {
-                // user doesn't exist in firestore, save user info
-                Timber.e((userAlreadyRegistered as Result.Error).exception)
-                val currentUser = auth.currentUser!!
-                val user = User(
-                    uid = currentUser.uid,
-                    userName = currentUser.displayName,
-                    userEmail = currentUser.email,
-                    photoUrl = currentUser.photoUrl?.toString()
-                )
-                usersCollection.document(user.uid!!).set(user).await()
-                Result.Success(Any())
-            }
-        }
-    }
-
     override fun fetchCohortsQuery(): Result<Query> {
         return safeCall {
             Result.Success(
@@ -103,14 +79,11 @@ class CohortsRepository @Inject constructor(
 
     override suspend fun getCurrentUser(): Result<User> {
         return safeCall {
-            val currentUser = auth.currentUser!!
-            val user = User(
-                uid = currentUser.uid,
-                userEmail = currentUser.email,
-                userName = currentUser.displayName,
-                photoUrl = currentUser.photoUrl?.toString()
-            )
-            Result.Success(user)
+            val currentUser = usersCollection.document(auth.currentUser!!.uid)
+                .get()
+                .await()
+                .toObject(User::class.java)
+            Result.Success(currentUser!!)
         }
     }
 
@@ -205,7 +178,6 @@ class CohortsRepository @Inject constructor(
 
             // delete the chats associated with the cohort
             chatReference.child(cohort.cohortUid).removeValue().await()
-//            storageReference.child(cohort.cohortUid).delete().await()
 
             // finally delete the cohort
             cohortsCollection.document(cohort.cohortUid).delete().await()
@@ -217,13 +189,11 @@ class CohortsRepository @Inject constructor(
     override suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any> {
         return safeCall {
             // remove this cohort from the list of cohorts the user is in
-//            user.cohortsIn.remove(cohort.cohortUid)
             usersCollection.document(user.uid!!)
                 .update("cohortsIn", FieldValue.arrayRemove(cohort.cohortUid))
                 .await()
 
             // remove this user from the list of users that are in this cohort
-//            cohort.cohortMembers.remove(user.uid!!)
             cohortsCollection.document(cohort.cohortUid)
                 .update("cohortMembers", FieldValue.arrayRemove(user.uid!!))
 
@@ -231,8 +201,6 @@ class CohortsRepository @Inject constructor(
             cohortsCollection.document(cohort.cohortUid)
                 .update("numberOfMembers", cohort.numberOfMembers - 1)
                 .await()
-//            saveCohort(cohort)
-//            saveUser(user)
             Result.Success(
                 "${user.userName} was successfully removed from ${cohort.cohortName}"
             )

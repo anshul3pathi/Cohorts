@@ -50,21 +50,6 @@ class CohortsRepositoryAndroidTest {
         assertThat(result.succeeded, `is`(true))
     }
 
-
-    @Test
-    // You should be logged in for this test to pass
-    fun registerCurrentUser_getCurrentUser_savesAndGetsCurrentlyLoggedInUser() = runBlocking {
-        // Given - user is logged in
-        // When -  user is registered
-        val result = repository.registerCurrentUser()
-        assertThat(result.succeeded, `is`(true))
-        // Then - registered user should be the same as currently logged in user
-        val user = repository.getCurrentUser()
-        assertThat(user.succeeded, `is`(true))
-        user as Result.Success
-        assertThat(user.data.uid, `is`(auth.currentUser!!.uid))
-    }
-
     @Test
     // You should be logged in for this test to pass
     fun getUserByEmail_givenUserEmail_getsUserInfo() = runBlocking {
@@ -91,6 +76,27 @@ class CohortsRepositoryAndroidTest {
     }
 
     @Test
+    fun saveUser_savesTheGivenUserInFirestoreDb() = runBlocking {
+        // Given - user to save
+        val user = User(
+            uid = "fakeduid",
+            userName = "fakename",
+            userEmail = "fakeEmail"
+        )
+        // When - user is saved
+        repository.saveUser(user)
+        // Then - it should be saved in firestore
+        val savedUser = firestore.collection("users").document(user.uid!!)
+            .get().await().toObject(User::class.java)
+
+        // Deleting the saved user from firestore
+        firestore.collection("users").document(user.uid!!).delete().await()
+
+        assertThat(savedUser, `is`(notNullValue()))
+        assertThat(savedUser!!.uid!!, `is`(user.uid!!))
+    }
+
+    @Test
     fun saveCohort_savesTheGivenCohortInFirestoreDb() = runBlocking {
         // Given - the cohort to save
         val cohort = Cohort(
@@ -108,6 +114,7 @@ class CohortsRepositoryAndroidTest {
         // Deleting the saved cohort
         firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
 
+        assertThat(savedCohort, `is`(notNullValue()))
         assertThat(savedCohort!!.cohortUid, `is`(cohort.cohortUid))
     }
 
