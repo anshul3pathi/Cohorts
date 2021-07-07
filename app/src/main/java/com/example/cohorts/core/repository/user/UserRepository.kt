@@ -11,11 +11,17 @@ import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepository @Inject constructor(
     firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
 ) : UserRepo {
+
+    init {
+        Timber.d("Init")
+    }
 
     companion object {
         private const val USERS_COLLECTION = "users"
@@ -27,6 +33,11 @@ class UserRepository @Inject constructor(
 
     // returns true if user is logged in else false
     override fun isUserLoggedIn() = (auth.currentUser != null)
+
+    override fun initialiseCurrentUser(): Result<Any> {
+        listenToRealtimeChangesToCurrentUser()
+        return Result.Success(Any())
+    }
 
     override suspend fun registerCurrentUser(): Result<Any> {
         return safeCall {
@@ -41,7 +52,7 @@ class UserRepository @Inject constructor(
             } else {
                 // user doesn't exist in firestore, save user info
                 Timber.d("User doesn't exist in firestore")
-                Timber.d("current user ${auth.currentUser}")
+                Timber.d("current user auth = ${auth.currentUser}")
                 val loggedInUser = auth.currentUser!!
                 val user = User(
                     uid = loggedInUser.uid,
@@ -68,7 +79,8 @@ class UserRepository @Inject constructor(
 
     override fun getCurrentUser(): Result<User> {
         return safeCall {
-            Result.Success(currentUser!!)
+            Timber.d("current user is - $currentUser")
+            Result.Success(this.currentUser!!)
         }
     }
 
@@ -93,8 +105,8 @@ class UserRepository @Inject constructor(
             }
 
             if (value != null && value.exists()) {
-                currentUser = value.data!!.mapToUserObject(value.data!!)
-                Timber.d("current user = $currentUser")
+                currentUser = value.data!!.mapToUserObject(value.data!!)!!
+                Timber.d("current user init = $currentUser")
             }
         }
     }

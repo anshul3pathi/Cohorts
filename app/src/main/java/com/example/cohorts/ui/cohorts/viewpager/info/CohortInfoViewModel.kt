@@ -28,7 +28,7 @@ class CohortInfoViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    private val _currentUser = MutableLiveData<User>()
+    private val _currentUser = MutableLiveData(User())
     val currentUser: LiveData<User> = _currentUser
 
     private val _userSuccessfullyRemovedMessage = MutableLiveData<String>()
@@ -47,7 +47,7 @@ class CohortInfoViewModel @Inject constructor(
             val result = userRepository.getCurrentUser()
             if (result.succeeded) {
                 Timber.d("got current user - ${(result as Result.Success).data}")
-                _currentUser.postValue(result.data!!)
+                _currentUser.postValue(result.data)
             } else {
                 Timber.e((result as Result.Error).exception, "couldn't get current user")
                 _errorMessage.postValue("There was some error removing the user.")

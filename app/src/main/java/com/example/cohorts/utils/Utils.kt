@@ -1,7 +1,13 @@
 package com.example.cohorts.utils
 
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Color
 import android.view.View
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.res.use
 import com.example.cohorts.core.Result
 import com.google.android.material.snackbar.Snackbar
 
@@ -37,5 +43,17 @@ fun intToTheme(value: Int): Theme {
         0 -> Theme.LIGHT
         1 -> Theme.DARK
         else -> Theme.SYSTEM_DEFAULT
+    }
+}
+
+@ColorInt
+@SuppressLint("Recycle")
+fun Context.themeColor(
+    @AttrRes themeAttrId: Int
+): Int {
+    return obtainStyledAttributes(
+        intArrayOf(themeAttrId)
+    ).use {
+        it.getColor(0, Color.MAGENTA)
     }
 }

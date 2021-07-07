@@ -1,6 +1,7 @@
 package com.example.cohorts.ui.cohorts
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cohorts.databinding.ItemCohortBinding
@@ -15,7 +16,7 @@ class CohortsAdapter(
     options: FirestoreRecyclerOptions<Cohort>,
 ) : FirestoreRecyclerAdapter<Cohort, ViewHolder>(options) {
 
-    private var cohortItemClickListener: ((Cohort) -> Unit)? = null
+    private var cohortItemClickListener: ((Cohort, View) -> Unit)? = null
     private var outlineJoinButtonClickListener: (() -> Unit)? = null
     private var containedJoinButtonClickListener: ((Cohort) -> Unit)? = null
 
@@ -29,13 +30,17 @@ class CohortsAdapter(
         (holder as CohortViewHolder).bind(model)
     }
 
-    inner class CohortViewHolder(private val binding: ItemCohortBinding): ViewHolder(binding.root) {
+    inner class CohortViewHolder(private val binding: ItemCohortBinding):
+        ViewHolder(binding.root) {
 
-        init {
+        fun bind(cohortItem: Cohort) {
             binding.apply {
-                cohortItemMcv.setOnClickListener {
-//                    itemClickListener.cohortItemClicked(getItem(layoutPosition))
-                    cohortItemClickListener!!(getItem(layoutPosition))
+                cohortItemMcv.apply {
+                    setOnClickListener { mcv ->
+    //                    itemClickListener.cohortItemClicked(getItem(layoutPosition))
+                        cohortItemClickListener!!(getItem(layoutPosition), mcv)
+                    }
+                    transitionName = cohortItem.cohortUid
                 }
                 joinVideoCallContainedButton.setOnClickListener {
                     containedJoinButtonClickListener!!(getItem(layoutPosition))
@@ -44,14 +49,11 @@ class CohortsAdapter(
                     outlineJoinButtonClickListener!!()
                 }
             }
-        }
-
-        fun bind(cohortItem: Cohort) {
             binding.cohort = cohortItem
         }
     }
 
-    fun setCohortItemClickListener(listener: (Cohort) -> Unit) {
+    fun setCohortItemClickListener(listener: (Cohort, View) -> Unit) {
         cohortItemClickListener = listener
     }
 

@@ -16,7 +16,7 @@ import timber.log.Timber
 class ChatMessageAdapter(
     private val options: FirebaseRecyclerOptions<ChatMessage>,
     private val progressBar: ProgressBar,
-    private val imageClickListener: (String?) -> Unit
+    private val imageClickListener: (String?, View) -> Unit
 ) : FirebaseRecyclerAdapter<ChatMessage, ViewHolder>(options) {
 
     companion object {
@@ -134,13 +134,17 @@ class ChatMessageAdapter(
         ViewHolder(binding.root) {
 
         init {
-            binding.itemChatImageIv.setOnClickListener {
-                imageClickListener(getItem(layoutPosition).imageUrl)
-            }
             hideProgressBar()
         }
 
         fun bind(chat: ChatMessage) {
+            binding.itemChatImageIv.apply {
+                val imageUrl = getItem(layoutPosition).imageUrl
+                setOnClickListener { view ->
+                    imageClickListener(getItem(layoutPosition).imageUrl, view)
+                }
+                transitionName = imageUrl
+            }
             binding.chat = chat
         }
 
@@ -150,13 +154,17 @@ class ChatMessageAdapter(
         ViewHolder(binding.root) {
 
         init {
-            binding.itemChatImageSentIv.setOnClickListener {
-                imageClickListener(getItem(layoutPosition).imageUrl)
-            }
             hideProgressBar()
         }
 
         fun bind(chat: ChatMessage) {
+            binding.itemChatImageSentIv.apply {
+                val imageUrl = getItem(layoutPosition).imageUrl
+                setOnClickListener { view ->
+                    imageClickListener(getItem(layoutPosition).imageUrl, view)
+                }
+                transitionName = imageUrl
+            }
             binding.chat = chat
         }
 

@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.cohorts.viewpager
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -14,9 +15,11 @@ import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.ui.main.MainActivity
 import com.example.cohorts.ui.chat.ChatFragment
 import com.example.cohorts.ui.files.FilesFragment
+import com.example.cohorts.utils.themeColor
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -39,11 +42,22 @@ class ViewPagerFragment : Fragment() {
         binding = FragmentViewPagerBinding.inflate(inflater)
         navController = findNavController()
 
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment
+            duration = 300
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
+        }
+
         arguments?.let {
             cohortArgument = ViewPagerFragmentArgs.fromBundle(it).cohort!!
             (activity as AppCompatActivity).supportActionBar?.title = cohortArgument.cohortName
             (activity as AppCompatActivity).supportActionBar?.subtitle =
                 cohortArgument.cohortDescription
+        }
+
+        binding.apply {
+            rootLayoutViewPagerFragment.transitionName = cohortArgument.cohortUid
         }
 
         val bundle = Bundle()

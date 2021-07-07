@@ -30,7 +30,7 @@ class ChatViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    private val _currentUser = MutableLiveData<User>()
+    private val _currentUser = MutableLiveData(User())
     val currentUser: LiveData<User> = _currentUser
 
     fun fetchChatReference(cohortUid: String): DatabaseReference? {

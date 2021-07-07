@@ -1,9 +1,13 @@
 package com.example.cohorts.ui.zoomedimage
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentZoomedImageBinding
+import com.example.cohorts.utils.themeColor
+import com.google.android.material.transition.MaterialContainerTransform
 
 class ZoomedImageFragment : Fragment() {
 
@@ -15,7 +19,16 @@ class ZoomedImageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentZoomedImageBinding.inflate(inflater)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment
+            duration = 300
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().getColor(R.color.black))
+        }
+
         setHasOptionsMenu(true)
+
         return binding.root
     }
 
@@ -23,6 +36,7 @@ class ZoomedImageFragment : Fragment() {
         arguments.let {
             val imageUrl = ZoomedImageFragmentArgs.fromBundle(it!!).imageUrl
             binding.imageUrl = imageUrl
+            binding.zoomedImageView.transitionName = imageUrl
         }
     }
 

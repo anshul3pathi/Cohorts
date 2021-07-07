@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.cohorts.newcohort
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -8,10 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.transition.Slide
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentAddNewCohortBinding
 import com.example.cohorts.core.model.Cohort
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,10 +25,6 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class AddNewCohort : Fragment() {
-
-    companion object {
-        private const val TAG = "AddNewFragment"
-    }
 
     private lateinit var binding: FragmentAddNewCohortBinding
     private lateinit var navController: NavController

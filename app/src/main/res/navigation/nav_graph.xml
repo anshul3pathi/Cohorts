@@ -13,7 +13,9 @@
             app:destination="@id/viewPagerFragment" />
         <action
             android:id="@+id/cohorts_to_addNewCohorts"
-            app:destination="@id/addNewCohort" />
+            app:destination="@id/addNewCohort"
+            app:enterAnim="@anim/scale_in"
+            app:popExitAnim="@anim/scale_out"/>
     </fragment>
 
     <fragment
@@ -49,7 +51,9 @@
             android:defaultValue="@null" />
         <action
             android:id="@+id/action_viewPagerFragment_to_cohortInfoFragment"
-            app:destination="@id/cohortInfoFragment" />
+            app:destination="@id/cohortInfoFragment"
+            app:enterAnim="@anim/scale_in"
+            app:popExitAnim="@anim/scale_out"/>
         <action
             android:id="@+id/action_zoomed_image"
             app:destination="@id/zoomedImageFragment" />

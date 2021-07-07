@@ -38,6 +38,10 @@ class SplashViewModel @Inject constructor(
         checkIfUserLoggedIn()
     }
 
+    fun initialiseCurrentUser() {
+        userRepository.initialiseCurrentUser()
+    }
+
     private fun startTimer() {
         object: CountDownTimer(1500L, 500L) {
             override fun onTick(millisUntilFinished: Long) {}

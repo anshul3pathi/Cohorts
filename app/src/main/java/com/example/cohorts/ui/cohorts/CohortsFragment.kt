@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
@@ -18,6 +19,8 @@ import com.example.cohorts.ui.main.MainActivity
 import com.example.cohorts.utils.snackbar
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialElevationScale
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -30,8 +33,6 @@ class CohortsFragment : Fragment() {
 
     private lateinit var binding: FragmentCohortsBinding
     private lateinit var navController: NavController
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
     private lateinit var cohortsAdapter: CohortsAdapter
     private val cohortsViewModel: CohortsViewModel by viewModels()
 
@@ -41,20 +42,21 @@ class CohortsFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCohortsBinding.inflate(inflater)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         navController = findNavController()
-        firestore = Firebase.firestore
-        auth = FirebaseAuth.getInstance()
 
         subscribeToObservers()
 
         setupCohortRcv()
 
         binding.addCohortsFab.setOnClickListener {
-            navController.navigate(R.id.cohorts_to_addNewCohorts)
+            navController.navigate(
+                CohortsFragmentDirections.cohortsToAddNewCohorts()
+            )
         }
 
         (activity as AppCompatActivity).supportActionBar?.subtitle = ""
@@ -101,10 +103,13 @@ class CohortsFragment : Fragment() {
         cohortsAdapter = CohortsAdapter(cohortAdapterOptions)
 
         // setting up onClickListeners
-        cohortsAdapter.setCohortItemClickListener { cohort ->
+        cohortsAdapter.setCohortItemClickListener { cohort, mcv ->
             Timber.d( "cohort clicked with id: $cohort")
+            val extras = FragmentNavigatorExtras(
+                mcv to cohort.cohortUid
+            )
             val action = CohortsFragmentDirections.actionCohortsToViewPager(cohort)
-            navController.navigate(action)
+            navController.navigate(action, extras)
         }
         cohortsAdapter.setContainedJoinButtonClickListener { cohort ->
             Timber.d( "contained button clicked - $cohort")

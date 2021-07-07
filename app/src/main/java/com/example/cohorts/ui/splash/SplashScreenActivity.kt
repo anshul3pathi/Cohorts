@@ -41,6 +41,7 @@ class SplashScreenActivity : AppCompatActivity() {
         viewModel.navigateToLiveData.observe(this, { navigateToMainActivity ->
             if (navigateToMainActivity) {
                 if (isUserLoggedIn) {
+                    viewModel.initialiseCurrentUser()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 } else {

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
@@ -120,9 +121,14 @@ class ChatFragment : Fragment() {
         val options = FirebaseRecyclerOptions.Builder<ChatMessage>()
             .setQuery(chatRef, ChatMessage::class.java)
             .build()
-        chatMessageAdapter = ChatMessageAdapter(options, binding.chatProgressBar) { imageUrl ->
+        chatMessageAdapter =
+            ChatMessageAdapter(options, binding.chatProgressBar) { imageUrl, view ->
+            val extras = FragmentNavigatorExtras(
+                view to imageUrl!!
+            )
             navController.navigate(
-                ViewPagerFragmentDirections.actionZoomedImage(imageUrl)
+                ViewPagerFragmentDirections.actionZoomedImage(imageUrl),
+                extras
             )
         }
         chatViewModel.getCurrentUser()
