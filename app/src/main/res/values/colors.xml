@@ -14,4 +14,5 @@
     <color name="mainColor">#523C80</color>
     <color name="dark_theme_toolbar_color">#363640</color>
     <color name="dark_theme_widgets_surface">#8124242B</color>
+    <color name="faded_white">#eef0f2</color>
 </resources>
