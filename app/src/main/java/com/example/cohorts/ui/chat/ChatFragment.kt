@@ -17,7 +17,6 @@ import com.example.cohorts.R
 import com.example.cohorts.core.model.ChatMessage
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.databinding.FragmentChatBinding
-import com.example.cohorts.ui.cohorts.viewpager.ViewPagerFragmentDirections
 import com.example.cohorts.ui.main.MainActivity
 import com.example.cohorts.utils.snackbar
 import com.example.cohorts.utils.themeColor
@@ -69,7 +68,6 @@ class ChatFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-//        cohortUid = arguments?.getString("cohortUid").toString()
         return binding.root
     }
 
@@ -127,6 +125,12 @@ class ChatFragment : Fragment() {
                 navController.navigate(
                     ChatFragmentDirections
                         .actionChatToCohortInfo(cohortArgument)
+                )
+                true
+            } R.id.item_go_to_tasks -> {
+                Timber.d("Go to tasks clicked!")
+                navController.navigate(
+                    ChatFragmentDirections.actionChatToTasks(cohortArgument)
                 )
                 true
             } R.id.start_video_call_menu_button -> {

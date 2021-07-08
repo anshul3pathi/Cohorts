@@ -1,4 +1,4 @@
-package com.example.cohorts.ui.cohorts.viewpager.info
+package com.example.cohorts.ui.info
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cohorts.R
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
 import com.example.cohorts.databinding.FragmentCohortInfoBinding
@@ -16,7 +15,6 @@ import com.example.cohorts.utils.snackbar
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 @AndroidEntryPoint

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/add_new_task_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cohort_name_label_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                    android:text="@string/task_name" />
+
+                <EditText
+                    android:id="@+id/cohort_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name_the_task"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/cohort_description_label_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                    android:text="@string/description_optional" />
+
+                <EditText
+                    android:id="@+id/cohort_description_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/describe_the_task"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

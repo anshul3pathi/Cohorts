@@ -43,42 +43,38 @@
         <action
             android:id="@+id/action_chat_to_detailedImage"
             app:destination="@id/zoomedImageFragment" />
+        <action
+            android:id="@+id/action_chat_to_tasks"
+            app:destination="@+id/tasksFragment"
+            app:enterAnim="@anim/scale_in"
+            app:popExitAnim="@anim/scale_out"/>
     </fragment>
 
     <fragment
-        android:id="@+id/filesFragment"
-        android:name="com.example.cohorts.ui.files.FilesFragment"
-        android:label="@string/files_label" />
-
-    <fragment
-        android:id="@+id/helpFragment"
-        android:name="com.example.cohorts.ui.help.HelpFragment"
-        android:label="@string/help_label" />
-
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.cohorts.ui.settings.SettingsFragment"
-        android:label="@string/settings_label" />
-
-    <fragment
-        android:id="@+id/viewPagerFragment"
-        android:name="com.example.cohorts.ui.cohorts.viewpager.ViewPagerFragment">
-        <action
-            android:id="@+id/action_viewPagerFragment_to_addNewMemberFragment"
-            app:destination="@id/addNewMemberFragment" />
+        android:id="@+id/tasksFragment"
+        android:name="com.example.cohorts.ui.tasks.TasksFragment"
+        android:label="@string/tasks" >
         <argument
             android:name="cohort"
             app:argType="com.example.cohorts.core.model.Cohort"
             app:nullable="true"
-            android:defaultValue="@null" />
+            android:defaultValue="@null"/>
         <action
-            android:id="@+id/action_viewPagerFragment_to_cohortInfoFragment"
-            app:destination="@id/cohortInfoFragment"
+            android:id="@+id/action_task_to_add_task"
+            app:destination="@+id/addNewTaskFragment"
             app:enterAnim="@anim/scale_in"
             app:popExitAnim="@anim/scale_out"/>
-        <action
-            android:id="@+id/action_zoomed_image"
-            app:destination="@id/zoomedImageFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addNewTaskFragment"
+        android:name="com.example.cohorts.ui.tasks.addNewTask.AddNewTaskFragment"
+        android:label="New Task">
+        <argument
+            android:name="cohort"
+            app:argType="com.example.cohorts.core.model.Cohort"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
 
     <fragment
@@ -98,7 +94,7 @@
     </dialog>
     <fragment
         android:id="@+id/cohortInfoFragment"
-        android:name="com.example.cohorts.ui.cohorts.viewpager.info.CohortInfoFragment"
+        android:name="com.example.cohorts.ui.info.CohortInfoFragment"
         android:label="Info" >
         <argument
             android:name="cohort"

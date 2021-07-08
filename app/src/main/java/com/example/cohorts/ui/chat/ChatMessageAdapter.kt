@@ -58,16 +58,6 @@ class ChatMessageAdapter(
         }
     }
 
-    override fun getSnapshots(): ObservableSnapshotArray<ChatMessage> {
-        Timber.d("getting snapshots")
-        return super.getSnapshots()
-    }
-
-    override fun updateOptions(options: FirebaseRecyclerOptions<ChatMessage>) {
-        Timber.d("updating options")
-        super.updateOptions(options)
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ChatMessage) {
         if (options.snapshots[position].text != null) {
             if (options.snapshots[position].userUid == currentUser.uid) {

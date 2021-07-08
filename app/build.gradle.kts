@@ -89,6 +89,7 @@ dependencies {
     implementation(Dependency.LEGACY_SUPPORT)
     implementation(Dependency.KOTLIN_STDLIB)
     implementation(Dependency.LEGACY_SUPPORT)
+    implementation(Dependency.LIVE_DATA)
 
     // Android Testing
     androidTestImplementation(Dependency.EXT_JUNIT)

@@ -1,4 +1,4 @@
-package com.example.cohorts.ui.cohorts.viewpager.info
+package com.example.cohorts.ui.info
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

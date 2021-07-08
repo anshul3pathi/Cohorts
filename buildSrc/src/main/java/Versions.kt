@@ -20,6 +20,7 @@ object Versions {
     const val GLIDE = "4.12.0"
     const val KOTLIN_COROUTINES = "1.4.1"
     const val LIFECYCLE = "2.3.1"
+    const val LIVE_DATA = "2.4.0-alpha02"
     const val MOSHI = "1.11.0"
     const val RETROFIT = "2.9.0"
     const val CIRCLE_IMAGEVIEW = "3.1.0"

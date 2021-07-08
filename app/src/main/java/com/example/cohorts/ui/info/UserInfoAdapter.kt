@@ -1,4 +1,4 @@
-package com.example.cohorts.ui.cohorts.viewpager.info
+package com.example.cohorts.ui.info
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

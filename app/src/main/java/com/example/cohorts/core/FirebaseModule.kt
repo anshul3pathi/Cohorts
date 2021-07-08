@@ -1,4 +1,4 @@
-package com.example.cohorts.core.model
+package com.example.cohorts.core
 
 import com.firebase.ui.database.paging.FirebaseDataSource
 import com.google.firebase.auth.FirebaseAuth
