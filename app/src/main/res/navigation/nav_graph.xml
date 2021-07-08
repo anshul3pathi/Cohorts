@@ -16,6 +16,11 @@
             app:destination="@id/addNewCohort"
             app:enterAnim="@anim/scale_in"
             app:popExitAnim="@anim/scale_out"/>
+        <action
+            android:id="@+id/action_cohortTo_profile"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/scale_in"
+            app:popExitAnim="@anim/scale_out"/>
     </fragment>
 
     <fragment
@@ -92,6 +97,11 @@
             android:defaultValue="null"
             app:argType="string"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.cohorts.ui.profile.ProfileFragment"
+        android:label="@string/profile" >
     </fragment>
 
 </navigation>

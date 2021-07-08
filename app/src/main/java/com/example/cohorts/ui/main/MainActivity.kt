@@ -18,6 +18,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityMainBinding
+import com.example.cohorts.ui.cohorts.CohortsFragmentDirections
 import com.example.cohorts.ui.login.LoginActivity
 import com.example.cohorts.utils.Theme
 import com.example.cohorts.utils.intToTheme
@@ -96,7 +97,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.item_sign_out -> {
+            R.id.item_profile -> {
+                navController.navigate(
+                    CohortsFragmentDirections.actionCohortToProfile()
+                )
+                true
+            } R.id.item_sign_out -> {
                 signOut()
                 true
             } R.id.item_theme -> {

@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.cohorts.core.Result
-import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.repository.theme.ThemeRepo
 import com.example.cohorts.core.repository.user.UserRepo
@@ -22,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val cohortsRepository: CohortsRepo,
     private val themeRepository: ThemeRepo,
     private val meetingRepository: MeetingRepo,
     private val userRepository: UserRepo,
