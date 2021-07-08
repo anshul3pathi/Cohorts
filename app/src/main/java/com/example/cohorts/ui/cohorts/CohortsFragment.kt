@@ -108,7 +108,7 @@ class CohortsFragment : Fragment() {
             val extras = FragmentNavigatorExtras(
                 mcv to cohort.cohortUid
             )
-            val action = CohortsFragmentDirections.actionCohortsToViewPager(cohort)
+            val action = CohortsFragmentDirections.actionCohortToChat(cohort)
             navController.navigate(action, extras)
         }
         cohortsAdapter.setContainedJoinButtonClickListener { cohort ->

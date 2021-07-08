@@ -121,7 +121,7 @@ class ViewPagerFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        inflater.inflate(R.menu.viewpager_fragment_menu, menu)
+        inflater.inflate(R.menu.chat_fragment_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

@@ -9,9 +9,6 @@
         android:name="com.example.cohorts.ui.cohorts.CohortsFragment"
         android:label="@string/cohort_label">
         <action
-            android:id="@+id/action_cohortsTo_viewPager"
-            app:destination="@id/viewPagerFragment" />
-        <action
             android:id="@+id/cohorts_to_addNewCohorts"
             app:destination="@id/addNewCohort"
             app:enterAnim="@anim/scale_in"
@@ -21,12 +18,32 @@
             app:destination="@id/profileFragment"
             app:enterAnim="@anim/scale_in"
             app:popExitAnim="@anim/scale_out"/>
+        <action
+            android:id="@+id/action_cohortTo_chat"
+            app:destination="@id/chatFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.cohorts.ui.chat.ChatFragment"
-        android:label="@string/chat_label" />
+        android:label="@string/chat_label" >
+        <argument
+            android:name="cohort"
+            app:argType="com.example.cohorts.core.model.Cohort"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_chat_to_addNewMember"
+            app:destination="@id/addNewMemberFragment" />
+        <action
+            android:id="@+id/action_chat_to_cohortInfo"
+            app:destination="@id/cohortInfoFragment"
+            app:enterAnim="@anim/scale_in"
+            app:popExitAnim="@anim/scale_out"/>
+        <action
+            android:id="@+id/action_chat_to_detailedImage"
+            app:destination="@id/zoomedImageFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/filesFragment"

@@ -61,9 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         navController = this.findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.cohortsFragment,
-            R.id.chatFragment,
-            R.id.filesFragment
+            R.id.cohortsFragment
         ))
 
         subscribeToObservers()
