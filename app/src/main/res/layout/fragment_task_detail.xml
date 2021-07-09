@@ -28,35 +28,59 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/task_detail_layout"
                 android:layout_width="match_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:visibility="@{isEditing ? View.GONE : View.VISIBLE}">
 
-                <CheckBox
-                    android:id="@+id/task_detail_complete_checkbox"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/check_and_title_ll"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:checked="@{task.completed}"/>
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <CheckBox
+                        android:id="@+id/task_detail_complete_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:checked="@{task.completed}"/>
+
+                    <TextView
+                        android:id="@+id/task_detail_title_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:text="@{task.title}"
+                        app:completedTask="@{task.completed}"
+                        android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                        tools:text="Complete cohorts app"/>
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/task_detail_title_text"
+                    android:id="@+id/task_detail_description_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:text="@{task.title}"
+                    android:layout_marginStart="80dp"
+                    android:text="@{task.description}"
                     app:completedTask="@{task.completed}"
-                    android:textAppearance="@style/TextAppearance.Cohorts.Headline6"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Subtitle1"
+                    app:layout_constraintTop_toBottomOf="@+id/check_and_title_ll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     tools:text="Complete cohorts app"/>
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/edit_task_layout"

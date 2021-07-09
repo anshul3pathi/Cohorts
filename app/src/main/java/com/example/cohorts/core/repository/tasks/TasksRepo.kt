@@ -12,5 +12,6 @@ interface TasksRepo {
     suspend fun markTaskCompleteOrActive(task: Task): Result<Any>
     suspend fun clearAllTasks(ofCohortUid: String): Result<Any>
     suspend fun clearCompletedTasks(ofCohortUid: String): Result<Any>
+    suspend fun updateTask(task: Task): Result<Any>
 
 }

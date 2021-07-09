@@ -68,4 +68,11 @@ class TasksRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateTask(task: Task): Result<Any> {
+        return safeCall {
+            Timber.d("updating task - $task")
+            tasksReference.child(task.taskOfCohort!!).child(task.taskId).setValue(task).await()
+            Result.Success(Any())
+        }
+    }
 }
