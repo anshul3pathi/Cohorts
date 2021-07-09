@@ -62,14 +62,6 @@ class AddNewCohort : Fragment() {
             R.id.done_add_cohort_button -> {
                 Timber.d( "added new Cohort - ${binding.cohortNameEt.text}")
                 addNewCohortToDatabase()
-                object: CountDownTimer(3000L, 1000L) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-
-                    override fun onFinish() {
-                        navController.popBackStack()
-                    }
-                }.start()
                 true
             } else -> {
                 return super.onOptionsItemSelected(item)
@@ -83,6 +75,15 @@ class AddNewCohort : Fragment() {
             cohortDescription = binding.cohortDescriptionEt.text.toString()
         )
         addNewCohortViewModel.addNewCohort(newCohort)
+
+        object: CountDownTimer(1500L, 1000L) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                navController.popBackStack()
+            }
+        }.start()
     }
 
     private fun subscribeToObservers() {

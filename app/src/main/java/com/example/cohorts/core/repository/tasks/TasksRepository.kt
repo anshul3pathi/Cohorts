@@ -75,4 +75,11 @@ class TasksRepository @Inject constructor(
             Result.Success(Any())
         }
     }
+
+    override suspend fun deleteTask(task: Task): Result<Any> {
+        return safeCall {
+            tasksReference.child(task.taskOfCohort!!).child(task.taskId).removeValue().await()
+            Result.Success(Any())
+        }
+    }
 }

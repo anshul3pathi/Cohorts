@@ -22,21 +22,42 @@ class TaskDetailViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData<Event<String>>()
-    val errorMessage: LiveData<Event<String>> = _errorMessage
-
-    private val _taskEditedMessage = MutableLiveData<Event<String>>()
-    val taskEditedMessage: LiveData<Event<String>> = _taskEditedMessage
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     fun saveChangesToTask(task: Task) {
         CoroutineScope(coroutineDispatcher).launch {
             val result = tasksRepository.updateTask(task)
             if (result.succeeded) {
-                _taskEditedMessage.postValue(Event("Task was edited!"))
+                _snackbarMessage.postValue(Event("Task was edited!"))
             } else {
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "Couldn't edit task.")
-                _errorMessage.postValue(Event("Couldn't edit task!"))
+                _snackbarMessage.postValue(Event("Couldn't edit task!"))
+            }
+        }
+    }
+
+    fun deleteTask(task: Task) {
+        CoroutineScope(coroutineDispatcher).launch {
+            val result = tasksRepository.deleteTask(task)
+            if (result.succeeded) {
+                _snackbarMessage.postValue(Event("Task was deleted!"))
+            } else {
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error deleting task.")
+                _snackbarMessage.postValue(Event("There was some error deleting task."))
+            }
+        }
+    }
+
+    fun markTaskCompletedOrActive(task: Task) {
+        CoroutineScope(coroutineDispatcher).launch {
+            val result = tasksRepository.markTaskCompleteOrActive(task)
+            if (!result.succeeded) {
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "cannot change status of task.")
+                _snackbarMessage.postValue(Event("There was some error!"))
             }
         }
     }
