@@ -1,18 +1,20 @@
 package com.example.cohorts.ui.tasks
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cohorts.R
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.Task
 import com.example.cohorts.databinding.FragmentTasksBinding
+import com.example.cohorts.utils.EventObserver
+import com.example.cohorts.utils.snackbar
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -44,16 +46,36 @@ class TasksFragment : Fragment() {
 
         navController = findNavController()
 
+        setHasOptionsMenu(true)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpTaskRcv()
 
+        subscribeToObservers()
+
         binding.addTaskFab.setOnClickListener {
             navController.navigate(
                 TasksFragmentDirections.actionTaskToAddTask(cohortArgument)
             )
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.tasks_fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_task_clear_completed -> {
+                true
+            } R.id.item_task_clear_all -> {
+                taskViewModel.clearAllTasks(cohortArgument.cohortUid)
+                true
+            } else -> return super.onOptionsItemSelected(item)
         }
     }
 
@@ -97,6 +119,20 @@ class TasksFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = tasksAdapter
         }
+    }
+
+    private fun subscribeToObservers() {
+        taskViewModel.errorMessage.observe(viewLifecycleOwner, { event ->
+            event.getContentIfNotHandled()?.let {
+                snackbar(binding.tasksFragmentRootLayout, it)
+            }
+        })
+
+        taskViewModel.allTasksDeletedMessage.observe(viewLifecycleOwner, { event ->
+            event.getContentIfNotHandled()?.let {
+                snackbar(binding.tasksFragmentRootLayout, it)
+            }
+        })
     }
 
 }
