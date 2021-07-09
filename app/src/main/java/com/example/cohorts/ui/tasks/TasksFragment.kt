@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.R
@@ -114,6 +115,16 @@ class TasksFragment : Fragment() {
 
         tasksAdapter = TasksAdapter(options) { task ->
             taskViewModel.markTaskCompleteOrActive(task)
+        }
+
+        tasksAdapter.setTaskItemClickListener { task, view ->
+            val extras = FragmentNavigatorExtras(
+                view to task.taskId
+            )
+            navController.navigate(
+                TasksFragmentDirections.actionTaskToTaskDetail(task),
+                extras
+            )
         }
 
         binding.tasksRcv.apply {

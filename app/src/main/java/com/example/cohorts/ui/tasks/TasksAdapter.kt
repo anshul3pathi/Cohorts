@@ -1,6 +1,7 @@
 package com.example.cohorts.ui.tasks
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.example.cohorts.core.model.Task
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -12,6 +13,8 @@ class TasksAdapter(
     options: FirebaseRecyclerOptions<Task>,
     private val checkClickListener: (Task) -> Unit
 ) : FirebaseRecyclerAdapter<Task, ViewHolder>(options) {
+
+    private var taskItemClickListener: ((Task, View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,12 +31,23 @@ class TasksAdapter(
         fun bind(taskItem: Task) {
             binding.apply {
                 task = taskItem
+
                 completeCheckbox.setOnClickListener {
                     checkClickListener(taskItem)
                 }
+
+                itemTaskContainer.setOnClickListener {
+                    taskItemClickListener!!(taskItem, it)
+                }
+
+                itemTaskContainer.transitionName = taskItem.taskId
             }
         }
 
+    }
+
+    fun setTaskItemClickListener(listener: (Task, View) -> Unit) {
+        taskItemClickListener = listener
     }
 
 }

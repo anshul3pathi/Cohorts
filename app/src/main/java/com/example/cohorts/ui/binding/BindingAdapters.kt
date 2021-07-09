@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.binding
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.media.Image
 import android.view.View
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.cohorts.R
 import com.example.cohorts.core.model.User
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 @BindingAdapter(value = ["bind:user", "bind:currentUser"], requireAll = true)
 fun setUserInfoButtonText(view: View, user: User, currentUser: User) {
@@ -48,5 +50,15 @@ fun setStyle(textView: TextView, enabled: Boolean) {
         textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     } else {
         textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    }
+}
+
+@SuppressLint("UseCompatLoadingForDrawables")
+@BindingAdapter("app:setIcon")
+fun fabSrc(fab: FloatingActionButton, editing: Boolean) {
+    if (editing) {
+        fab.setImageDrawable(fab.context.getDrawable(R.drawable.ic_edit))
+    } else {
+        fab.setImageDrawable(fab.context.getDrawable(R.drawable.ic_done))
     }
 }

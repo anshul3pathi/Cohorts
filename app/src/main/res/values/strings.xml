@@ -40,4 +40,6 @@
     <string name="there_are_no_active_tasks">There are no active tasks.</string>
     <string name="clear_completed">Clear Completed</string>
     <string name="clear_all">Clear All</string>
+    <string name="new_task">New Task</string>
+    <string name="task_detail">Task Detail</string>
 </resources>
