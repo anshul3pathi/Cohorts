@@ -60,15 +60,7 @@ class AddNewTaskFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.done_add_cohort_button -> {
-                Timber.d( "added new Cohort - ${binding.cohortNameEt.text}")
                 addNewTask()
-                object: CountDownTimer(3000L, 1000L) {
-                    override fun onTick(millisUntilFinished: Long) {}
-
-                    override fun onFinish() {
-                        navController.popBackStack()
-                    }
-                }.start()
                 true
             } else -> {
                 return super.onOptionsItemSelected(item)
@@ -77,12 +69,24 @@ class AddNewTaskFragment : Fragment() {
     }
 
     private fun addNewTask() {
+        if (binding.taskTitleEt.text.toString().isEmpty()) {
+            snackbar(binding.addNewTaskRootLayout, "Task must have a name!")
+            return
+        }
         val newTask = Task(
-            taskOfCohort =cohortArgument.cohortUid,
-            title = binding.cohortNameEt.text.toString(),
-            description = binding.cohortDescriptionEt.text.toString()
+            taskOfCohort = cohortArgument.cohortUid,
+            title = binding.taskTitleEt.text.toString(),
+            description = binding.taskDescriptionEt.text.toString()
         )
         addNewTaskViewModel.addNewCohort(newTask, cohortArgument.cohortUid)
+
+        object: CountDownTimer(1500L, 1000L) {
+            override fun onTick(millisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                navController.popBackStack()
+            }
+        }.start()
     }
 
     private fun subscribeToObservers() {

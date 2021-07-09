@@ -71,6 +71,7 @@ class TasksFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_task_clear_completed -> {
+                taskViewModel.clearCompletedTasks(cohortArgument.cohortUid)
                 true
             } R.id.item_task_clear_all -> {
                 taskViewModel.clearAllTasks(cohortArgument.cohortUid)

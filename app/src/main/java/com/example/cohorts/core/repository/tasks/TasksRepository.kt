@@ -52,4 +52,20 @@ class TasksRepository @Inject constructor(
             Result.Success(Any())
         }
     }
+
+    override suspend fun clearCompletedTasks(ofCohortUid: String): Result<Any> {
+        return safeCall {
+            val tasksSnapshot = tasksReference.child(ofCohortUid).get().await()
+            for (snapshot in tasksSnapshot.children) {
+                if (snapshot.exists()) {
+                    val task = snapshot.getValue<Task>()!!
+                    if (task.isCompleted) {
+                        snapshot.ref.removeValue()
+                    }
+                }
+            }
+            Result.Success(Any())
+        }
+    }
+
 }

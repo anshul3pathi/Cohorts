@@ -23,6 +23,9 @@ class TasksViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
+    private val _completedTasksDeletedMessage = MutableLiveData<Event<String>>()
+    val completedTasksDeletedMessage: LiveData<Event<String>> = _completedTasksDeletedMessage
+
     private val _allTasksDeletedMessage = MutableLiveData<Event<String>>()
     val allTasksDeletedMessage: LiveData<Event<String>> = _allTasksDeletedMessage
 
@@ -43,7 +46,21 @@ class TasksViewModel @Inject constructor(
             if (!result.succeeded) {
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "Could not change status of task")
-                _errorMessage.postValue(Event(exception.message?: ""))
+                _errorMessage.postValue(Event("Couldn't change status of task!"))
+            }
+        }
+    }
+
+    fun clearCompletedTasks(ofCohortUid: String) {
+        viewModelScope.launch(coroutineDispatcher) {
+            val result = tasksRepository.clearCompletedTasks(ofCohortUid)
+            if (result.succeeded) {
+                _completedTasksDeletedMessage
+                    .postValue(Event("Completed tasks are deleted."))
+            } else {
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "clear completed tasks failed.")
+                _errorMessage.postValue(Event("Couldn't delete completed tasks!"))
             }
         }
     }
@@ -53,6 +70,10 @@ class TasksViewModel @Inject constructor(
             val result = tasksRepository.clearAllTasks(ofCohortUid)
             if (result.succeeded) {
                 _allTasksDeletedMessage.postValue(Event("All tasks are deleted."))
+            } else {
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "clear all tasks failed.")
+                _errorMessage.postValue(Event("Couldn't clear all tasks!"))
             }
         }
     }

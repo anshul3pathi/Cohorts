@@ -30,6 +30,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/letters_numbers_and_spaces_are_allowed"
                 android:backgroundTint="?attr/colorPrimary"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 app:layout_constraintStart_toStartOf="@id/cohort_name_label_tv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cohort_name_label_tv"
@@ -55,6 +57,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 app:layout_constraintStart_toStartOf="@id/cohort_description_label_tv"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 android:textCursorDrawable="@drawable/cursor_color"
                 app:layout_constraintTop_toBottomOf="@+id/cohort_description_label_tv"
                 android:layout_marginTop="4dp"/>
