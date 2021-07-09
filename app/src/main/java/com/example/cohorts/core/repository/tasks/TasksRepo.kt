@@ -9,5 +9,6 @@ interface TasksRepo {
 
     fun fetchTaskReference(cohortUid: String): Result<DatabaseReference>
     suspend fun addNewTask(task: Task, cohortUid: String): Result<Any>
+    suspend fun markTaskCompleteOrActive(task: Task): Result<Any>
 
 }

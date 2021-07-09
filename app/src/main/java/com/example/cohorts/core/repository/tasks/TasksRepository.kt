@@ -2,6 +2,7 @@ package com.example.cohorts.core.repository.tasks
 
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Task
+import com.example.cohorts.core.succeeded
 import com.example.cohorts.utils.safeCall
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
@@ -32,7 +33,15 @@ class TasksRepository @Inject constructor(
 
     override suspend fun addNewTask(task: Task, cohortUid: String): Result<Any> {
         return safeCall {
-            tasksReference.child(cohortUid).push().setValue(task).await()
+            tasksReference.child(cohortUid).child(task.taskId).setValue(task).await()
+            Result.Success(Any())
+        }
+    }
+
+    override suspend fun markTaskCompleteOrActive(task: Task): Result<Any> {
+        return safeCall {
+            task.isCompleted = !task.isCompleted
+            tasksReference.child(task.taskOfCohort!!).child(task.taskId).setValue(task).await()
             Result.Success(Any())
         }
     }

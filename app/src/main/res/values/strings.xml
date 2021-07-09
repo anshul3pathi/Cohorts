@@ -36,4 +36,6 @@
     <string name="task_name">Task Name</string>
     <string name="describe_the_task">Describe the task</string>
     <string name="name_the_task">Name the task</string>
+    <string name="all_tasks">All Tasks</string>
+    <string name="there_are_no_active_tasks">There are no active tasks.</string>
 </resources>

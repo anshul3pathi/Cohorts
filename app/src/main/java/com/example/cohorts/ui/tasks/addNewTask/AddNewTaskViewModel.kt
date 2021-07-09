@@ -21,7 +21,7 @@ class AddNewTaskViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData("")
+    private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
     private val _taskAddedSuccessfully = MutableLiveData(false)

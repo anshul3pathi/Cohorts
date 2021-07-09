@@ -9,7 +9,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 
 class TasksAdapter(
-    private val options: FirebaseRecyclerOptions<Task>
+    options: FirebaseRecyclerOptions<Task>,
+    private val checkClickListener: (Task) -> Unit
 ) : FirebaseRecyclerAdapter<Task, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,8 +25,13 @@ class TasksAdapter(
 
     inner class TaskViewHolder(private val binding: ItemTasksBinding): ViewHolder(binding.root) {
 
-        fun bind(task: Task) {
-            binding.task = task
+        fun bind(taskItem: Task) {
+            binding.apply {
+                task = taskItem
+                completeCheckbox.setOnClickListener {
+                    checkClickListener(taskItem)
+                }
+            }
         }
 
     }

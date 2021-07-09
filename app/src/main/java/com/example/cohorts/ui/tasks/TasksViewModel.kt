@@ -1,9 +1,6 @@
 package com.example.cohorts.ui.tasks
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Task
 import com.example.cohorts.core.repository.tasks.TasksRepo
@@ -12,6 +9,8 @@ import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +29,17 @@ class TasksViewModel @Inject constructor(
         } else {
             _errorMessage.postValue((result as Result.Error).exception.message)
             null
+        }
+    }
+
+    fun markTaskCompleteOrActive(task: Task) {
+        viewModelScope.launch(coroutineDispatcher) {
+            val result = tasksRepository.markTaskCompleteOrActive(task)
+            if (!result.succeeded) {
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "Could not change status of task")
+                _errorMessage.postValue(exception.message)
+            }
         }
     }
 

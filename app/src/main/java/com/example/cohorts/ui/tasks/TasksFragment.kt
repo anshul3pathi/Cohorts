@@ -89,7 +89,9 @@ class TasksFragment : Fragment() {
             .setQuery(taskRef, Task::class.java)
             .build()
 
-        tasksAdapter = TasksAdapter(options)
+        tasksAdapter = TasksAdapter(options) { task ->
+            taskViewModel.markTaskCompleteOrActive(task)
+        }
 
         binding.tasksRcv.apply {
             layoutManager = LinearLayoutManager(requireContext())

@@ -1,5 +1,6 @@
 package com.example.cohorts.ui.binding
 
+import android.graphics.Paint
 import android.media.Image
 import android.view.View
 import android.widget.ImageView
@@ -39,4 +40,13 @@ fun numberOfMembers(view: TextView, numberOfMembers: Int) {
 @BindingAdapter("viewGoneOrVisible")
 fun viewGoneOrVisible(view: View, visible: Boolean) {
     view.visibility = if (visible) View.VISIBLE else View.GONE
+}
+
+@BindingAdapter("app:completedTask")
+fun setStyle(textView: TextView, enabled: Boolean) {
+    if (enabled) {
+        textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    } else {
+        textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    }
 }
