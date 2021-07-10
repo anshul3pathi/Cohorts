@@ -147,4 +147,41 @@ class MeetingRepository @Inject constructor(
             Result.Success(Any())
         }
     }
+
+    override suspend fun onDestroy() {
+        Timber.d("onDestroy")
+        val batch = firestore.batch()
+
+        /* find all cohorts in whose meeting the user is in right now.
+         * the user cannot be in more than one meeting at once but still we will
+         * check all cohorts.
+         */
+        val cohortsDocuments = cohortsCollection
+            .whereArrayContains("membersInMeeting", auth.currentUser!!.uid)
+            .get()
+            .await()
+
+        /* remove current user from from the meetings of all the cohorts they are in
+         * and if the user was the only member in the meeting then also terminate
+         * that meeting
+         */
+        cohortsDocuments.documents.forEach { document ->
+            document.data?.get("membersInMeeting")?.let { membersInMeeting ->
+                membersInMeeting as MutableList<*>
+                // remove current user from this meeting
+                membersInMeeting.remove(auth.currentUser!!.uid)
+                // update membersInMeeting value in firestore
+                batch.update(document.reference, "membersInMeeting", membersInMeeting)
+
+                // if the current user was the only one in the meeting then terminate the meeting
+                if (membersInMeeting.size == 0) {
+                    // update callOngoing value in firestore
+                    batch.update(document.reference, "callOngoing", false)
+                }
+            }
+        }
+
+        batch.commit().await() // commit the changes to firestore
+        Timber.d("onDestroy")
+    }
 }

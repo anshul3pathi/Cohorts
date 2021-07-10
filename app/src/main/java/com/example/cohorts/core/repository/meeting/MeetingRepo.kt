@@ -8,5 +8,6 @@ interface MeetingRepo {
     suspend fun addCurrentUserToOngoingMeeting(ofCohortUid: String): Result<User>
     suspend fun startNewMeeting(ofCohortUid: String): Result<Any>
     suspend fun leaveOngoingMeeting(): Result<Any>
+    suspend fun onDestroy()
 
 }

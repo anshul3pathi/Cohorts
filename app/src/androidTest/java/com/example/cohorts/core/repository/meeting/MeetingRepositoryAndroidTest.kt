@@ -20,7 +20,6 @@ import org.junit.Test
 import org.junit.rules.RuleChain
 import javax.inject.Inject
 
-
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 @MediumTest
@@ -53,19 +52,16 @@ class MeetingRepositoryAndroidTest {
             numberOfMembers = 1,
             cohortMembers = mutableListOf("fake user uid"),
         )
-        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        addNewCohortToFirestore(cohort)
 
         // When - current user is added to meeting of this cohort
         repository.addCurrentUserToOngoingMeeting(cohort.cohortUid)
 
         // Then - current user uid should be added to membersInMeeting array of given cohort
-        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .await()
-            .toObject(Cohort::class.java)!!
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
 
         // ensuring that the saved cohort gets deleted from firestore even if this test fails
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        deleteCohortFromFirestore(cohort.cohortUid)
 
         // retrieved cohort is same as saved
         assertThat(savedCohort.cohortUid, `is`(cohort.cohortUid))
@@ -82,25 +78,20 @@ class MeetingRepositoryAndroidTest {
             numberOfMembers = 1,
             cohortMembers = mutableListOf("fake user uid"),
         )
-        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        addNewCohortToFirestore(cohort)
 
         // When - a new meeting is started
         val result = repository.startNewMeeting(cohort.cohortUid)
 
         // Then - a new meeting of this cohort should be started
-        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .await()
-            .toObject(Cohort::class.java)!!
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
 
         // ensuring that the saved cohort gets deleted from firestore even if this test fails
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        deleteCohortFromFirestore(cohort.cohortUid)
 
         assertThat(result.succeeded, `is`(true)) // operation returned success
-
         // current user is in meeting
         assertThat(auth.currentUser!!.uid in savedCohort.membersInMeeting, `is`(true))
-
         assertThat(savedCohort.isCallOngoing, `is`(true))
     }
 
@@ -114,19 +105,16 @@ class MeetingRepositoryAndroidTest {
             cohortMembers = mutableListOf("fake user uid"),
             isCallOngoing = true
         )
-        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        addNewCohortToFirestore(cohort)
 
         // When - a new meeting is started
         val result = repository.startNewMeeting(cohort.cohortUid)
 
         // Then - it should return an error and no changes should be made in the given cohort
-        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .await()
-            .toObject(Cohort::class.java)!!
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
 
         // ensuring that the saved cohort gets deleted from firestore even if this test fails
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        deleteCohortFromFirestore(cohort.cohortUid)
 
         assertThat(result.succeeded, `is`(false)) // operation returned an error
 
@@ -148,26 +136,21 @@ class MeetingRepositoryAndroidTest {
             isCallOngoing = true,
             membersInMeeting = mutableListOf(auth.currentUser!!.uid)
         )
-        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        addNewCohortToFirestore(cohort)
 
         // When - the user tries to leave the meeting
         val result = repository.leaveOngoingMeeting()
 
         // Then - the user is removed from meeting and the meeting is ended if no other
         // participants are in the meeting
-        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .await()
-            .toObject(Cohort::class.java)!!
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
 
         // ensuring that the saved cohort gets deleted from firestore even if this test fails
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        deleteCohortFromFirestore(cohort.cohortUid)
 
         assertThat(result.succeeded, `is`(true)) // operation returned success
-
         // current user was removed from the ongoing meeting
         assertThat(auth.currentUser!!.uid !in savedCohort.membersInMeeting, `is`(true))
-
         assertThat(savedCohort.isCallOngoing, `is`(false)) // meeting has ended
     }
 
@@ -184,27 +167,107 @@ class MeetingRepositoryAndroidTest {
             // other participants are also in meeting
             membersInMeeting = mutableListOf(auth.currentUser!!.uid, "user2uid", "user3uid")
         )
-        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+        addNewCohortToFirestore(cohort)
 
         // When - the user tries to leave the meeting
         val result = repository.leaveOngoingMeeting()
 
         // Then - the user is removed from meeting and the meeting is not ended as other
         // participants are in the meeting
-        val savedCohort = firestore.collection("cohorts").document(cohort.cohortUid)
-            .get()
-            .await()
-            .toObject(Cohort::class.java)!!
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
 
         // ensuring that the saved cohort gets deleted from firestore even if this test fails
-        firestore.collection("cohorts").document(cohort.cohortUid).delete().await()
+        deleteCohortFromFirestore(cohort.cohortUid)
 
         assertThat(result.succeeded, `is`(true)) // the operation returned success
-
         // the current user was removed from the meeting
         assertThat(auth.currentUser!!.uid !in savedCohort.membersInMeeting, `is`(true))
-
         assertThat(savedCohort.isCallOngoing, `is`(true)) // the meeting is still going on
+    }
+
+    @Test fun onDestroy_userIsInMultipleMeetings() = runBlocking {
+        // Given - the current user is in meetings of multiple cohorts
+        val cohort1 = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc",
+            numberOfMembers = 1,
+            cohortMembers = mutableListOf("fake user uid"),
+            isCallOngoing = true,
+            // more than one member in meeting
+            membersInMeeting = mutableListOf(auth.currentUser!!.uid, "adsfadfsasdf")
+        )
+        val cohort2 = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc",
+            numberOfMembers = 1,
+            cohortMembers = mutableListOf("fake user uid"),
+            isCallOngoing = true,
+            membersInMeeting = mutableListOf(auth.currentUser!!.uid)
+        )
+        addNewCohortToFirestore(cohort1)
+        addNewCohortToFirestore(cohort2)
+
+        // When - onDestroy is called
+        repository.onDestroy()
+
+        // Then - the current user should be removed from all the meetings
+        val savedCohort1 = getCohortFromFirestore(cohort1.cohortUid)
+        val savedCohort2 = getCohortFromFirestore(cohort2.cohortUid)
+
+        // ensuring that the cohorts are deleted from firestore even if the test fails
+        deleteCohortFromFirestore(cohort1.cohortUid)
+        deleteCohortFromFirestore(cohort2.cohortUid)
+
+        // current user is removed from the meeting
+        assertThat(auth.currentUser!!.uid !in savedCohort1.membersInMeeting, `is`(true))
+        // but the call is still going on as there were more members in meeting
+        assertThat(savedCohort1.isCallOngoing, `is`(true))
+
+        assertThat(auth.currentUser!!.uid !in savedCohort2.membersInMeeting, `is`(true))
+        // as the user was the only one in meeting, therefore the call is ended
+        assertThat(savedCohort2.isCallOngoing, `is`(false))
+    }
+
+    @Test
+    fun onDestroy_userIsInSingleMeeting() = runBlocking {
+        // Given - user is in meeting of a cohort
+        val cohort = Cohort(
+            cohortName = "RandomName",
+            cohortDescription = "RandomDesc",
+            numberOfMembers = 1,
+            cohortMembers = mutableListOf("fake user uid"),
+            isCallOngoing = true,
+            // more than one member in meeting
+            membersInMeeting = mutableListOf(auth.currentUser!!.uid, "adsfadfsasdf")
+        )
+        addNewCohortToFirestore(cohort)
+
+        // When - onDestroy is called
+        repository.onDestroy()
+
+        // Then - the user should be removed from all the meetings they are in
+        val savedCohort = getCohortFromFirestore(cohort.cohortUid)
+
+        // ensuring that the saved cohort is deleted from firestore even if this test fails
+        deleteCohortFromFirestore(cohort.cohortUid)
+
+        // user was removed from the meeting
+        assertThat(auth.currentUser!!.uid !in savedCohort.membersInMeeting, `is`(true))
+        // but the meeting is still ongoing
+        assertThat(savedCohort.isCallOngoing, `is`(true))
+    }
+
+    private suspend fun addNewCohortToFirestore(cohort: Cohort) {
+        firestore.collection("cohorts").document(cohort.cohortUid).set(cohort).await()
+    }
+
+    private suspend fun deleteCohortFromFirestore(cohortUid: String) {
+        firestore.collection("cohorts").document(cohortUid).delete().await()
+    }
+
+    private suspend fun getCohortFromFirestore(cohortUid: String): Cohort {
+        return firestore.collection("cohorts").document(cohortUid)
+            .get().await().toObject(Cohort::class.java)!!
     }
 
 }

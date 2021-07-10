@@ -83,13 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Timber.d("onDestroy called!")
-        try {
-            mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
-        } catch (ex: Exception) {
-            Timber.d("exception")
-            Timber.e(ex)
-        }
+        mainViewModel.onDestroy(this, broadcastReceiver)
         super.onDestroy()
     }
 
@@ -176,20 +170,22 @@ class MainActivity : AppCompatActivity() {
             val event = BroadcastEvent(intent)
             when (event.type) {
                 BroadcastEvent.Type.CONFERENCE_JOINED -> Toast.makeText(
-                    this, "Conference joined", Toast.LENGTH_LONG
+                    this, "Meeting joined", Toast.LENGTH_LONG
                 ).show()
                 BroadcastEvent.Type.PARTICIPANT_JOINED -> Toast.makeText(
-                    this, "User joined - ${event.data["name"]}", Toast.LENGTH_LONG
+                    this, "${event.data["name"]} joined the meeting", Toast.LENGTH_LONG
                 ).show()
                 BroadcastEvent.Type.CONFERENCE_TERMINATED -> {
+                    Toast.makeText(
+                    this, "You left the meeting.", Toast.LENGTH_LONG
+                    ).show()
                     Timber.d("on going conference terminated!")
                     mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
-                }
-                BroadcastEvent.Type.ENDPOINT_TEXT_MESSAGE_RECEIVED -> {
-                    Timber.d("pip exited!")
-                }
-                else -> {
+                } else -> {
                     if (event.data?.get("muted") == "6.0") {
+                        Toast.makeText(
+                            this, "You left the meeting.", Toast.LENGTH_LONG
+                        ).show()
                         Timber.d("Meeting terminated from PIP")
                         mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
                     }

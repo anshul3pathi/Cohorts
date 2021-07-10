@@ -46,6 +46,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun onDestroy(context: Context, broadcastReceiver: BroadcastReceiver) {
+        destroyJitsi(context, broadcastReceiver)
+        CoroutineScope(coroutineDispatcher).launch {
+            meetingRepository.onDestroy()
+        }
+    }
+
     fun changeAppTheme(value: Int) {
         val theme = value.toTheme()
         _currentAppTheme.postValue(theme)
