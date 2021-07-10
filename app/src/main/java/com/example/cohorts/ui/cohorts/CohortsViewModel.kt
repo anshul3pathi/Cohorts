@@ -13,6 +13,7 @@ import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
+import com.example.cohorts.utils.Event
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,14 +30,8 @@ class CohortsViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _userAddedToMeeting = MutableLiveData(false)
-    val userAddedToMeeting: LiveData<Boolean> = _userAddedToMeeting
-
-    private val _errorAddingUserToMeeting = MutableLiveData(false)
-    val errorAddingUserToMeeting: LiveData<Boolean> = _errorAddingUserToMeeting
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     private lateinit var currentUser: User
 
@@ -46,15 +41,23 @@ class CohortsViewModel @Inject constructor(
             if (userResult.succeeded) {
                 currentUser = (userResult as Result.Success).data
             } else {
-                _errorMessage.postValue((userResult as Result.Error).exception.message)
+                val exception = (userResult as Result.Error).exception
+                Timber.e(exception, "error getting current user")
+                _snackbarMessage.postValue(Event("There was some error."))
             }
         }
     }
 
-    fun fetchCohortsQuery(): Query {
+    fun fetchCohortsQuery(): Query? {
         val query = cohortsRepository.fetchCohortsQuery()
-        query as Result.Success
-        return query.data
+        return if (query.succeeded) {
+            (query as Result.Success).data
+        } else {
+            val exception = (query as Result.Error).exception
+            Timber.e(exception, "error getting cohorts query.")
+            _snackbarMessage.postValue(Event("There was some error."))
+            null
+        }
     }
 
     fun addCurrentUserToOngoingMeeting(
@@ -66,28 +69,19 @@ class CohortsViewModel @Inject constructor(
             val addedUser = meetingRepository.addCurrentUserToOngoingMeeting(ofCohort.cohortUid)
             if (addedUser.succeeded) {
                 addedUser as Result.Success
-                _userAddedToMeeting.postValue(true)
                 initJitsi(addedUser.data, broadcastReceiver, context)
                 launchJitsi(context, ofCohort.cohortRoomCode)
             } else {
-                _errorAddingUserToMeeting.postValue(true)
                 val exception = (addedUser as Result.Error).exception
-                _errorMessage.postValue(exception.message)
-                Timber.e(exception)
+                Timber.e(exception, "error adding current user to ongoing meeting")
+                _snackbarMessage.postValue(
+                    Event("Cannot add you to ongoing meeting. Please try later")
+                )
             }
         }
     }
 
     fun isCurrentUserInMeetingOfThisCohort(cohort: Cohort) =
         (currentUser.uid!! in cohort.membersInMeeting)
-
-
-    fun resetUserAddedToMeeting() {
-        _userAddedToMeeting.postValue(false)
-    }
-
-    fun resetErrorAddingUserToMeeting() {
-        _errorAddingUserToMeeting.postValue(false)
-    }
 
 }

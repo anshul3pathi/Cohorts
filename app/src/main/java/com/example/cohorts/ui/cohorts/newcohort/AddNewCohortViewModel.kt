@@ -8,10 +8,12 @@ import com.example.cohorts.core.Result
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.succeeded
+import com.example.cohorts.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,20 +22,20 @@ class AddNewCohortViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData("")
-    val errorMessage: LiveData<String> = _errorMessage
-
-    private val _cohortAddedSuccessfully = MutableLiveData(false)
-    val cohortAddedSuccessfully: LiveData<Boolean> = _cohortAddedSuccessfully
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     fun addNewCohort(newCohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = repository.addNewCohort(newCohort)
             if (result.succeeded) {
-                _cohortAddedSuccessfully.postValue(true)
+                _snackbarMessage.postValue(Event("Cohort was added successfully!"))
             } else {
-                result as Result.Error
-                _errorMessage.postValue(result.exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error adding new cohort")
+                _snackbarMessage.postValue(
+                    Event("There was some error in creating new cohort")
+                )
             }
         }
     }

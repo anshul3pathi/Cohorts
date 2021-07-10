@@ -8,7 +8,7 @@ import com.example.cohorts.core.Result
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
-import com.example.cohorts.utils.NetworkRequest
+import com.example.cohorts.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,18 +22,14 @@ class LoginViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _userRegistered = MutableLiveData(NetworkRequest.LOADING)
-    val userRegistered: LiveData<NetworkRequest> = _userRegistered
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     fun registerCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
             val result = userRepository.registerCurrentUser()
-            if (result.succeeded) {
-                _userRegistered.postValue(NetworkRequest.SUCCESS)
-            } else {
-                _userRegistered.postValue(NetworkRequest.FAILURE)
-                result as Result.Error
-                Timber.e(result.exception)
+            if (!result.succeeded) {
+                _snackbarMessage.postValue(Event("Cannot log you in. Please try again."))
             }
         }
     }

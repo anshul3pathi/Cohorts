@@ -16,12 +16,10 @@ import com.example.cohorts.core.repository.meeting.MeetingRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
+import com.example.cohorts.utils.Event
 import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,21 +32,23 @@ class ChatViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     private val _currentUser = MutableLiveData(User())
     val currentUser: LiveData<User> = _currentUser
 
-    private val _cohortDeleted = MutableLiveData(false)
-    val cohortDeleted: LiveData<Boolean> = _cohortDeleted
+    private val _cohortDeleted = MutableLiveData<Event<Boolean>>()
+    val cohortDeleted: LiveData<Event<Boolean>> = _cohortDeleted
 
     fun fetchChatReference(cohortUid: String): DatabaseReference? {
         val result = chatRepository.fetchChatReference(cohortUid)
         return if (result.succeeded) {
             (result as Result.Success).data
         } else {
-            _errorMessage.postValue((result as Result.Error).exception.message)
+            val exception = (result as Result.Error).exception
+            Timber.e(exception, "error fetching chat reference")
+            _snackbarMessage.postValue(Event("Error fetching chat reference!"))
             null
         }
     }
@@ -59,7 +59,11 @@ class ChatViewModel @Inject constructor(
             if (result.succeeded) {
                 _currentUser.postValue((result as Result.Success).data)
             } else {
-                _errorMessage.postValue((result as Result.Error).exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "Error getting current user!")
+                _snackbarMessage.postValue(
+                    Event("There was some error. Check you internet or try again later")
+                )
             }
         }
     }
@@ -70,8 +74,11 @@ class ChatViewModel @Inject constructor(
             if (result.succeeded) {
                 launchJitsi(context, ofCohort.cohortRoomCode)
             } else {
-                result as Result.Error
-                _errorMessage.postValue(result.exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error starting a new meeting.")
+                _snackbarMessage.postValue(
+                    Event("Couldn't start a new meeting. Check your interned or try again later.")
+                )
             }
         }
     }
@@ -82,19 +89,24 @@ class ChatViewModel @Inject constructor(
             if (currentUser.succeeded) {
                 currentUser as Result.Success
                 initJitsi(currentUser.data, broadcastReceiver, context)
+            } else {
+                val exception = (currentUser as Result.Error).exception
+                Timber.e(exception, "error getting current user.")
+                _snackbarMessage.postValue(Event("There was some error."))
             }
         }
     }
 
     fun deleteThisCohort(cohort: Cohort) {
-        GlobalScope.launch(coroutineDispatcher) {
+        CoroutineScope(coroutineDispatcher).launch {
             val result = cohortsRepository.deleteThisCohort(cohort)
             if (result.succeeded) {
-                _cohortDeleted.postValue(true)
+                _cohortDeleted.postValue(Event(true))
+                _snackbarMessage.postValue(Event("Cohort deleted successfully!"))
             } else {
                 val exception = (result as Result.Error).exception
-                _cohortDeleted.postValue(false)
-                _errorMessage.postValue(exception.message)
+                Timber.e(exception, "error deleting cohort.")
+                _snackbarMessage.postValue(Event("There was an error deleting the cohort."))
             }
         }
     }
@@ -112,7 +124,9 @@ class ChatViewModel @Inject constructor(
             Timber.d("${_currentUser.value!!.photoUrl}")
             val result = chatRepository.sendNewChatMessage(newMessage)
             if (!result.succeeded) {
-                _errorMessage.postValue((result as Result.Error).exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error sending message")
+                _snackbarMessage.postValue(Event("There was an error sending the message"))
             }
         }
     }
@@ -128,7 +142,9 @@ class ChatViewModel @Inject constructor(
         GlobalScope.launch(coroutineDispatcher) {
             val result = chatRepository.sendImageMessage(newImageMessage, imageUri)
             if (!result.succeeded) {
-                _errorMessage.postValue((result as Result.Error).exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error sending image")
+                _snackbarMessage.postValue(Event("There was an error sending the image"))
             }
         }
     }

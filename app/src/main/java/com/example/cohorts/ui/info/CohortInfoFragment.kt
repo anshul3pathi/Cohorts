@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.core.model.User
@@ -84,14 +85,11 @@ class CohortInfoFragment : Fragment() {
         cohortInfoViewModel.currentUser.observe(viewLifecycleOwner, { currentUser ->
             userInfoAdapter.setCurrentUser(currentUser)
         })
-        cohortInfoViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            snackbar(binding.infoRootLayout, errorMessage)
-        })
-        cohortInfoViewModel.userSuccessfullyRemovedMessage.observe(viewLifecycleOwner, { message ->
-            snackbar(binding.infoRootLayout, message)
-        })
-        cohortInfoViewModel.cohortInfoUpdatedMessage.observe(viewLifecycleOwner, { message ->
-            snackbar(binding.infoRootLayout, message)
+
+        cohortInfoViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.infoRootLayout.snackbar(it)
+            }
         })
     }
 

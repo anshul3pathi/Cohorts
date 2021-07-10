@@ -73,28 +73,15 @@ class CohortsFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        cohortsViewModel.userAddedToMeeting.observe(viewLifecycleOwner, { userAddedToMeeting ->
-            if (userAddedToMeeting) {
-                cohortsViewModel.resetUserAddedToMeeting()
+        cohortsViewModel.snackbarMessage.observe(viewLifecycleOwner, { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.cohortsFragmentRootLayout.snackbar(it)
             }
-        })
-        cohortsViewModel.errorAddingUserToMeeting.observe(viewLifecycleOwner, { errorAddingUser ->
-            if (errorAddingUser) {
-                Snackbar.make(
-                    binding.cohortsFragmentRootLayout,
-                    "Error adding you to meeting.",
-                    Snackbar.LENGTH_LONG
-                ).show()
-                cohortsViewModel.resetErrorAddingUserToMeeting()
-            }
-        })
-        cohortsViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            snackbar(binding.cohortsFragmentRootLayout, errorMessage)
         })
     }
 
     private fun setupCohortRcv() {
-        val query = cohortsViewModel.fetchCohortsQuery()
+        val query = cohortsViewModel.fetchCohortsQuery()!!
 
         val cohortAdapterOptions = FirestoreRecyclerOptions.Builder<Cohort>()
             .setQuery(query, Cohort::class.java)
@@ -111,7 +98,7 @@ class CohortsFragment : Fragment() {
             val action = CohortsFragmentDirections.actionCohortToChat(cohort)
             navController.navigate(action, extras)
         }
-        cohortsAdapter.setContainedJoinButtonClickListener { cohort ->
+        cohortsAdapter.setJoinButtonClickListener { cohort ->
             Timber.d( "contained button clicked - $cohort")
             if (!cohortsViewModel.isCurrentUserInMeetingOfThisCohort(cohort)) {
                 cohortsViewModel.addCurrentUserToOngoingMeeting(
@@ -120,18 +107,10 @@ class CohortsFragment : Fragment() {
                     requireContext()
                 )
             } else {
-                snackbar(
-                    binding.cohortsFragmentRootLayout,
+                binding.cohortsFragmentRootLayout.snackbar(
                     "You are already in this meeting!"
                 )
             }
-        }
-        cohortsAdapter.setOutlineJoinButtonClickListener {
-            Timber.d("Outlined button clicked!")
-            snackbar(
-                binding.cohortsFragmentRootLayout,
-                "Start a new meeting from inside the cohort first!"
-            )
         }
 
         binding.cohortsRcv.apply {

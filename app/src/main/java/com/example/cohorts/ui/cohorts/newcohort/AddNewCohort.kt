@@ -7,12 +7,14 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentAddNewCohortBinding
 import com.example.cohorts.core.model.Cohort
+import com.example.cohorts.utils.snackbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.firebase.auth.FirebaseAuth
@@ -87,27 +89,11 @@ class AddNewCohort : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        addNewCohortViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            if (errorMessage.isNotEmpty()) {
-                Snackbar.make(
-                    binding.addNewCohortFragmentRoot,
-                    errorMessage,
-                    Snackbar.LENGTH_LONG
-                ).show()
+        addNewCohortViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.addNewCohortFragmentRoot.snackbar(it)
             }
         })
-        addNewCohortViewModel.cohortAddedSuccessfully.observe(
-            viewLifecycleOwner,
-            { cohortAddedSuccessfully ->
-                if (cohortAddedSuccessfully) {
-                    Snackbar.make(
-                        binding.addNewCohortFragmentRoot,
-                        "Cohort created successfully!",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            }
-        )
     }
 
 }

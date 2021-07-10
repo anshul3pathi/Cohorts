@@ -25,11 +25,13 @@ class CohortsRepository @Inject constructor(
         private const val USERS_COLLECTION = "users"
         private const val COHORTS_COLLECTION = "cohorts"
         private const val CHAT_CHILD = "chats"
+        private const val TASK_CHILD = "tasks"
     }
 
     private val usersCollection = firestore.collection(USERS_COLLECTION)
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
     private val chatReference = firebaseDatabase.reference.child(CHAT_CHILD)
+    private val tasksReference = firebaseDatabase.reference.child(TASK_CHILD)
 
     override fun fetchCohortsQuery(): Result<Query> {
         return safeCall {
@@ -178,6 +180,9 @@ class CohortsRepository @Inject constructor(
 
             // delete the chats associated with the cohort
             chatReference.child(cohort.cohortUid).removeValue().await()
+
+            // delete the tasks associated with this fragment
+            tasksReference.child(cohort.cohortUid).removeValue().await()
 
             // finally delete the cohort
             cohortsCollection.document(cohort.cohortUid).delete().await()

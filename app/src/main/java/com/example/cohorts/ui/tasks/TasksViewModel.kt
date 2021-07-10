@@ -20,22 +20,16 @@ class TasksViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData<Event<String>>()
-    val errorMessage: LiveData<Event<String>> = _errorMessage
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
-    private val _completedTasksDeletedMessage = MutableLiveData<Event<String>>()
-    val completedTasksDeletedMessage: LiveData<Event<String>> = _completedTasksDeletedMessage
-
-    private val _allTasksDeletedMessage = MutableLiveData<Event<String>>()
-    val allTasksDeletedMessage: LiveData<Event<String>> = _allTasksDeletedMessage
-
-    fun fetchChatReference(cohortUid: String): DatabaseReference? {
+    fun fetchTaskReference(cohortUid: String): DatabaseReference? {
         val result = tasksRepository.fetchTaskReference(cohortUid)
         return if (result.succeeded) {
             (result as Result.Success).data
         } else {
             val errorMessage = (result as Result.Error).exception.message
-            _errorMessage.postValue(Event(errorMessage?: ""))
+            _snackbarMessage.postValue(Event("There was some error."))
             null
         }
     }
@@ -46,7 +40,7 @@ class TasksViewModel @Inject constructor(
             if (!result.succeeded) {
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "Could not change status of task")
-                _errorMessage.postValue(Event("Couldn't change status of task!"))
+                _snackbarMessage.postValue(Event("Couldn't change status of task!"))
             }
         }
     }
@@ -55,12 +49,12 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.clearCompletedTasks(ofCohortUid)
             if (result.succeeded) {
-                _completedTasksDeletedMessage
+                _snackbarMessage
                     .postValue(Event("Completed tasks are deleted."))
             } else {
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "clear completed tasks failed.")
-                _errorMessage.postValue(Event("Couldn't delete completed tasks!"))
+                _snackbarMessage.postValue(Event("Couldn't delete completed tasks!"))
             }
         }
     }
@@ -69,11 +63,11 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.clearAllTasks(ofCohortUid)
             if (result.succeeded) {
-                _allTasksDeletedMessage.postValue(Event("All tasks are deleted."))
+                _snackbarMessage.postValue(Event("All tasks are deleted."))
             } else {
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "clear all tasks failed.")
-                _errorMessage.postValue(Event("Couldn't clear all tasks!"))
+                _snackbarMessage.postValue(Event("Couldn't clear all tasks!"))
             }
         }
     }

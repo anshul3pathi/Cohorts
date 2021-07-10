@@ -11,7 +11,7 @@ import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.destroyJitsi
 import com.example.cohorts.utils.Theme
-import com.example.cohorts.utils.intToTheme
+import com.example.cohorts.utils.toTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.BroadcastReceiver
@@ -47,7 +47,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun changeAppTheme(value: Int) {
-        val theme = intToTheme(value)
+        val theme = value.toTheme()
         _currentAppTheme.postValue(theme)
         themeRepository.saveAppTheme(theme)
     }

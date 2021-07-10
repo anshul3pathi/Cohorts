@@ -6,6 +6,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.cohorts.R
@@ -70,7 +71,7 @@ class AddNewTaskFragment : Fragment() {
 
     private fun addNewTask() {
         if (binding.taskTitleEt.text.toString().isEmpty()) {
-            snackbar(binding.addNewTaskRootLayout, "Task must have a name!")
+            binding.addNewTaskRootLayout.snackbar("Task must have a name!")
             return
         }
         val newTask = Task(
@@ -78,7 +79,7 @@ class AddNewTaskFragment : Fragment() {
             title = binding.taskTitleEt.text.toString(),
             description = binding.taskDescriptionEt.text.toString()
         )
-        addNewTaskViewModel.addNewCohort(newTask, cohortArgument.cohortUid)
+        addNewTaskViewModel.addNewTask(newTask, cohortArgument.cohortUid)
 
         object: CountDownTimer(1500L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {}
@@ -90,13 +91,9 @@ class AddNewTaskFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        addNewTaskViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            snackbar(binding.addNewTaskRootLayout, errorMessage)
-        })
-
-        addNewTaskViewModel.taskAddedSuccessfully.observe(viewLifecycleOwner, { taskAdded ->
-            if (taskAdded) {
-                snackbar(binding.addNewTaskRootLayout, "Task added successfully!")
+        addNewTaskViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.addNewTaskRootLayout.snackbar(it)
             }
         })
     }

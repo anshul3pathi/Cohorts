@@ -92,7 +92,7 @@ class TasksFragment : Fragment() {
     }
 
     private fun setUpTaskRcv() {
-        val taskRef = taskViewModel.fetchChatReference(cohortArgument.cohortUid)!!
+        val taskRef = taskViewModel.fetchTaskReference(cohortArgument.cohortUid)!!
 
         taskRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -134,15 +134,9 @@ class TasksFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        taskViewModel.errorMessage.observe(viewLifecycleOwner, { event ->
+        taskViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let {
-                snackbar(binding.tasksFragmentRootLayout, it)
-            }
-        })
-
-        taskViewModel.allTasksDeletedMessage.observe(viewLifecycleOwner, { event ->
-            event.getContentIfNotHandled()?.let {
-                snackbar(binding.tasksFragmentRootLayout, it)
+                binding.tasksFragmentRootLayout.snackbar(it)
             }
         })
     }

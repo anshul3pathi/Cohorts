@@ -21,8 +21,8 @@ import com.example.cohorts.databinding.ActivityMainBinding
 import com.example.cohorts.ui.cohorts.CohortsFragmentDirections
 import com.example.cohorts.ui.login.LoginActivity
 import com.example.cohorts.utils.Theme
-import com.example.cohorts.utils.intToTheme
 import com.example.cohorts.utils.snackbar
+import com.example.cohorts.utils.toTheme
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         subscribeToObservers()
 
-        appTheme = intToTheme(intent.getIntExtra(APP_THEME_EXTRA, 1))
+        appTheme = intent.getIntExtra(APP_THEME_EXTRA, 1).toTheme()
 
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     private fun subscribeToObservers() {
         mainViewModel.errorMessage.observe(this, { errorMessage ->
             if (errorMessage != "Index: 0, Size: 0") {
-            snackbar(binding.mainActivityRootLayout, errorMessage)
+                binding.mainActivityRootLayout.snackbar(errorMessage, false)
             }
         })
         mainViewModel.currentAppTheme.observe(this, { appTheme ->

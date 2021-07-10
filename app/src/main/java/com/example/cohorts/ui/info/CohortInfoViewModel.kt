@@ -10,6 +10,7 @@ import com.example.cohorts.core.model.User
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
+import com.example.cohorts.utils.Event
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,17 +26,11 @@ class CohortInfoViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
     private val _currentUser = MutableLiveData(User())
     val currentUser: LiveData<User> = _currentUser
 
-    private val _userSuccessfullyRemovedMessage = MutableLiveData<String>()
-    val userSuccessfullyRemovedMessage: LiveData<String> = _userSuccessfullyRemovedMessage
-
-    private val _cohortInfoUpdatedMessage = MutableLiveData<String>()
-    val cohortInfoUpdatedMessage: LiveData<String> = _cohortInfoUpdatedMessage
+    private val _snackbarMessage = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
     fun fetchUsersQuery(cohortUid: String): Query {
         val result = cohortsRepository.fetchUsersQuery(cohortUid)
@@ -50,7 +45,9 @@ class CohortInfoViewModel @Inject constructor(
                 _currentUser.postValue(result.data)
             } else {
                 Timber.e((result as Result.Error).exception, "couldn't get current user")
-                _errorMessage.postValue("There was some error removing the user.")
+                _snackbarMessage.postValue(
+                    Event("There was some error getting current user.")
+                )
             }
         }
     }
@@ -59,9 +56,15 @@ class CohortInfoViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             val result = cohortsRepository.removeThisUserFromCohort(user, cohort)
             if (result.succeeded) {
-                _userSuccessfullyRemovedMessage.postValue((result as Result.Success).data as String)
+                _snackbarMessage.postValue(
+                    Event("${user.userName} was removed from ${cohort.cohortName}.")
+                )
             } else {
-                _errorMessage.postValue((result as Result.Error).exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error removing user from cohort")
+                _snackbarMessage.postValue(
+                    Event("There was some error removing the user.")
+                )
             }
         }
     }
@@ -70,9 +73,15 @@ class CohortInfoViewModel @Inject constructor(
         viewModelScope.launch(coroutineDispatcher) {
             val result = cohortsRepository.saveCohort(cohort)
             if (result.succeeded) {
-                _cohortInfoUpdatedMessage.postValue("Cohort info was updated!")
+                _snackbarMessage.postValue(
+                    Event("Cohort updated.")
+                )
             } else {
-                _errorMessage.postValue((result as Result.Error).exception.message)
+                val exception = (result as Result.Error).exception
+                Timber.e(exception, "error updating cohort info")
+                _snackbarMessage.postValue(
+                    Event("There was some error updating the cohort.")
+                )
             }
         }
     }

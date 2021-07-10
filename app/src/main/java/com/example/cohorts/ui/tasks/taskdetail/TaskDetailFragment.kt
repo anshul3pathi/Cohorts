@@ -90,7 +90,7 @@ class TaskDetailFragment : Fragment() {
     private fun subscribeToObservers() {
         taskDetailViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let {
-                snackbar(binding.taskDetailRootLayout, it)
+                binding.taskDetailRootLayout.snackbar(it)
             }
         })
     }
@@ -112,7 +112,7 @@ class TaskDetailFragment : Fragment() {
                 binding.task = taskArgument
                 binding.executePendingBindings()
             } else {
-                snackbar(binding.taskDetailRootLayout, "Title cannot be empty!")
+                binding.taskDetailRootLayout.snackbar("Title cannot be empty!")
             }
         }
     }

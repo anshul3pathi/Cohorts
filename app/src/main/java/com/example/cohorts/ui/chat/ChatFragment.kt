@@ -9,6 +9,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -179,28 +180,27 @@ class ChatFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        chatViewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
-            snackbar(binding.chatRootLayout, errorMessage)
+        chatViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.chatRootLayout.snackbar(it)
+            }
         })
 
         chatViewModel.currentUser.observe(viewLifecycleOwner, { currentUser ->
             chatMessageAdapter.setCurrentUser(currentUser)
         })
 
-        chatViewModel.cohortDeleted.observe(viewLifecycleOwner, { cohortDeleted ->
-            if (cohortDeleted) {
-                Snackbar.make(
-                    binding.chatRootLayout,
-                    "Cohort deleted!",
-                    Snackbar.LENGTH_LONG
-                ).show()
-                object : CountDownTimer(1500L, 500L) {
-                    override fun onTick(millisUntilFinished: Long) {}
+        chatViewModel.cohortDeleted.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    object : CountDownTimer(1500L, 500L) {
+                        override fun onTick(millisUntilFinished: Long) {}
 
-                    override fun onFinish() {
-                        navController.navigateUp()
-                    }
-                }.start()
+                        override fun onFinish() {
+                            navController.navigateUp()
+                        }
+                    }.start()
+                }
             }
         })
     }

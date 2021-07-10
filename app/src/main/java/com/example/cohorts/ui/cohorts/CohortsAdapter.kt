@@ -17,8 +17,7 @@ class CohortsAdapter(
 ) : FirestoreRecyclerAdapter<Cohort, ViewHolder>(options) {
 
     private var cohortItemClickListener: ((Cohort, View) -> Unit)? = null
-    private var outlineJoinButtonClickListener: (() -> Unit)? = null
-    private var containedJoinButtonClickListener: ((Cohort) -> Unit)? = null
+    private var joinButtonClickListener: ((Cohort) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -43,10 +42,7 @@ class CohortsAdapter(
                     transitionName = cohortItem.cohortUid
                 }
                 joinVideoCallContainedButton.setOnClickListener {
-                    containedJoinButtonClickListener!!(getItem(layoutPosition))
-                }
-                joinVideoCallOutlineButton.setOnClickListener {
-                    outlineJoinButtonClickListener!!()
+                    joinButtonClickListener!!(getItem(layoutPosition))
                 }
             }
             binding.cohort = cohortItem
@@ -57,12 +53,8 @@ class CohortsAdapter(
         cohortItemClickListener = listener
     }
 
-    fun setOutlineJoinButtonClickListener(listener: () -> Unit) {
-        outlineJoinButtonClickListener = listener
-    }
-
-    fun setContainedJoinButtonClickListener(listener: (Cohort) -> Unit) {
-        containedJoinButtonClickListener = listener
+    fun setJoinButtonClickListener(listener: (Cohort) -> Unit) {
+        joinButtonClickListener = listener
     }
 
 }
@@ -76,6 +68,12 @@ class ExtendedFloatingActionButtonScrollListener(
             && !extendedFab.isExtended && recyclerView.computeVerticalScrollOffset() == 0) {
             Timber.d("scroll state changed")
             extendedFab.extend()
+        }
+        if (!recyclerView.canScrollVertically(1)
+            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+            extendedFab.hide()
+        } else {
+            extendedFab.show()
         }
         super.onScrollStateChanged(recyclerView, newState)
     }

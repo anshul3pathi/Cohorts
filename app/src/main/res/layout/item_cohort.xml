@@ -62,9 +62,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="8dp"
-                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Body2."
                     app:numberOfMembers="@{cohort.numberOfMembers}"
                     tools:text="Members: 69" />
+
+                <TextView
+                    android:id="@+id/item_cohort_ongoing_call_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.Cohorts.Body2."
+                    app:viewGoneOrVisible="@{cohort.callOngoing}"
+                    android:text="@string/a_meeting_is_going_on_in_this_cohort"/>
 
             </LinearLayout>
 
@@ -75,24 +84,16 @@
                 android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/join_video_call_outline_button"
-                    style="?materialButtonOutlinedStyle"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/join"
-                    android:textAllCaps="false"
-                    app:viewGoneOrVisible="@{!cohort.callOngoing}" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:viewGoneOrVisible="@{cohort.callOngoing}">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/join_video_call_contained_button"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/join"
                     android:textAllCaps="false"
-                    app:viewGoneOrVisible="@{cohort.callOngoing}" />
+                    android:drawableEnd="@drawable/ic_video_call"/>
 
             </FrameLayout>
 

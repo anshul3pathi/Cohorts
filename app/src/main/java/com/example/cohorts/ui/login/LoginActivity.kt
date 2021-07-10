@@ -6,12 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityLoginBinding
 import com.example.cohorts.ui.main.MainActivity
-import com.example.cohorts.utils.NetworkRequest
 import com.example.cohorts.utils.Theme
-import com.example.cohorts.utils.intToTheme
+import com.example.cohorts.utils.snackbar
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
@@ -79,16 +79,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun subscribeToObservers() {
-        loginViewModel.userRegistered.observe(this, { userRegistered ->
-            if (userRegistered == NetworkRequest.SUCCESS) {
-                Timber.d("Logged in!")
-                Snackbar.make(binding.loginRootLayout, "Signed in!", Snackbar.LENGTH_LONG)
-                    .show()
-            } else {
-                Timber.d("Error saving user")
-                Snackbar
-                    .make(binding.loginRootLayout, "Error saving user", Snackbar.LENGTH_LONG)
-                    .show()
+        loginViewModel.snackbarMessage.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                binding.loginRootLayout.snackbar(it)
             }
         })
     }

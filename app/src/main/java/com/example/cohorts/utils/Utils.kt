@@ -26,8 +26,11 @@ inline fun <T> safeCall(action: () -> Result<T>): Result<T> {
     }
 }
 
-enum class NetworkRequest {
-    SUCCESS, FAILURE, LOADING
+fun View.snackbar(message: String, lengthShort: Boolean = false) {
+    Snackbar.make(
+        this,
+        message, if (lengthShort) Snackbar.LENGTH_SHORT else Snackbar.LENGTH_LONG
+    ).show()
 }
 
 fun snackbar(view: View, message: String) {
@@ -38,8 +41,8 @@ enum class Theme {
     LIGHT, DARK, SYSTEM_DEFAULT
 }
 
-fun intToTheme(value: Int): Theme {
-    return when (value) {
+fun Int.toTheme(): Theme {
+    return when (this) {
         0 -> Theme.LIGHT
         1 -> Theme.DARK
         else -> Theme.SYSTEM_DEFAULT
