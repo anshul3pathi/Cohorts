@@ -13,6 +13,7 @@ import com.example.cohorts.core.model.User
 import com.example.cohorts.core.repository.chat.ChatRepo
 import com.example.cohorts.core.repository.cohorts.CohortsRepo
 import com.example.cohorts.core.repository.meeting.MeetingRepo
+import com.example.cohorts.core.repository.user.UserRepo
 import com.example.cohorts.core.succeeded
 import com.example.cohorts.jitsi.initJitsi
 import com.example.cohorts.jitsi.launchJitsi
@@ -31,6 +32,7 @@ class ChatViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
     private val chatRepository: ChatRepo,
     private val meetingRepository: MeetingRepo,
+    private val userRepository: UserRepo,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -105,7 +107,7 @@ class ChatViewModel @Inject constructor(
      */
     fun initialiseJitsi(broadcastReceiver: BroadcastReceiver, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
-            val currentUser = cohortsRepository.getCurrentUser()
+            val currentUser = userRepository.getCurrentUser()
             if (currentUser.succeeded) {
                 currentUser as Result.Success
                 initJitsi(currentUser.data, broadcastReceiver, context)
