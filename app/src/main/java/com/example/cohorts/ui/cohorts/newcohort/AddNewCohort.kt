@@ -1,6 +1,5 @@
 package com.example.cohorts.ui.cohorts.newcohort
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -10,21 +9,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.transition.Slide
 import com.example.cohorts.R
 import com.example.cohorts.databinding.FragmentAddNewCohortBinding
 import com.example.cohorts.core.model.Cohort
 import com.example.cohorts.utils.snackbar
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialContainerTransform
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Displays the page for adding a new Cohort
+ */
 @AndroidEntryPoint
 class AddNewCohort : Fragment() {
 
@@ -48,6 +42,8 @@ class AddNewCohort : Fragment() {
         subscribeToObservers()
 
         (activity as AppCompatActivity).supportActionBar?.apply {
+
+            // change the icon of up button
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_cancel)
         }
@@ -62,7 +58,6 @@ class AddNewCohort : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.done_add_cohort_button -> {
-                Timber.d( "added new Cohort - ${binding.cohortNameEt.text}")
                 addNewCohortToDatabase()
                 true
             } else -> {
@@ -78,7 +73,8 @@ class AddNewCohort : Fragment() {
         )
         addNewCohortViewModel.addNewCohort(newCohort)
 
-        object: CountDownTimer(1500L, 1000L) {
+        // wait till the confirmation or error snackbar is displayed, then pop out of this screen
+        object: CountDownTimer(3000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
             }
 

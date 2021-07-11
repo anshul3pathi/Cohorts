@@ -9,12 +9,15 @@ import com.example.cohorts.utils.safeCall
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Concrete implementation of [MeetingRepo] for dealing with adding and removing
+ * user from meetings of cohorts
+ */
 @Singleton
 class MeetingRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -29,6 +32,8 @@ class MeetingRepository @Inject constructor(
     private val usersCollection = firestore.collection(USERS_COLLECTION)
     private val cohortsCollection = firestore.collection(COHORTS_COLLECTION)
 
+    // initialise the member variable with minimum amount of information about the
+    // currently logged in user until the data from firestore is retrieved
     private var currentUser: User? = User(
         uid = auth.currentUser!!.uid,
         userName = auth.currentUser!!.displayName,
@@ -36,16 +41,21 @@ class MeetingRepository @Inject constructor(
     )
 
     init {
+        // listen for changes to the data of the currently logged in user
+        // in firestore database
         listenToRealtimeChangesToCurrentUser()
         Timber.d("Init")
+        // crash the app if the user is not logged in
         auth.currentUser!!
     }
 
+    /**
+     * Attach a realtime listener to the data of currently logged in user
+     * this listener will update the currentUser member variable whenever there are changes
+     * to the data of current user in firestore
+     */
     private fun listenToRealtimeChangesToCurrentUser() {
         Timber.d("trying to listen to realtime changes!")
-        // attaching a realtime listener to the data of current user
-        // this listener will update the currentUser variable whenever there are changes
-        // to the data of current user in firestore
         usersCollection.document(auth.currentUser!!.uid).addSnapshotListener { value, error ->
             if (error != null) {
                 Timber.e(error, "error listening to realtime changes in current user")
@@ -53,15 +63,21 @@ class MeetingRepository @Inject constructor(
             }
 
             if (value != null && value.exists()) {
-                currentUser = value.data!!.mapToUserObject(value.data!!)
+                currentUser = value.data!!.mapToUserObject()!!
                 Timber.d("current user = $currentUser")
             }
         }
     }
 
+    /**
+     * Add the current user to the meeting of cohort
+     *
+     * @param ofCohortUid uid of the cohort in whose the meeting the user is to be added
+     * @return [User] wrapped in [Result]
+     */
     override suspend fun addCurrentUserToOngoingMeeting(ofCohortUid: String): Result<User> {
         return safeCall {
-            // add currently logged in user to the ongoing meeting of the
+            // add currently logged in user to the ongoing meeting of the cohort
             cohortsCollection.document(ofCohortUid)
                 .update("membersInMeeting", FieldValue.arrayUnion(auth.currentUser!!.uid))
                 .await()
@@ -69,6 +85,12 @@ class MeetingRepository @Inject constructor(
         }
     }
 
+    /**
+     * Start a new meeting in the cohort
+     *
+     * @param ofCohortUid uid of the cohort in which the meeting is to be started
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun startNewMeeting(ofCohortUid: String): Result<Any> {
         return safeCall {
             // retrieving the cohort from firestore
@@ -86,7 +108,9 @@ class MeetingRepository @Inject constructor(
                 cohortsCollection.document(ofCohortUid)
                     .update("callOngoing", true)
                     .await()
+
                 val result = addCurrentUserToOngoingMeeting(ofCohortUid)
+                // if the current user was successfully added to the started meeting of cohort
                 if (result.succeeded) {
                     Result.Success(Any())
                 } else {
@@ -96,6 +120,11 @@ class MeetingRepository @Inject constructor(
         }
     }
 
+    /**
+     * Leave the ongoing meeting of which the currently logged in user is part of
+     *
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun leaveOngoingMeeting(): Result<Any> {
         return safeCall {
             // retrieving the cohort in whose meeting the user is in
@@ -148,6 +177,12 @@ class MeetingRepository @Inject constructor(
         }
     }
 
+    /**
+     * Removes the user from meetings the are in, even if they are part of multiple meetings
+     * because of some bug
+     *
+     * Call this method when the app closes
+     */
     override suspend fun onDestroy() {
         Timber.d("onDestroy")
         val batch = firestore.batch()
@@ -156,16 +191,18 @@ class MeetingRepository @Inject constructor(
          * the user cannot be in more than one meeting at once but still we will
          * check all cohorts.
          */
-        val cohortsDocuments = cohortsCollection
-            .whereArrayContains("membersInMeeting", auth.currentUser!!.uid)
-            .get()
-            .await()
+        val cohortsDocuments = auth.currentUser?.uid?.let {
+            cohortsCollection
+                .whereArrayContains("membersInMeeting", it)
+                .get()
+                .await()
+        }
 
         /* remove current user from from the meetings of all the cohorts they are in
          * and if the user was the only member in the meeting then also terminate
          * that meeting
          */
-        cohortsDocuments.documents.forEach { document ->
+        cohortsDocuments?.documents?.forEach { document ->
             document.data?.get("membersInMeeting")?.let { membersInMeeting ->
                 membersInMeeting as MutableList<*>
                 // remove current user from this meeting

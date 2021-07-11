@@ -17,6 +17,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel to Add new task screen
+ */
 @HiltViewModel
 class AddNewTaskViewModel @Inject constructor(
     private val tasksRepository: TasksRepo,
@@ -26,6 +29,12 @@ class AddNewTaskViewModel @Inject constructor(
     private val _snackbarMessage = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
+    /**
+     * Save new [Task] to firebase database
+     *
+     * @param newTask task object to be saved on firebase
+     * @param cohortUid uid of cohort the task belongs to
+     */
     fun addNewTask(newTask: Task, cohortUid: String) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.addNewTask(newTask, cohortUid)

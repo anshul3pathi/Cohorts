@@ -18,6 +18,9 @@ import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Displays the Cohort Info screen and list of [User]s in [Cohort]
+ */
 @AndroidEntryPoint
 class CohortInfoFragment : Fragment() {
 
@@ -38,8 +41,10 @@ class CohortInfoFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        arguments.let {
-            cohortArgument = CohortInfoFragmentArgs.fromBundle(it!!).cohort!!
+        // get the cohort argument passed to the fragment and initialise the cohortArgument
+        // member variable
+        arguments?.let {
+            cohortArgument = CohortInfoFragmentArgs.fromBundle(it).cohort!!
             binding.cohort = cohortArgument
             (activity as AppCompatActivity).supportActionBar?.subtitle = ""
             Timber.d("Cohort - $cohortArgument")
@@ -83,6 +88,7 @@ class CohortInfoFragment : Fragment() {
 
     private fun subscribeToObservers() {
         cohortInfoViewModel.currentUser.observe(viewLifecycleOwner, { currentUser ->
+            Timber.d("current user - $currentUser")
             userInfoAdapter.setCurrentUser(currentUser)
         })
 

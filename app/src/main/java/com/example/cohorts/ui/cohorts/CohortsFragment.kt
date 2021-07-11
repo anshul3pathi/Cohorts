@@ -28,6 +28,9 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Displays a list of [Cohort]s
+ */
 @AndroidEntryPoint
 class CohortsFragment : Fragment() {
 

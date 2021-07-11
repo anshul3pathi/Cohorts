@@ -17,6 +17,9 @@ import com.example.cohorts.utils.snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Add new task screen
+ */
 @AndroidEntryPoint
 class AddNewTaskFragment : Fragment() {
 
@@ -34,8 +37,9 @@ class AddNewTaskFragment : Fragment() {
 
         navController = findNavController()
 
-        arguments.let {
-            cohortArgument = AddNewTaskFragmentArgs.fromBundle(it!!).cohort!!
+        // initialise the cohortArgument from safeArgs passed to this fragment
+        arguments?.let {
+            cohortArgument = AddNewTaskFragmentArgs.fromBundle(it).cohort!!
         }
 
         setHasOptionsMenu(true)
@@ -53,7 +57,10 @@ class AddNewTaskFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // clear the default menu of MainActivity
         menu.clear()
+
+        // inflate the menu specific to this fragment
         inflater.inflate(R.menu.add_cohort_fragment_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -81,7 +88,8 @@ class AddNewTaskFragment : Fragment() {
         )
         addNewTaskViewModel.addNewTask(newTask, cohortArgument.cohortUid)
 
-        object: CountDownTimer(1500L, 1000L) {
+        // wait for the snackbar to appear then pop out of this fragment
+        object: CountDownTimer(3000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {

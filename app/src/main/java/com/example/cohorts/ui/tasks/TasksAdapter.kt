@@ -9,6 +9,12 @@ import com.example.cohorts.databinding.ItemTasksBinding
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 
+/**
+ * Adapter for displaying task list
+ *
+ * @param options [FirebaseRecyclerOptions] for displaying realtime list of [Task]s
+ * @param checkClickListener Listener for listening to check box click events
+ */
 class TasksAdapter(
     options: FirebaseRecyclerOptions<Task>,
     private val checkClickListener: (Task) -> Unit
@@ -46,6 +52,11 @@ class TasksAdapter(
 
     }
 
+    /**
+     * Sets the click listener for task item click event
+     *
+     * @param listener lambda function for handling [Task] item click events
+     */
     fun setTaskItemClickListener(listener: (Task, View) -> Unit) {
         taskItemClickListener = listener
     }

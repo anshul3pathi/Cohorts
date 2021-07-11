@@ -15,6 +15,9 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import kotlin.IllegalArgumentException
 
+/**
+ * Concrete implementation for manipulating [Cohort]s data in firestore database
+ */
 class CohortsRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
@@ -33,6 +36,12 @@ class CohortsRepository @Inject constructor(
     private val chatReference = firebaseDatabase.reference.child(CHAT_CHILD)
     private val tasksReference = firebaseDatabase.reference.child(TASK_CHILD)
 
+    /**
+     * Fetches the query to get all the [Cohort]s from firestore whose member the
+     * logged in user is
+     *
+     * @return [Query] wrapped in [Result]
+     */
     override fun fetchCohortsQuery(): Result<Query> {
         return safeCall {
             Result.Success(
@@ -41,6 +50,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Fetches the query to get all the [User]s who are in a certain [Cohort]
+     *
+     * @param cohortUid uid of the [Cohort]
+     * @return [Query] wrapped in [Result]
+     */
     override fun fetchUsersQuery(cohortUid: String): Result<Query> {
         return safeCall {
             Result.Success(
@@ -49,15 +64,24 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Get the [User] with the given email
+     *
+     * @param userEmail email of the [User] to be searched
+     * @return [User] wrapped in [Result]
+     */
     override suspend fun getUserByEmail(userEmail: String): Result<User> {
         return safeCall {
+            // search for the user with the given email
             val users = usersCollection
                 .whereEqualTo("userEmail", userEmail)
                 .get()
                 .await()
                 .toObjects(User::class.java)
+            // if more than 1 users found with the given email
             if (users.size > 1) {
                 throw IllegalStateException("More than one user found with given email!")
+            // if no users found with the given email
             } else if (users.size == 0) {
                 throw IllegalStateException("No user found with the given email!")
             }
@@ -65,6 +89,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Save the given [Cohort] in firestore cohorts collection
+     *
+     * @param cohort [Cohort] to save in firestore
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun saveCohort(cohort: Cohort): Result<Any> {
         return safeCall {
             cohortsCollection.document(cohort.cohortUid).set(cohort).await()
@@ -72,6 +102,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Save the given [User] in firestore users collection
+     *
+     * @param user [User] to save in firestore
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun saveUser(user: User): Result<Any> {
         return safeCall {
             usersCollection.document(user.uid!!).set(user).await()
@@ -79,6 +115,11 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Get the [User] object containing the data of the currently logged in user
+     *
+     * @return [User] wrapped in [Result]
+     */
     override suspend fun getCurrentUser(): Result<User> {
         return safeCall {
             val currentUser = usersCollection.document(auth.currentUser!!.uid)
@@ -89,6 +130,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Get the [User] with the given uid
+     *
+     * @param userUid uid of the user
+     * @return [User] wrapped in [Result]
+     */
     override suspend fun getUserByUid(userUid: String): Result<User> {
         return safeCall {
             val searchedUser =
@@ -97,16 +144,29 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Create a new cohort
+     *
+     * Given a cohort with name and description, add the user who created the
+     * cohort and save it on firestore
+     *
+     * @param newCohort [Cohort] containing the name and description
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun addNewCohort(newCohort: Cohort): Result<Any> {
         return safeCall {
+            //  get the currently logged in user
             val currentUser = getUserByUid(auth.currentUser!!.uid)
             if (!currentUser.succeeded) currentUser as Result.Error
 
             currentUser as Result.Success
+            // increase the member count of the cohort as the current user
+            // is a member of this cohort
             newCohort.numberOfMembers += 1
+            // add current user's uid to the list of members of this cohort
             newCohort.cohortMembers.add(currentUser.data.uid!!)
 
-            // adding this new cohort to the list of cohorts current user is in
+            // adding this new cohort's uid to the list of cohorts current user is in
             usersCollection.document(currentUser.data.uid!!)
                 .update("cohortsIn", FieldValue.arrayUnion(newCohort.cohortUid))
 
@@ -118,8 +178,16 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Add a [User] to the given [Cohort]
+     *
+     * @param cohort Cohort in which the user is to be added
+     * @param userEmail email of the user to be added to given cohort
+     * @return [Any] wrapped in  [Result]
+     */
     override suspend fun addNewMemberToCohort(cohort: Cohort, userEmail: String): Result<Any> {
         return safeCall {
+            // get user using given email
             val result = getUserByEmail(userEmail)
 
             // user with the given name doesn't exist
@@ -151,6 +219,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Get the [Cohort] from firestore with the given cohortUid
+     *
+     * @param cohortUid uid of the [Cohort] to be searched
+     * @return [Cohort] wrapped in [Result]
+     */
     override suspend fun getCohortById(cohortUid: String): Result<Cohort> {
         val cohort = cohortsCollection.document(cohortUid).get().await()
             .toObject(Cohort::class.java)
@@ -159,6 +233,12 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Delete the given [Cohort] from firestore
+     *
+     * @param cohort cohort to be deleted
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun deleteThisCohort(cohort: Cohort): Result<Any> {
         return safeCall {
             val batch = firestore.batch()
@@ -191,6 +271,13 @@ class CohortsRepository @Inject constructor(
         }
     }
 
+    /**
+     * Remove the given user from the given cohort
+     *
+     * @param user user to be removed from cohort
+     * @param cohort cohort from which the user is to be removed
+     * @return [Any] wrapped in [Result]
+     */
     override suspend fun removeThisUserFromCohort(user: User, cohort: Cohort): Result<Any> {
         return safeCall {
             // remove this cohort from the list of cohorts the user is in

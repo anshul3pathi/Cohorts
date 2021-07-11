@@ -41,6 +41,14 @@ enum class Theme {
     LIGHT, DARK, SYSTEM_DEFAULT
 }
 
+fun Theme.fromThemeToInt(): Int {
+    return when (this) {
+        Theme.LIGHT -> 0
+        Theme.DARK -> 1
+        Theme.SYSTEM_DEFAULT -> 2
+    }
+}
+
 fun Int.toTheme(): Theme {
     return when (this) {
         0 -> Theme.LIGHT

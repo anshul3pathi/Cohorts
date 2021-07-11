@@ -6,6 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt Module for for providing the implementation of [TasksRepo]
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class TasksRepositoryModule {

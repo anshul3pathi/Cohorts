@@ -30,6 +30,9 @@ import org.jitsi.meet.sdk.BroadcastEvent
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 
+/**
+ * Activity that hosts the navHost Fragment and listens to broadcast events from Jitsi
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -109,6 +112,9 @@ class MainActivity : AppCompatActivity() {
 
     // private functions
 
+    /**
+     * Launch Firebase's AuthUI for signing out the user
+     */
     private fun signOut() {
         mainViewModel.signOut()
         AuthUI.getInstance()
@@ -135,6 +141,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Shows the change theme dialog and changes the theme with the theme selected
+     */
     private fun showChangeThemeDialog() {
         val singleItems = arrayOf("Light", "Dark", "System Default")
         val checkedItem = when (appTheme) {
@@ -165,32 +174,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Receives the broadcast events from Jitsi and decides what to do with them
+     */
     private fun onBroadcastReceived(intent: Intent?) {
         if (intent != null) {
             val event = BroadcastEvent(intent)
             when (event.type) {
+
+                // Meeting joined, show Toast
                 BroadcastEvent.Type.CONFERENCE_JOINED -> Toast.makeText(
                     this, "Meeting joined", Toast.LENGTH_LONG
                 ).show()
+
+                // Participant joined, show their name
                 BroadcastEvent.Type.PARTICIPANT_JOINED -> Toast.makeText(
                     this, "${event.data["name"]} joined the meeting", Toast.LENGTH_LONG
                 ).show()
+
+                // User left the meeting
                 BroadcastEvent.Type.CONFERENCE_TERMINATED -> {
                     Toast.makeText(
                     this, "You left the meeting.", Toast.LENGTH_LONG
                     ).show()
-                    Timber.d("on going conference terminated!")
                     mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
                 } else -> {
                     if (event.data?.get("muted") == "6.0") {
+                        // if the close button is pressed on the picture in picture screen
+
+                        // show meeting left Toast
                         Toast.makeText(
                             this, "You left the meeting.", Toast.LENGTH_LONG
                         ).show()
-                        Timber.d("Meeting terminated from PIP")
                         mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
                     }
-                    Timber.d( "Event - ${event.data}")
-                    Timber.d("muted = ${event.data?.get("muted")}")
                 }
             }
         }

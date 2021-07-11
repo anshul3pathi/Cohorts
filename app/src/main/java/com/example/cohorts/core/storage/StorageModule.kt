@@ -6,6 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt module that provides implementation of [Storage]
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class StorageModule {

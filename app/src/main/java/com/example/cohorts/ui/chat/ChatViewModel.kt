@@ -23,7 +23,9 @@ import kotlinx.coroutines.*
 import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 import javax.inject.Inject
-
+/**
+ * ViewModel for the Chat list screen
+ */
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
@@ -41,6 +43,9 @@ class ChatViewModel @Inject constructor(
     private val _cohortDeleted = MutableLiveData<Event<Boolean>>()
     val cohortDeleted: LiveData<Event<Boolean>> = _cohortDeleted
 
+    /**
+     * @param [cohortUid] uid of the cohort whose chat is required
+     */
     fun fetchChatReference(cohortUid: String): DatabaseReference? {
         val result = chatRepository.fetchChatReference(cohortUid)
         return if (result.succeeded) {
@@ -53,6 +58,9 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Gets the data of current user and posts the value in currentUser liveData
+     */
     fun getCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
             val result = cohortsRepository.getCurrentUser()
@@ -68,6 +76,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Starts a new meeting in given cohort
+     *
+     * @param ofCohort Cohort object containing the data of cohort whose new meeting is started
+     * @param context [Context]
+     */
     fun startNewMeeting(ofCohort: Cohort, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = meetingRepository.startNewMeeting(ofCohort.cohortUid)
@@ -77,12 +91,18 @@ class ChatViewModel @Inject constructor(
                 val exception = (result as Result.Error).exception
                 Timber.e(exception, "error starting a new meeting.")
                 _snackbarMessage.postValue(
-                    Event("Couldn't start a new meeting. Check your interned or try again later.")
+                    Event("Couldn't start a new meeting. Check your internet or try again later.")
                 )
             }
         }
     }
 
+    /**
+     * Initialises Jitsi with broadcastReceiver and the context
+     *
+     * @param broadcastReceiver for listening the broadcast events
+     * @param context [Context]
+     */
     fun initialiseJitsi(broadcastReceiver: BroadcastReceiver, context: Context) {
         viewModelScope.launch(coroutineDispatcher) {
             val currentUser = cohortsRepository.getCurrentUser()
@@ -97,6 +117,11 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Deletes the given cohort from database
+     *
+     * @param cohort object containing data data of [Cohort] to be deleted
+     */
     fun deleteThisCohort(cohort: Cohort) {
         CoroutineScope(coroutineDispatcher).launch {
             val result = cohortsRepository.deleteThisCohort(cohort)
@@ -111,6 +136,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Sends a  new text message in [Cohort]
+     *
+     * @param textMessage the text to be sent
+     * @param cohortUid uid of the [Cohort] in which the text is sent
+     */
     fun sendNewMessage(textMessage: String, cohortUid: String) {
         viewModelScope.launch(coroutineDispatcher) {
             val newMessage = ChatMessage(
@@ -131,6 +162,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Sends a  new image message in [Cohort]
+     *
+     * @param imageUri uri of the image to be sent
+     * @param cohortUid uid of the [Cohort] in which the image is sent
+     */
     fun sendImageMessage(imageUri: Uri?, cohortUid: String) {
         val newImageMessage = ChatMessage(
             text = null,
@@ -139,7 +176,11 @@ class ChatViewModel @Inject constructor(
             chatOfCohort = cohortUid,
             photoUrl = _currentUser.value!!.photoUrl
         )
-        GlobalScope.launch(coroutineDispatcher) {
+        /**
+         * CoroutineScope ensures that the image message is saved in database
+         * even if the [ChatViewModel] is destroyed.
+         */
+        CoroutineScope(coroutineDispatcher).launch {
             val result = chatRepository.sendImageMessage(newImageMessage, imageUri)
             if (!result.succeeded) {
                 val exception = (result as Result.Error).exception

@@ -15,12 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Bottom Sheet for taking userEmail as input and adding new user to [Cohort]
+ */
 @AndroidEntryPoint
 class AddNewMemberFragment : BottomSheetDialogFragment() {
-
-    companion object {
-        private const val TAG = "AddNewMemberBottomSheet"
-    }
 
     private lateinit var binding: FragmentAddNewMemberBinding
     private lateinit var cohort: Cohort
@@ -63,6 +62,8 @@ class AddNewMemberFragment : BottomSheetDialogFragment() {
         if (userEmail.isNotEmpty()) {
             Timber.d("addUserToCohort")
             addNewMemberViewModel.addNewMemberToCohort(cohort, userEmail)
+
+            // display a snackbar then dismiss the dialog
             object : CountDownTimer(3000L, 1000L) {
                 override fun onTick(millisUntilFinished: Long) {
                 }

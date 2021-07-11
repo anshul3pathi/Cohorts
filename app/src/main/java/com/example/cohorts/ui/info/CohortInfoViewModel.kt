@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel for the CohortInfo screen
+ */
 @HiltViewModel
 class CohortInfoViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
@@ -26,7 +29,7 @@ class CohortInfoViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
-    private val _currentUser = MutableLiveData(User())
+    private val _currentUser = MutableLiveData<User>()
     val currentUser: LiveData<User> = _currentUser
 
     private val _snackbarMessage = MutableLiveData<Event<String>>()
@@ -37,6 +40,9 @@ class CohortInfoViewModel @Inject constructor(
         return (result as Result.Success).data
     }
 
+    /**
+     * Get the data of current user and initialise the _currentUser liveData
+     */
     fun getCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
             val result = userRepository.getCurrentUser()
@@ -52,6 +58,12 @@ class CohortInfoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Removes the given [User] from the given [Cohort]
+     *
+     * @param user object with the data of the user to be removed
+     * @param cohort object with the data of cohort from which the user is to be removed
+     */
     fun removeThisUserFromCohort(user: User, cohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = cohortsRepository.removeThisUserFromCohort(user, cohort)
@@ -69,6 +81,11 @@ class CohortInfoViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Update the data of the given [Cohort] in firestore
+     *
+     * @param cohort object containing the data of updated cohort
+     */
     fun updateThisCohort(cohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = cohortsRepository.saveCohort(cohort)

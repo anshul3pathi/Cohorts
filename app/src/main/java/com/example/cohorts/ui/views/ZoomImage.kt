@@ -11,6 +11,9 @@ import android.view.View
 import androidx.annotation.Nullable
 import androidx.appcompat.widget.AppCompatImageView
 
+/**
+ * ImageView that con be zoomed in
+ */
 class ZoomImage : AppCompatImageView, View.OnTouchListener,
     GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
     //shared constructing

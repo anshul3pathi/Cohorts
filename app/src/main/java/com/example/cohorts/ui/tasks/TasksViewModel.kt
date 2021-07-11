@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel to [Task]s list screen
+ */
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val tasksRepository: TasksRepo,
@@ -23,17 +26,31 @@ class TasksViewModel @Inject constructor(
     private val _snackbarMessage = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
+    /**
+     * Fetches the reference to [Task]s in firebase database
+     *
+     * @param cohortUid uid of cohort the tasks are of
+     * @return DatabaseReference of task if successful otherwise null
+     */
     fun fetchTaskReference(cohortUid: String): DatabaseReference? {
         val result = tasksRepository.fetchTaskReference(cohortUid)
         return if (result.succeeded) {
             (result as Result.Success).data
         } else {
-            val errorMessage = (result as Result.Error).exception.message
+            val exception = (result as Result.Error).exception
+            Timber.e(exception, "error fetching task reference")
             _snackbarMessage.postValue(Event("There was some error."))
             null
         }
     }
 
+    /**
+     * Toggle the status of given [Task]
+     *
+     * Marks the task complete if it is active or marks it active if it is completed
+     *
+     * @param task object containing data of task
+     */
     fun markTaskCompleteOrActive(task: Task) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.markTaskCompleteOrActive(task)
@@ -45,6 +62,11 @@ class TasksViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clear all completed tasks from firebase database
+     *
+     * @param ofCohortUid uid of the cohort to which the completed tasks belong
+     */
     fun clearCompletedTasks(ofCohortUid: String) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.clearCompletedTasks(ofCohortUid)
@@ -59,6 +81,11 @@ class TasksViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears all the tasks from firebase database
+     *
+     * @param ofCohortUid uid of the cohort the tasks belong to
+     */
     fun clearAllTasks(ofCohortUid: String) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = tasksRepository.clearAllTasks(ofCohortUid)

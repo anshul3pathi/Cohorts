@@ -9,11 +9,15 @@ import com.example.cohorts.databinding.ItemInfoUserBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import timber.log.Timber
 
+/**
+ * Adapter for displaying list of [User]s
+ * @param options for displaying the list of [User]s in realtime
+ */
 class UserInfoAdapter(
     options: FirestoreRecyclerOptions<User>
 ) : FirestoreRecyclerAdapter<User, ViewHolder>(options) {
 
-    private lateinit var currentUser: User
+    private lateinit var mCurrentUser: User
     private var removeButtonOnClickListener: ((User) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,24 +35,37 @@ class UserInfoAdapter(
         private val binding: ItemInfoUserBinding
     ) : ViewHolder(binding.root) {
 
-        init {
-            binding.itemInfoRemoveButton.setOnClickListener {
-                removeButtonOnClickListener!!(getItem(layoutPosition))
-            }
-        }
-
         fun bind(user: User) {
-            binding.user = user
-            binding.currentUser = currentUser
+            binding.apply {
+                Timber.d("current user while binding - $mCurrentUser")
+                this.user = user
+                this.currentUser = mCurrentUser
+
+                itemInfoRemoveButton.setOnClickListener {
+                    removeButtonOnClickListener!!(user)
+                }
+            }
             Timber.d("User - $user")
         }
 
     }
 
+    /**
+     * Sets the currentUser member variable with the given [User] object
+     *
+     * @param user object with data of user
+     */
     fun setCurrentUser(user: User) {
-        currentUser = user
+        mCurrentUser = user
+        Timber.d("setCurrentUser - $mCurrentUser")
+
     }
 
+    /**
+     * Sets removeButtonClickListener member variable
+     *
+     * @param listener click listener lambda function
+     */
     fun setRemoveButtonClickListener(listener: (User) -> Unit) {
         removeButtonOnClickListener = listener
     }

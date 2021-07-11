@@ -18,6 +18,9 @@ import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Display the Task Detail screen
+ */
 @AndroidEntryPoint
 class TaskDetailFragment : Fragment() {
 
@@ -36,6 +39,7 @@ class TaskDetailFragment : Fragment() {
 
         navController = findNavController()
 
+        // initialise the transition to this fragment
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host_fragment
             duration = 300
@@ -43,6 +47,7 @@ class TaskDetailFragment : Fragment() {
             setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
         }
 
+        // initialise the taskArgument member variable from safeArgs
         arguments?.let {
             taskArgument = TaskDetailFragmentArgs.fromBundle(it).task!!
             binding.apply {
@@ -73,7 +78,10 @@ class TaskDetailFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // clear the default menu of MainActivity
         menu.clear()
+
+        // inflate the menu specific to this fragment
         inflater.inflate(R.menu.task_detail_menu, menu)
     }
 
@@ -103,6 +111,9 @@ class TaskDetailFragment : Fragment() {
             executePendingBindings()
         }
 
+        /*
+        * if the editing member variable is false then editing is done
+        */
         if (!editing) {
             Timber.d("done editing! save changes.")
             if (binding.editTaskTitleEt.text.toString().isNotEmpty()) {
@@ -120,7 +131,8 @@ class TaskDetailFragment : Fragment() {
     private fun deleteTask() {
         taskDetailViewModel.deleteTask(taskArgument)
 
-        object: CountDownTimer(1500L, 1000L) {
+        // wait for the snackbar message to appear then pop out of this fragment
+        object: CountDownTimer(3000L, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
             }
 

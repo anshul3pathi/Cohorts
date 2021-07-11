@@ -23,6 +23,9 @@ import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel to the [Cohort]s list screen
+ */
 @HiltViewModel
 class CohortsViewModel @Inject constructor(
     private val cohortsRepository: CohortsRepo,
@@ -60,6 +63,14 @@ class CohortsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Adds the current user to the ongoing meeting of the given [Cohort]
+     *
+     * @param ofCohort object containing the data of the [Cohort] whose meeting the user
+     * wants to join
+     * @param broadcastReceiver for listening to broadcast events by Jitsi
+     * @param context [Context]
+     */
     fun addCurrentUserToOngoingMeeting(
         ofCohort: Cohort,
         broadcastReceiver: BroadcastReceiver,
@@ -81,6 +92,12 @@ class CohortsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Checks if the current user if in meeting of the given [Cohort]
+     *
+     * @param cohort object containing the information of the [Cohort]
+     * @return true if user is in meeting otherwise false
+     */
     fun isCurrentUserInMeetingOfThisCohort(cohort: Cohort) =
         (currentUser.uid!! in cohort.membersInMeeting)
 

@@ -13,6 +13,13 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import timber.log.Timber
 
+/**
+ * Adapter for displaying list of [ChatMessage]
+ *
+ * @param options [FirebaseRecyclerOptions] For displaying chats in realtime
+ * @param progressBar [ProgressBar] For displaying chats loading
+ * @param imageClickListener Click listener for image message click event
+ */
 class ChatMessageAdapter(
     private val options: FirebaseRecyclerOptions<ChatMessage>,
     private val progressBar: ProgressBar,
@@ -31,10 +38,6 @@ class ChatMessageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-
-        if (isProgressBarVisible) {
-            hideProgressBar()
-        }
 
         return when (viewType) {
             VIEW_TYPE_TEXT_SENT -> {
@@ -61,19 +64,39 @@ class ChatMessageAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int, model: ChatMessage) {
         if (options.snapshots[position].text != null) {
             if (options.snapshots[position].userUid == currentUser.uid) {
+                /*
+                * if the item is of type text and the person who sent the text is current user
+                * then bind the data to SentTextViewHolder
+                */
                 (holder as SentTextViewHolder).bind(model)
             } else {
+                /*
+                * if the item is of type text but the person who sent the text is not current user
+                * then bind data to ReceivedTextViewHolder
+                */
                 (holder as ReceivedTextViewHolder).bind(model)
             }
         } else {
             if (options.snapshots[position].userUid == currentUser.uid) {
+                /*
+                * if the item is of type image and is sent by the current user then bind the data
+                * to ImageMessageSentViewHolder
+                */
                 (holder as ImageMessageSentViewHolder).bind(model)
             } else {
+                /*
+                * if the item is of type image and is not sent by the current user then bind the
+                *  data to ImageMessageReceivedViewHolder
+                */
                 (holder as ImageMessageReceivedViewHolder).bind(model)
             }
         }
     }
 
+    /**
+     * Depending upon the item being of text type of image type and if they are sent by
+     * the current user or not, returns the View type as a constant
+     */
     override fun getItemViewType(position: Int): Int {
         return if (options.snapshots[position].text != null) {
             if (options.snapshots[position].userUid == currentUser.uid) {
@@ -90,6 +113,10 @@ class ChatMessageAdapter(
         }
     }
 
+    /**
+     * Initialises the currentUser member variable
+     * @param user the user object containing the data of the current user
+     */
     fun setCurrentUser(user: User) {
         currentUser = user
     }
@@ -98,6 +125,7 @@ class ChatMessageAdapter(
         ViewHolder(binding.root) {
 
         init {
+            // hide the progress bar since the chat has loaded and list views are inflated
             hideProgressBar()
         }
 
@@ -160,6 +188,9 @@ class ChatMessageAdapter(
 
     }
 
+    /**
+     * Hides the chat loading progress bar if it is not already hidden
+     */
     private fun hideProgressBar() {
         if (isProgressBarVisible) {
             progressBar.visibility = View.INVISIBLE

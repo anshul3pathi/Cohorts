@@ -7,6 +7,9 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ViewModelComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt Module for providing the implementation of [MeetingRepo]
+ */
 @InstallIn(ViewModelComponent::class)
 @Module
 abstract class MeetingRepositoryModule {

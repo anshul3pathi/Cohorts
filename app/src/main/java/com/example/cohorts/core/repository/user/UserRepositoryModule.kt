@@ -6,6 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt module for providing the implementation of [UserRepo]
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class UserRepositoryModule {

@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel for AddNewMember screen
+ */
 @HiltViewModel
 class AddNewMemberViewModel @Inject constructor(
     private val repository: CohortsRepo,
@@ -25,6 +28,12 @@ class AddNewMemberViewModel @Inject constructor(
     private val _snackbarMessage = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
+    /**
+     * Add new member to given [Cohort]
+     *
+     * @param cohort object containing [Cohort] info
+     * @param userEmail email of the user to be added
+     */
     fun addNewMemberToCohort(cohort: Cohort, userEmail: String) {
         CoroutineScope(coroutineDispatcher).launch {
             val result = repository.addNewMemberToCohort(cohort, userEmail)

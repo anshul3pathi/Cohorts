@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel for Login Screen
+ */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepo,
@@ -25,6 +28,9 @@ class LoginViewModel @Inject constructor(
     private val _snackbarMessage = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
+    /**
+     * Saves the data of current user in firestore if it doesn't exist
+     */
     fun registerCurrentUser() {
         viewModelScope.launch(coroutineDispatcher) {
             val result = userRepository.registerCurrentUser()

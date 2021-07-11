@@ -12,6 +12,11 @@ import com.example.cohorts.R
 import com.example.cohorts.core.model.User
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import timber.log.Timber
+
+/**
+ * Binding adapters for the entire project.
+ */
 
 @BindingAdapter(value = ["bind:user", "bind:currentUser"], requireAll = true)
 fun setUserInfoButtonText(view: View, user: User, currentUser: User) {

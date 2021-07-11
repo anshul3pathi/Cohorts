@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivityLoginBinding
 import com.example.cohorts.ui.main.MainActivity
-import com.example.cohorts.utils.Theme
 import com.example.cohorts.utils.snackbar
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Activity for logging the user in using the Firebase's AuthUI
+ */
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     companion object {
         private const val RC_SIGN_IN = 1
-        private const val APP_THEME_EXTRA = "app_theme"
     }
 
     private lateinit var binding: ActivityLoginBinding
@@ -52,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
 
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
-                Timber.d("onActivityResult: Successfully signed in")
                 loginViewModel.registerCurrentUser()
                 val mainActivityIntent = Intent(this, MainActivity::class.java)
                 startActivity(mainActivityIntent)
@@ -65,6 +64,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Launch the firebase's AuthUI
+     */
     private fun launchSignInFlow() {
         startActivityForResult(
             AuthUI.getInstance()

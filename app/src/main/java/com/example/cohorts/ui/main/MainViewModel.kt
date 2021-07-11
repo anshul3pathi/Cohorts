@@ -18,6 +18,9 @@ import org.jitsi.meet.sdk.BroadcastReceiver
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel for MainActivity
+ */
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val themeRepository: ThemeRepo,
@@ -26,12 +29,26 @@ class MainViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
+    init {
+        // load the data of current user as the user is now logged in
+        userRepository.initialiseCurrentUser()
+    }
+
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
     private val _currentAppTheme = MutableLiveData(getAppTheme())
     val currentAppTheme: LiveData<Theme> = _currentAppTheme
 
+    /**
+     * Terminate the ongoing meeting
+     *
+     * Detaches the broadcast receiver from Jitsi and removes the user from the ongoing
+     * meeting
+     *
+     * @param context [Context]
+     * @param broadcastReceiver broadcast receiver listening to Jitsi events
+     */
     fun terminateOngoingMeeting(context: Context, broadcastReceiver: BroadcastReceiver) {
         CoroutineScope(coroutineDispatcher).launch {
             val result = meetingRepository.leaveOngoingMeeting()
@@ -46,6 +63,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Remove user from any ongoing meeting and terminate the meetings
+     *
+     * Removes the user from meetings of any cohort the user maybe in and
+     * detaches the broadcast receiver from Jitsi
+     *
+     * @param context [Context]
+     * @param broadcastReceiver listens to the event broadcasts by Jitsi
+     * */
     fun onDestroy(context: Context, broadcastReceiver: BroadcastReceiver) {
         destroyJitsi(context, broadcastReceiver)
         CoroutineScope(coroutineDispatcher).launch {
@@ -53,12 +79,23 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Change the app theme
+     *
+     * Changes the current theme value of _currentTheme liveData and saves the updated
+     * theme
+     *
+     * @param value [Int] value that will be mapped to app theme
+     */
     fun changeAppTheme(value: Int) {
         val theme = value.toTheme()
         _currentAppTheme.postValue(theme)
         themeRepository.saveAppTheme(theme)
     }
 
+    /**
+     * Sign the current user out
+     */
     fun signOut() {
         Timber.d("Signing out!")
         CoroutineScope(coroutineDispatcher).launch {

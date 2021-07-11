@@ -23,6 +23,9 @@ import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Displays the list of [Task]
+ */
 @AndroidEntryPoint
 class TasksFragment : Fragment() {
 
@@ -39,8 +42,9 @@ class TasksFragment : Fragment() {
     ): View {
         binding = FragmentTasksBinding.inflate(inflater)
 
-        arguments.let {
-            cohortArgument = TasksFragmentArgs.fromBundle(it!!).cohort!!
+        // initialise the cohortArgument member variable from safeArgs
+        arguments?.let {
+            cohortArgument = TasksFragmentArgs.fromBundle(it).cohort!!
             Timber.d("cohort Argument = $cohortArgument")
             (activity as AppCompatActivity).supportActionBar?.subtitle = cohortArgument.cohortName
         }
@@ -65,6 +69,7 @@ class TasksFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // clear the MainActivity's menu and inflate TasksFragment's menu
         menu.clear()
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
     }
@@ -97,10 +102,16 @@ class TasksFragment : Fragment() {
         taskRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    /*
+                     * if tasks exist, show tasks list and hide not task message
+                     */
                     Timber.d("tasks exist")
                     binding.tasksRcv.visibility = View.VISIBLE
                     binding.noTasksLayout.visibility = View.INVISIBLE
                 } else {
+                    /*
+                     * if tasks don't exist, hide tasks list and show no tasks message
+                     */
                     binding.tasksRcv.visibility = View.INVISIBLE
                     binding.noTasksLayout.visibility = View.VISIBLE
                 }

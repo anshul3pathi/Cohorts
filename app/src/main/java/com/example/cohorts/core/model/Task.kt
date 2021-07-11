@@ -3,6 +3,15 @@ package com.example.cohorts.core.model
 import com.example.cohorts.utils.generateRandomString
 import java.io.Serializable
 
+/**
+ * Model class of a task
+ *
+ * @param title title of the task
+ * @param description description of the task
+ * @param isCompleted true if task completed otherwise false
+ * @param taskId unique id of this task
+ * @param taskOfCohort unique id of the cohort this task belongs to
+ */
 data class Task(
     var title: String? = null,
     var description: String? = null,

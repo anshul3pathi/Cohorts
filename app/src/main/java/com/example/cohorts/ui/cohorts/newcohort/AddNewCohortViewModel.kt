@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * ViewModel for AddNewCohort screen*/
 @HiltViewModel
 class AddNewCohortViewModel @Inject constructor(
     private val repository: CohortsRepo,
@@ -25,6 +27,11 @@ class AddNewCohortViewModel @Inject constructor(
     private val _snackbarMessage = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>> = _snackbarMessage
 
+    /**
+     * Adds new Cohort to firestore database
+     *
+     * @param newCohort object containing the data of the newCohort to be added
+     */
     fun addNewCohort(newCohort: Cohort) {
         viewModelScope.launch(coroutineDispatcher) {
             val result = repository.addNewCohort(newCohort)

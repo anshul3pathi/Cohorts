@@ -7,6 +7,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.example.cohorts.R
 import com.example.cohorts.databinding.ActivitySplashScreenBinding
 import com.example.cohorts.ui.main.MainActivity
@@ -16,6 +17,9 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 
+/**
+ * Displays the Splash screen
+ */
 @AndroidEntryPoint
 class SplashScreenActivity : AppCompatActivity() {
 
@@ -38,19 +42,22 @@ class SplashScreenActivity : AppCompatActivity() {
         viewModel.isUserLoggedIn.observe(this, { value ->
             isUserLoggedIn = value
         })
-        viewModel.navigateToLiveData.observe(this, { navigateToMainActivity ->
-            if (navigateToMainActivity) {
-                if (isUserLoggedIn) {
-                    viewModel.initialiseCurrentUser()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
+        viewModel.navigate.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let {
+                if (it) {
+                    if (isUserLoggedIn) {
+                        viewModel.initialiseCurrentUser()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                    finish()
                 }
-                finish()
             }
         })
+        // get the saved theme value and then change the app theme
         viewModel.appTheme.observe(this, { theme ->
             changeAppTheme(theme)
         })
