@@ -43,7 +43,7 @@ Get to Cohort info by clicking a Cohort then clicking the 3 dots on top and sele
 Delete the Cohort by clicking on Cohort, click on 3 dots on top right and then select *Delete Cohort*.
 
 ## Video Calling
-Users can start a new video meeting in a Cohort by clicking the video icon on the top right.
+Users can start a new video meeting in a Cohort by clicking the video icon on the top.
 [](extras/empty_chat_screen.jpg)
 
 Upto 20 people can join the video meeting. Users can turn on or off their videos, mute of unmute 
