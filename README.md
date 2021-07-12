@@ -4,7 +4,15 @@ A minimalistic collaboration android app for organising a video meet of up to 20
 chat in realtime chat and add tasks to be done.
 
 ## Install Cohorts
-[Get APK](https://drive.google.com/drive/folders/1IN1qMayoN1HsaKvCEPPCuPnQlCTmGbxm?usp=sharing)
+Install The app on your Android device by downloading the latest APK from the given link.
+
+[Get Latest APK](https://drive.google.com/drive/folders/1IN1qMayoN1HsaKvCEPPCuPnQlCTmGbxm?usp=sharing)
+
+## Compile instructions
+Anyone who clones this repo and runs gradle build *won't be able to compile the app because they
+won't have their developing machine's SHA keys registered on Firebase*. You will get Firebase Error code: 10.
+Please ping me on my mail - anshul.3pathi@gmail.com for registering you machine's SHA keys on 
+Firebase.
 
 # Features
 
