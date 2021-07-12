@@ -32,9 +32,9 @@ Add new member by clicking on the Cohort, clicking the 3 dots on top and selecti
 *Add New Member* option. Users, who are on Cohort, can be added using their emails.
 
 <p float="left">
-  <img src="extras/chat_options.jpg" width="200" /> 
-  <img src="extras/add_new_member_with_email.jpg" width="200" />
-  <img src="extras/add_new_member.jpg" width="200" />
+  <img src="extras/chat_options.jpg" width="220" /> 
+  <img src="extras/add_new_member_with_email.jpg" width="220" />
+  <img src="extras/add_new_member.jpg" width="220" />
 </p>
 
 ### Cohort Info
@@ -91,9 +91,9 @@ Clear completed Tasks by clicking on 3 dots and selecting *Clear Completed*.
 Clear all Tasks by clicking on 3 dots and selecting *Clear All*.
 
 <p float="center">
-  <img src="extras/delete_completed_tasks.jpg" width="200" /> 
-  <img src="extras/complete_tasks_deleted.jpg" width="200" />
-  <img src="extras/all_tasks_deleted.jpg" width="200" />
+  <img src="extras/delete_completed_tasks.jpg" width="220" /> 
+  <img src="extras/complete_tasks_deleted.jpg" width="220" />
+  <img src="extras/all_tasks_deleted.jpg" width="220" />
 </p>
 
 ### Add new Task
@@ -113,6 +113,25 @@ the top right corner.
   <img src="extras/task_detail_unmarked.jpg" width="200" />
   <img src="extras/edit_task.jpg" width="200" />
   <img src="extras/delete_task.jpg" width="200" />
+</p>
+
+## Profile
+View your Profile by coming to the Cohort screen clicking the 3 dots and selecting *Profile*
+
+<p float="center">
+  <img src="extras/profile_page.jpg" width="350" /> 
+</p>
+
+## Dark Mode
+App wide dark mode is available. Users can change the theme of the app by coming to Cohort 
+screen clicking the 3 dots and selecting the *Theme*.
+
+<p float="center">
+  <img src="extras/dark_mode_cohorts.jpg" width="350" /> 
+  <img src="extras/dark_mode_chat.jpg" width="350" /> 
+  <img src="extras/dark_mode_info.jpg" width="350" /> 
+  <img src="extras/dark_mode_tasks.jpg" width="350" /> 
+  <img src="extras/dark_mode_add_tasks.jpg" width="350" /> 
 </p>
 
 
