@@ -18,7 +18,7 @@ import javax.inject.Singleton
  * Concrete implementation of [MeetingRepo] for dealing with adding and removing
  * user from meetings of cohorts
  */
-@Singleton
+
 class MeetingRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
