@@ -127,11 +127,11 @@ App wide dark mode is available. Users can change the theme of the app by coming
 screen clicking the 3 dots and selecting the *Theme*.
 
 <p float="center">
-  <img src="extras/dark_mode_cohorts.jpg" width="350" /> 
+  <img src="extras/dark_mode_cohorts_screen.jpg" width="350" /> 
   <img src="extras/dark_mode_chat.jpg" width="350" /> 
   <img src="extras/dark_mode_info.jpg" width="350" /> 
   <img src="extras/dark_mode_tasks.jpg" width="350" /> 
-  <img src="extras/dark_mode_add_tasks.jpg" width="350" /> 
+  <img src="extras/dark_mode_add_task.jpg" width="350" /> 
 </p>
 
 
