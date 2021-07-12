@@ -85,20 +85,6 @@ class ExtendedFloatingActionButtonScrollListener(
             */
             extendedFab.extend()
         }
-        if (!recyclerView.canScrollVertically(1)
-            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-            /*
-            * if the list items can't be scrolled vertically and they are not being scrolled
-            * right now then hide the fab so that the last list item can be viewed
-            * and clicked easily
-            */
-            extendedFab.hide()
-        } else {
-            /*
-            * otherwise show the fab
-            */
-            extendedFab.show()
-        }
         super.onScrollStateChanged(recyclerView, newState)
     }
 

@@ -69,11 +69,16 @@ class MainActivity : AppCompatActivity() {
 
         subscribeToObservers()
 
+        // if a cohort bugged, then fix it the next time app starts
+        mainViewModel.onDestroy(this, broadcastReceiver)
+
         appTheme = intent.getIntExtra(APP_THEME_EXTRA, 1).toTheme()
 
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
+
+
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
@@ -86,7 +91,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        mainViewModel.onDestroy(this, broadcastReceiver)
+        mainViewModel.terminateOngoingMeeting(this, broadcastReceiver)
         super.onDestroy()
     }
 

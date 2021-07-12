@@ -145,6 +145,18 @@ screen clicking the 3 dots and selecting the *Theme*.
   <img src="extras/dark_mode_add_task.jpg" width="350" /> 
 </p>
 
+## Design Methodologies
+
+### Agile
+The project is primarily built using the [Agile](https://www.cprime.com/resources/what-is-agile-what-is-scrum/)
+methodology. Each feature is planned first before development begins and developed incrementally
+without breaking the existing app.
+
+### Modularised
+This app is highly modularised. There are different packages for different screens that only contain
+the logic for that screen, like Activity or Fragment classes, ViewModel, Adapters, etc.
+Following a modularised approach makes the app scalable and less daunting to understand.
+
 
 ## Built with
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.

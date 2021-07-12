@@ -6,8 +6,8 @@ object Versions {
     const val MIN_SDK = 26
     const val TARGET_SDK = 30
     const val GRADLE_BUILD_TOOLS = "4.2.1"
-    const val APP_VERSION = 2
-    const val APP_VERSION_NAME = "2.2.0"
+    const val APP_VERSION = 3
+    const val APP_VERSION_NAME = "3.1.0"
 
 
     const val NAVIGATION = "2.3.0-alpha01"

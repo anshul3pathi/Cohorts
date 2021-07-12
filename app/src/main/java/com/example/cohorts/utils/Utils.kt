@@ -11,6 +11,11 @@ import androidx.core.content.res.use
 import com.example.cohorts.core.Result
 import com.google.android.material.snackbar.Snackbar
 
+/**
+ * Generated a random string of given length
+ *
+ * @param length length of string required
+ */
 fun generateRandomString(length: Int = 10): String {
     val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
     return (1..length)
@@ -18,6 +23,13 @@ fun generateRandomString(length: Int = 10): String {
         .joinToString("")
 }
 
+/**
+ * This function takes a lambda and calls it inside a try and catch block
+ *
+ * @param T
+ * @param action () -> Result<T>
+ * @return T wrapped in [Result]
+ */
 inline fun <T> safeCall(action: () -> Result<T>): Result<T> {
     return try {
         action()
@@ -26,6 +38,9 @@ inline fun <T> safeCall(action: () -> Result<T>): Result<T> {
     }
 }
 
+/**
+ * View extension function for showing a snackbar
+ */
 fun View.snackbar(message: String, lengthShort: Boolean = false) {
     Snackbar.make(
         this,
@@ -33,14 +48,18 @@ fun View.snackbar(message: String, lengthShort: Boolean = false) {
     ).show()
 }
 
-fun snackbar(view: View, message: String) {
-    Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
-}
-
+/**
+ * Theme Enum class
+ */
 enum class Theme {
     LIGHT, DARK, SYSTEM_DEFAULT
 }
 
+/**
+ * Extension function on [Theme] which converts [Theme] to [Int]
+ *
+ * @return [Int]
+ */
 fun Theme.fromThemeToInt(): Int {
     return when (this) {
         Theme.LIGHT -> 0
@@ -49,6 +68,11 @@ fun Theme.fromThemeToInt(): Int {
     }
 }
 
+/**
+ * Extension function on [Int] which converts an [Int] to [Theme]
+ *
+ * @return [Theme]
+ */
 fun Int.toTheme(): Theme {
     return when (this) {
         0 -> Theme.LIGHT
