@@ -15,11 +15,17 @@ Login with Google or the user can login with Email and Password.
 ## Cohorts
 Cohort is a group in which members can start a video meet, chat with members
 and add tasks to be done.
-[](extras/cohort_screen.jpg)
+
+<p float="center">
+  <img src="extras/cohort_screen.jpg" width="350" /> 
+</p>
 
 ## Add New Cohort
 Add new Cohort by giving it a name and maybe a description.
-[](extras/add_new_cohort.jpg)
+
+<p float="center">
+  <img src="extras/add_new_cohort.jpg" width="350" /> 
+</p>
 
 ### Add members in a Cohort
 Add new member by clicking on the Cohort, clicking the 3 dots on top and selecting 
@@ -47,29 +53,44 @@ Delete the Cohort by clicking on Cohort, click on 3 dots on top right and then s
 
 ## Video Calling
 Users can start a new video meeting in a Cohort by clicking the video icon on the top.
-[](extras/empty_chat_screen.jpg)
+
+<p float="center">
+  <img src="extras/empty_chat_screen.jpg" width="350" /> 
+</p>
 
 Upto 20 people can join the video meeting. Users can turn on or off their videos, mute of unmute 
 their mics.
-[](extras/video_meet_screen.jpg)
+
+<p float="center">
+  <img src="extras/video_meet_screen.jpg" width="350" /> 
+</p>
 
 ## Chats
 Users can chat with all the other members of the Cohort in realtime. Users can also send images
 in Chat.
-[](extras/chat_screen.jpg)
+
+<p float="center">
+  <img src="extras/chat_screen.jpg" width="350" /> 
+</p>
 
 Click on the images to view them enlarged and pinch to zoom.
-[](extras/enlarged_image.jpg)
+
+<p float="center">
+  <img src="extras/enlarged_image.jpg" width="350" /> 
+</p>
 
 ## Tasks
 Add Tasks to do within Cohorts. Users can view the tasks, mark them complete or active,
 delete of with Task details. Click on the check box to mark a task complete or active.
-[](extras/task_screen.jpg)
+
+<p float="center">
+  <img src="extras/task_screen.jpg" width="350" /> 
+</p>
 
 Clear completed Tasks by clicking on 3 dots and selecting *Clear Completed*.
 Clear all Tasks by clicking on 3 dots and selecting *Clear All*.
 
-<p float="left">
+<p float="center">
   <img src="extras/delete_completed_tasks.jpg" width="200" /> 
   <img src="extras/complete_tasks_deleted.jpg" width="200" />
   <img src="extras/all_tasks_deleted.jpg" width="200" />
@@ -77,7 +98,10 @@ Clear all Tasks by clicking on 3 dots and selecting *Clear All*.
 
 ### Add new Task
 Add a new task by clicking on the + icon.
-[](extras/add_new_task.jpg)
+
+<p float="center">
+  <img src="extras/add_new_task.jpg" width="350" /> 
+</p>
 
 ### Task Detail
 Click on the Task to view it's details. Edit the Task by clicking the edit button at bottom right 
