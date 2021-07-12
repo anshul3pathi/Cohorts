@@ -1,13 +1,16 @@
 # Cohorts
 
 A minimalistic collaboration android app for organising a video meet of up to 20 people, 
-realtime chat and tasks.
+chat in realtime chat and add tasks to be done.
 
 # Features
 
 ## Login
 Login with Google or the user can login with Email and Password.
-[](extras/login_screen.jpg)
+
+<p float="center">
+  <img src="extras/login_screen.jpg" width="350" /> 
+</p>
 
 ## Cohorts
 Cohort is a group in which members can start a video meet, chat with members
