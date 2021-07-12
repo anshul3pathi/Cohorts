@@ -3,6 +3,9 @@
 A minimalistic collaboration android app for organising a video meet of up to 20 people, 
 chat in realtime chat and add tasks to be done.
 
+## Install Cohorts
+[Get APK](https://drive.google.com/drive/folders/1IN1qMayoN1HsaKvCEPPCuPnQlCTmGbxm?usp=sharing)
+
 # Features
 
 ## Login
