@@ -14,29 +14,27 @@ won't have their developing machine's SHA keys registered on Firebase*. You will
 Please ping me on my mail - anshul.3pathi@gmail.com for registering you machine's SHA keys on 
 Firebase.
 
+# Screenshots
+
+![](extras/screenshot1.jpg)
+![](extras/screenshot2.jpg)
+
 # Features
 
 ## Login
 Login with Google or the user can login with Email and Password.
 
-![](extras/login_screen.jpg)
 
 ## Cohorts
 Cohort is a group in which members can start a video meet, chat with members
 and add tasks to be done.
 
-![](extras/cohort_screen.jpg)
-
 ## Add New Cohort
 Add new Cohort by giving it a name and maybe a description.
-
-![](extras/add_new_cohort.jpg)
 
 ### Add members in a Cohort
 Add new member by clicking on the Cohort, clicking the 3 dots on top and selecting 
 *Add New Member* option. Users, who are on Cohort, can be added using their emails.
-
-![](extras/add_members.jpg)
 
 ### Cohort Info
 View detailed information about the Cohort, edit the name or description of the Cohort,
@@ -44,74 +42,45 @@ remove a user from the Cohort or leave the Cohort.
 Get to Cohort info by clicking a Cohort then clicking the 3 dots on top and selecting 
 *Cohort Info*.
 
-![](extras/cohort_info.jpg)
-
 ### Delete a Cohort
 Delete the Cohort by clicking on Cohort, click on 3 dots on top right and then select *Delete Cohort*.
 
 ## Video Calling
 Users can start a new video meeting in a Cohort by clicking the video icon on the top.
 
-
-![](extras/empty_chat_screen.jpg)
-
-Upto 20 people can join the video meeting. Users can turn on or off their videos, mute of unmute 
+Up to 20 people can join the video meeting. Users can turn on or off their videos, mute of unmute 
 their mics.
-
-
-![](extras/video_meet_screen.jpg)
 
 ## Chats
 Users can chat with all the other members of the Cohort in realtime. Users can also send images
 in Chat.
 
-
-![](extras/chat_screen.jpg)
-
 Click on the images to view them enlarged and pinch to zoom.
-
-
-![](extras/enlarged_image.jpg)
 
 ## Tasks
 Add Tasks to do within Cohorts. Users can view the tasks, mark them complete or active,
 delete of with Task details. Click on the check box to mark a task complete or active.
 
-
-![](extras/task_screen.jpg)
-
 Clear completed Tasks by clicking on 3 dots and selecting *Clear Completed*.
 Clear all Tasks by clicking on 3 dots and selecting *Clear All*.
 
-
-![](extras/delete_tasks.jpg)
-
 ### Add new Task
 Add a new task by clicking on the + icon.
-
-
-![](extras/add_new_task.jpg)
 
 ### Task Detail
 Click on the Task to view it's details. Edit the Task by clicking the edit button at bottom right 
 corner of the screen, mark the task complete of active or delete the task by clicking on 
 the top right corner.
 
-
-![](extras/task_detail.jpg)
-
 ## Profile
 View your Profile by coming to the Cohort screen clicking the 3 dots and selecting *Profile*
-
-
-![](extras/profile_page.jpg)
 
 ## Dark Mode
 App wide dark mode is available. Users can change the theme of the app by coming to Cohort 
 screen clicking the 3 dots and selecting the *Theme*.
 
-
 ![](extras/dark_mode.jpg)
+
 
 ## Design Methodologies
 
