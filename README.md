@@ -8,6 +8,9 @@ Install The app on your Android device by downloading the latest APK from the gi
 
 [Get Latest APK](https://drive.google.com/drive/folders/1IN1qMayoN1HsaKvCEPPCuPnQlCTmGbxm?usp=sharing)
 
+## Demo Link
+[Demo](https://www.youtube.com/watch?v=ecDySEMT4_g)
+
 ## Compile instructions
 Anyone who clones this repo and runs gradle build *won't be able to compile the app because they
 won't have their developing machine's SHA keys registered on Firebase*. You will get Firebase Error code: 10.
